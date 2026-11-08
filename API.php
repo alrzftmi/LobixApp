@@ -1376,6 +1376,7 @@ final class LBXOP_API {
             // were configured. Keep CIP-1, deactivate the other four, and
             // remove only their matching placeholder objects from the floor plan.
             $migration_meta_key = '_lobix_robina_system1_cleanup_v1';
+            $robina_migration_applied = false;
             if ($product_id === 1233 && !get_post_meta($product_id, $migration_meta_key, true)) {
                 $placeholder_indexes = array();
                 foreach ($systems as $index => $row) {
@@ -1441,7 +1442,7 @@ final class LBXOP_API {
                     }
                     $layout['updated_at'] = $now;
                     update_post_meta($product_id, self::floor_layout_meta_key(), $layout);
-                    update_post_meta($product_id, $migration_meta_key, $now);
+                    $robina_migration_applied = true;
                     $changed = true;
                 }
             }
@@ -1537,7 +1538,11 @@ final class LBXOP_API {
                 return true;
             }
 
-            return self::save_physical_systems_for_product($product_id, $systems);
+            $saved = self::save_physical_systems_for_product($product_id, $systems);
+            if ($saved && $robina_migration_applied) {
+                update_post_meta($product_id, $migration_meta_key, $now);
+            }
+            return $saved;
 
         } finally {
             delete_option($lock_key);
