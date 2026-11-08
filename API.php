@@ -1708,7 +1708,7 @@ final class LBXOP_API {
             unset($row);
             if (!$found) return self::fail('system_not_found', 'شناسه دستگاه در این گیمنت پیدا نشد.', 404);
             if (!self::save_physical_systems_for_product($product_id, $systems)) return self::fail('physical_system_storage_error', 'غیرفعال‌سازی دستگاه ذخیره نشد.', 500);
-            return self::ok(array('product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
+            return self::ok(array('product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
         } finally { self::unlock_product($lock); }
     }
 
@@ -1775,7 +1775,7 @@ final class LBXOP_API {
         $manuals = self::get_manuals_authoritative($product_id);
         if (is_wp_error($manuals)) return $manuals;
         $online = self::online_bookings($product_id, $date, $date);
-        $devices = self::physical_systems_for_product($product_id, true);
+        $devices = self::physical_systems_for_product($product_id, false);
         $now = self::now(); $now_date = $now->format('Y-m-d'); $now_hour = ((int) $now->format('H')) + ((int) $now->format('i') / 60);
         $out = array();
         foreach ($devices as $device) {
@@ -1878,7 +1878,7 @@ public static function public_booking_map_route($request) {
 
     // دریافت نقشه و دستگاه‌های همین گیمنت
     $layout = self::get_floor_layout($product_id);
-    $devices = self::physical_systems_for_product($product_id, true);
+    $devices = self::physical_systems_for_product($product_id, false);
 
     // فقط فیلدهای لازم برای نمایش نقشه را نگه می‌داریم.
     $safe_objects = array();
