@@ -1134,7 +1134,7 @@ final class LBXOP_API {
             'work_start' => (string) get_post_meta($product->get_id(), '_gamenet_work_start', true),
             'work_end' => (string) get_post_meta($product->get_id(), '_gamenet_work_end', true),
             'variations' => self::variation_data($product),
-            'physical_systems' => self::physical_systems_for_product($product->get_id(), true),
+            'physical_systems' => self::physical_systems_for_product($product->get_id(), false),
         );
     }
 
@@ -1209,7 +1209,7 @@ final class LBXOP_API {
             foreach ((array) $variation->get_variation_attributes() as $attribute_name => $attribute_value) {
                 $attribute_value = trim((string) $attribute_value);
                 if ($attribute_value === '') continue;
-                $key = strtolower((string) preg_replace('/^attribute_/', '', (string) $attribute_name));
+                $key = strtolower(rawurldecode((string) preg_replace('/^attribute_/', '', (string) $attribute_name)));
                 if (strpos($key, 'type') === false && strpos($key, 'category') === false && strpos($key, 'system') === false && strpos($key, 'device') === false && strpos($key, 'دستگاه') === false && strpos($key, 'نوع') === false) continue;
                 $taxonomy = preg_replace('/^attribute_/', '', (string) $attribute_name);
                 if ($taxonomy && taxonomy_exists($taxonomy)) {
@@ -1310,6 +1310,7 @@ final class LBXOP_API {
             }
 
             $expected = array();
+            $variation_categories = array();
             $variation_ids = $product->is_type('variable')
                 ? $product->get_children()
                 : array($product_id);
@@ -1347,6 +1348,7 @@ final class LBXOP_API {
                 if ($product->is_type('variable')) {
                     $category = self::variation_system_category($variation, $labels);
                 }
+                $variation_categories[$variation_id] = $category;
 
                 foreach ($labels as $position => $label) {
                     $number = self::numeric_system_number($label, $position + 1);
@@ -1369,6 +1371,81 @@ final class LBXOP_API {
             $changed = false;
             $now = self::now()->format('c');
 
+            // One-time repair for Robina (product 1233): the five generic
+            // system-1 rows were auto-created before the real system lists
+            // were configured. Keep CIP-1, deactivate the other four, and
+            // remove only their matching placeholder objects from the floor plan.
+            $migration_meta_key = '_lobix_robina_system1_cleanup_v1';
+            if ($product_id === 1233 && !get_post_meta($product_id, $migration_meta_key, true)) {
+                $placeholder_indexes = array();
+                foreach ($systems as $index => $row) {
+                    if (!is_array($row)) continue;
+                    $row_variation = absint(isset($row['variation_id']) ? $row['variation_id'] : 0);
+                    $row_number = absint(isset($row['number']) ? $row['number'] : 0);
+                    $row_category = sanitize_text_field((string) (isset($row['category']) ? $row['category'] : ''));
+                    $created_at = (string) (isset($row['created_at']) ? $row['created_at'] : '');
+                    if (
+                        $row_number === 1 &&
+                        $row_category === 'سیستم' &&
+                        strpos($created_at, '2026-11-09T00:42:05') === 0 &&
+                        isset($variation_categories[$row_variation])
+                    ) {
+                        $placeholder_indexes[] = $index;
+                    }
+                }
+
+                // Do not touch anything unless the exact five reported rows
+                // are present and exactly one belongs to the CIP variation.
+                $cip_placeholder_count = 0;
+                foreach ($placeholder_indexes as $index) {
+                    $row_variation = absint(isset($systems[$index]['variation_id']) ? $systems[$index]['variation_id'] : 0);
+                    if (strcasecmp((string) $variation_categories[$row_variation], 'CIP') === 0) {
+                        $cip_placeholder_count++;
+                    }
+                }
+
+                if (count($placeholder_indexes) === 5 && $cip_placeholder_count === 1) {
+                    $layout = self::get_floor_layout($product_id);
+                    $remove_layout_ids = array();
+                    foreach ($placeholder_indexes as $index) {
+                        $row_variation = absint(isset($systems[$index]['variation_id']) ? $systems[$index]['variation_id'] : 0);
+                        $system_id = sanitize_text_field((string) (isset($systems[$index]['system_id']) ? $systems[$index]['system_id'] : ''));
+                        $is_cip = strcasecmp((string) $variation_categories[$row_variation], 'CIP') === 0;
+
+                        if ($is_cip) {
+                            // Preserve the real CIP-1 identity and its map position.
+                            $systems[$index]['category'] = 'CIP';
+                            $systems[$index]['active'] = true;
+                            foreach ($layout['objects'] as &$object) {
+                                if (is_array($object) && isset($object['system_id']) && (string) $object['system_id'] === $system_id) {
+                                    $object['label'] = 'CIP #1';
+                                }
+                            }
+                            unset($object);
+                        } else {
+                            // Keep the registry row/ID for historical references,
+                            // but do not expose it as an available physical system.
+                            $systems[$index]['active'] = false;
+                            $remove_layout_ids[$system_id] = true;
+                        }
+
+                        $systems[$index]['updated_at'] = $now;
+                    }
+
+                    if ($remove_layout_ids) {
+                        $layout['objects'] = array_values(array_filter($layout['objects'], function ($object) use ($remove_layout_ids) {
+                            return !is_array($object) ||
+                                empty($object['system_id']) ||
+                                !isset($remove_layout_ids[(string) $object['system_id']]);
+                        }));
+                    }
+                    $layout['updated_at'] = $now;
+                    update_post_meta($product_id, self::floor_layout_meta_key(), $layout);
+                    update_post_meta($product_id, $migration_meta_key, $now);
+                    $changed = true;
+                }
+            }
+
             foreach ($expected as $key => $definition) {
                 if (isset($existing_index[$key])) {
                     $index = $existing_index[$key];
@@ -1388,7 +1465,7 @@ final class LBXOP_API {
                         $row['number'] = (int) $definition['number'];
                         $row_changed = true;
                     }
-                    if (empty($row['category'])) {
+                    if (empty($row['category']) || sanitize_text_field((string) $row['category']) === 'سیستم') {
                         $row['category'] = $definition['category'];
                         $row_changed = true;
                     }
@@ -1576,7 +1653,7 @@ final class LBXOP_API {
         $product_id = self::request_product_id($request);
         $product = self::require_product_access($user, $product_id);
         if (is_wp_error($product)) return $product;
-        return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
+        return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
     }
 
     public static function save_physical_system_route($request) {
@@ -1611,7 +1688,7 @@ final class LBXOP_API {
                 $systems[] = array('system_id' => 'sys_' . wp_generate_uuid4(), 'number' => $number, 'category' => $category, 'variation_id' => $variation_id, 'active' => true, 'created_at' => $now, 'updated_at' => $now);
             }
             if (!self::save_physical_systems_for_product($product_id, $systems)) return self::fail('physical_system_storage_error', 'ذخیره دستگاه‌ها تأیید نشد.', 500);
-            return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
+            return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
         } finally { self::unlock_product($lock); }
     }
 
@@ -1641,7 +1718,7 @@ final class LBXOP_API {
         $product_id = self::request_product_id($request);
         $product = self::require_product_access($user, $product_id);
         if (is_wp_error($product)) return $product;
-        $systems = self::physical_systems_for_product($product_id, true);
+        $systems = self::physical_systems_for_product($product_id, false);
         return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'layout' => self::get_floor_layout($product_id), 'physical_systems' => $systems));
     }
 
@@ -3500,7 +3577,7 @@ public static function public_booking_map_route($request) {
             'variations' => self::variation_data($product),
             'manual_bookings' => $manuals,
             'online_bookings' => $online,
-            'physical_systems' => self::physical_systems_for_product($product_id, true),
+            'physical_systems' => self::physical_systems_for_product($product_id, false),
             'floor_layout' => self::get_floor_layout($product_id),
         );
         $sync_at = self::now()->format('c');
