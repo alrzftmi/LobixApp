@@ -1134,7 +1134,7 @@ final class LBXOP_API {
             'work_start' => (string) get_post_meta($product->get_id(), '_gamenet_work_start', true),
             'work_end' => (string) get_post_meta($product->get_id(), '_gamenet_work_end', true),
             'variations' => self::variation_data($product),
-            'physical_systems' => self::physical_systems_for_product($product->get_id(), false),
+            'physical_systems' => self::physical_systems_for_product($product->get_id(), true),
         );
     }
 
@@ -1427,6 +1427,7 @@ final class LBXOP_API {
                             // Keep the registry row/ID for historical references,
                             // but do not expose it as an available physical system.
                             $systems[$index]['active'] = false;
+                            $systems[$index]['hidden_from_app'] = true;
                             $remove_layout_ids[$system_id] = true;
                         }
 
@@ -1549,7 +1550,7 @@ final class LBXOP_API {
         }
     }
 
-    private static function physical_systems_for_product($product_id, $include_inactive = true) {
+    private static function physical_systems_for_product($product_id, $include_inactive = true, $include_hidden = false) {
         $product_id = absint($product_id);
 
         // Lazy, idempotent migration/provisioning means existing products such
@@ -1564,6 +1565,9 @@ final class LBXOP_API {
         $out = array();
         foreach ($stored as $row) {
             if (!is_array($row)) {
+                continue;
+            }
+            if (!$include_hidden && !empty($row['hidden_from_app'])) {
                 continue;
             }
 
@@ -1609,7 +1613,7 @@ final class LBXOP_API {
     }
 
     private static function find_physical_system($product_id, $system_id) {
-        foreach (self::physical_systems_for_product($product_id, true) as $row) {
+        foreach (self::physical_systems_for_product($product_id, true, true) as $row) {
             if (hash_equals((string) $row['system_id'], (string) $system_id)) return $row;
         }
         return false;
@@ -1617,7 +1621,7 @@ final class LBXOP_API {
 
     private static function resolve_system_ids($product_id, $systems) {
         if (!is_array($systems)) return $systems;
-        $registry = self::physical_systems_for_product($product_id, true);
+        $registry = self::physical_systems_for_product($product_id, true, true);
         $by_id = array();
         foreach ($registry as $device) $by_id[(string) $device['system_id']] = $device;
 
@@ -1658,7 +1662,7 @@ final class LBXOP_API {
         $product_id = self::request_product_id($request);
         $product = self::require_product_access($user, $product_id);
         if (is_wp_error($product)) return $product;
-        return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
+        return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
     }
 
     public static function save_physical_system_route($request) {
@@ -1677,7 +1681,7 @@ final class LBXOP_API {
         $lock = self::lock_product($product_id);
         if (is_wp_error($lock)) return $lock;
         try {
-            $systems = self::physical_systems_for_product($product_id, true);
+            $systems = self::physical_systems_for_product($product_id, true, true);
             $found = false;
             foreach ($systems as $row) {
                 if ($system_id !== '' && hash_equals($row['system_id'], $system_id)) { $found = true; continue; }
@@ -1693,7 +1697,7 @@ final class LBXOP_API {
                 $systems[] = array('system_id' => 'sys_' . wp_generate_uuid4(), 'number' => $number, 'category' => $category, 'variation_id' => $variation_id, 'active' => true, 'created_at' => $now, 'updated_at' => $now);
             }
             if (!self::save_physical_systems_for_product($product_id, $systems)) return self::fail('physical_system_storage_error', 'ذخیره دستگاه‌ها تأیید نشد.', 500);
-            return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
+            return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
         } finally { self::unlock_product($lock); }
     }
 
@@ -1708,12 +1712,12 @@ final class LBXOP_API {
         $lock = self::lock_product($product_id);
         if (is_wp_error($lock)) return $lock;
         try {
-            $systems = self::physical_systems_for_product($product_id, true); $found = false;
+            $systems = self::physical_systems_for_product($product_id, true, true); $found = false;
             foreach ($systems as &$row) if (hash_equals($row['system_id'], $system_id)) { $row['active'] = false; $row['updated_at'] = self::now()->format('c'); $found = true; break; }
             unset($row);
             if (!$found) return self::fail('system_not_found', 'شناسه دستگاه در این گیمنت پیدا نشد.', 404);
             if (!self::save_physical_systems_for_product($product_id, $systems)) return self::fail('physical_system_storage_error', 'غیرفعال‌سازی دستگاه ذخیره نشد.', 500);
-            return self::ok(array('product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, false)));
+            return self::ok(array('product_id' => (int) $product_id, 'physical_systems' => self::physical_systems_for_product($product_id, true)));
         } finally { self::unlock_product($lock); }
     }
 
@@ -1723,7 +1727,7 @@ final class LBXOP_API {
         $product_id = self::request_product_id($request);
         $product = self::require_product_access($user, $product_id);
         if (is_wp_error($product)) return $product;
-        $systems = self::physical_systems_for_product($product_id, false);
+        $systems = self::physical_systems_for_product($product_id, true);
         return self::ok(array('api_version' => self::VERSION, 'product_id' => (int) $product_id, 'layout' => self::get_floor_layout($product_id), 'physical_systems' => $systems));
     }
 
@@ -1780,7 +1784,7 @@ final class LBXOP_API {
         $manuals = self::get_manuals_authoritative($product_id);
         if (is_wp_error($manuals)) return $manuals;
         $online = self::online_bookings($product_id, $date, $date);
-        $devices = self::physical_systems_for_product($product_id, false);
+        $devices = self::physical_systems_for_product($product_id, true);
         $now = self::now(); $now_date = $now->format('Y-m-d'); $now_hour = ((int) $now->format('H')) + ((int) $now->format('i') / 60);
         $out = array();
         foreach ($devices as $device) {
@@ -1883,7 +1887,7 @@ public static function public_booking_map_route($request) {
 
     // دریافت نقشه و دستگاه‌های همین گیمنت
     $layout = self::get_floor_layout($product_id);
-    $devices = self::physical_systems_for_product($product_id, false);
+    $devices = self::physical_systems_for_product($product_id, true);
 
     // فقط فیلدهای لازم برای نمایش نقشه را نگه می‌داریم.
     $safe_objects = array();
@@ -3582,7 +3586,7 @@ public static function public_booking_map_route($request) {
             'variations' => self::variation_data($product),
             'manual_bookings' => $manuals,
             'online_bookings' => $online,
-            'physical_systems' => self::physical_systems_for_product($product_id, false),
+            'physical_systems' => self::physical_systems_for_product($product_id, true),
             'floor_layout' => self::get_floor_layout($product_id),
         );
         $sync_at = self::now()->format('c');
