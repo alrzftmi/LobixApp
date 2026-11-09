@@ -105,11 +105,29 @@ namespace LobixApp.Views
         private readonly Dictionary<int, Button> _systemCardMinusButtons = new();
         private readonly Dictionary<int, Button> _systemCardPlusButtons = new();
 
+        // =====================================================
+        // BOOKING TIME SELECTION
+        // =====================================================
+
+        // زمان شروع به دقیقه از ابتدای روز
+        private int? _selectedStartMinuteOfDay;
+
+        // زمان پایان به دقیقه از ابتدای روز
+        private int? _selectedEndMinuteOfDay;
+
+        // مدت واقعی رزرو بر حسب دقیقه
+        private int _selectedDurationMinutes = 60;
+
+        // متغیرهای سازگاری با منطق ساعت‌محور فعلی
+        // تا زمان هماهنگ‌شدن مدل و API حفظ می‌شوند.
         private string? _selectedStartHour;
 
         private int _selectedBookingHours = 1;
 
         private bool _durationExplicitlySelected;
+
+        // فاصله زمانی دکمه‌ها
+        private const int BookingTimeStepMinutes = 5;
 
         private int _wizardStep;
 
