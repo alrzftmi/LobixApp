@@ -1,0 +1,803 @@
+<UserControl x:Class="LobixApp.Views.ReservationsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             SnapsToDevicePixels="True"
+             UseLayoutRounding="True"
+             Background="#111116"
+             Foreground="#F4F4F8">
+
+    <UserControl.Resources>
+
+        <!-- COLORS -->
+        <SolidColorBrush x:Key="PageBackground" Color="#111116"/>
+        <SolidColorBrush x:Key="CardBackground" Color="#1B1B24"/>
+        <SolidColorBrush x:Key="SoftBackground" Color="#22222D"/>
+        <SolidColorBrush x:Key="SoftPurpleBackground" Color="#292027"/>
+
+        <SolidColorBrush x:Key="PrimaryPurple" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="PrimaryPurpleDark" Color="#C92F39"/>
+        <SolidColorBrush x:Key="PurpleSoft" Color="#352126"/>
+
+        <SolidColorBrush x:Key="DarkText" Color="#F4F4F8"/>
+        <SolidColorBrush x:Key="SecondaryText" Color="#B0B0BF"/>
+        <SolidColorBrush x:Key="MutedText" Color="#818190"/>
+
+        <SolidColorBrush x:Key="BorderColor" Color="#343442"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#2A2A35"/>
+
+        <SolidColorBrush x:Key="SuccessBackground" Color="#173528"/>
+        <SolidColorBrush x:Key="SuccessText" Color="#4ADE80"/>
+
+        <SolidColorBrush x:Key="WarningBackground" Color="#392B1B"/>
+        <SolidColorBrush x:Key="WarningText" Color="#FBBF24"/>
+
+        <SolidColorBrush x:Key="DangerBackground" Color="#3A2025"/>
+        <SolidColorBrush x:Key="DangerText" Color="#F87171"/>
+
+        <SolidColorBrush x:Key="OnlineReservationColor" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="OnlineReservationBackground" Color="#3A2025"/>
+
+        <SolidColorBrush x:Key="ManualReservationColor" Color="#F59E0B"/>
+        <SolidColorBrush x:Key="ManualReservationBackground" Color="#392B1B"/>
+
+        <SolidColorBrush x:Key="LoadingOverlayBackground" Color="#D9000000"/>
+
+        <!-- FONT -->
+        <FontFamily x:Key="Peyda">pack://application:,,,/LobixApp;component/Fonts/#Peyda</FontFamily>
+
+        <!-- BASE BUTTON -->
+        <Style x:Key="BaseButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="Background" Value="{StaticResource SoftBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="15,9"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#30303B"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#555563"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#393944"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- PRIMARY BUTTON -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource PrimaryPurple}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="PrimaryBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="9"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PrimaryBorder" Property="Background" Value="{StaticResource PrimaryPurpleDark}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="PrimaryBorder" Property="Opacity" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="PrimaryBorder" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- BUTTON VARIANTS -->
+        <Style x:Key="BackButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="17,10"/>
+        </Style>
+
+        <Style x:Key="DateFilterButton" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Margin" Value="0,0,7,0"/>
+            <Setter Property="Padding" Value="15,9"/>
+        </Style>
+
+        <Style x:Key="StatusFilterButton" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Margin" Value="0,0,7,0"/>
+            <Setter Property="Padding" Value="15,9"/>
+        </Style>
+
+        <Style x:Key="SmallActionButtonStyle" TargetType="Button" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Padding" Value="13,8"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <!-- STAT CARD -->
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="17,14"/>
+        </Style>
+
+        <!-- SECTION LABEL -->
+        <Style x:Key="SectionLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+        </Style>
+
+        <!-- LEGEND -->
+        <Style x:Key="LegendTextStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryText}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- SCROLLBAR -->
+        <Style x:Key="DarkScrollBarStyle" TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="#111116"/>
+            <Setter Property="Foreground" Value="#DB3C45"/>
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="MinWidth" Value="12"/>
+            <Setter Property="MinHeight" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ScrollBar}">
+                        <Grid Background="#111116">
+                            <Track x:Name="PART_Track"
+                                   Orientation="{TemplateBinding Orientation}"
+                                   IsDirectionReversed="True">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton x:Name="DecreaseButton"
+                                                  Command="ScrollBar.PageUpCommand"
+                                                  Background="#111116"
+                                                  BorderThickness="0"
+                                                  Focusable="False"
+                                                  Opacity="0"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb Background="#DB3C45" MinHeight="28" MinWidth="28">
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Border x:Name="ThumbBorder"
+                                                        Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        Margin="2"/>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#F0525B"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsDragging" Value="True">
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#C92F39"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton x:Name="IncreaseButton"
+                                                  Command="ScrollBar.PageDownCommand"
+                                                  Background="#111116"
+                                                  BorderThickness="0"
+                                                  Focusable="False"
+                                                  Opacity="0"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Orientation" Value="Horizontal">
+                                <Setter Property="Width" Value="Auto"/>
+                                <Setter Property="Height" Value="12"/>
+                                <Setter Property="MinWidth" Value="0"/>
+                                <Setter Property="MinHeight" Value="12"/>
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="False"/>
+                                <Setter TargetName="DecreaseButton" Property="Command" Value="ScrollBar.PageLeftCommand"/>
+                                <Setter TargetName="IncreaseButton" Property="Command" Value="ScrollBar.PageRightCommand"/>
+                            </Trigger>
+                            <Trigger Property="Orientation" Value="Vertical">
+                                <Setter Property="Width" Value="12"/>
+                                <Setter Property="Height" Value="Auto"/>
+                                <Setter Property="MinWidth" Value="12"/>
+                                <Setter Property="MinHeight" Value="0"/>
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
+                                <Setter TargetName="DecreaseButton" Property="Command" Value="ScrollBar.PageUpCommand"/>
+                                <Setter TargetName="IncreaseButton" Property="Command" Value="ScrollBar.PageDownCommand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- TEXTBOX -->
+        <Style x:Key="DarkTextBoxStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="Background" Value="{StaticResource SoftBackground}"/>
+            <Setter Property="CaretBrush" Value="{StaticResource PrimaryPurple}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,7"/>
+        </Style>
+
+        <!-- COMBOBOX -->
+        <Style x:Key="DarkComboBoxStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkText}"/>
+            <Setter Property="Background" Value="{StaticResource SoftBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,5"/>
+        </Style>
+
+        <!-- DEFAULT COMBOBOX STYLE -->
+        <Style TargetType="{x:Type ComboBox}"
+       BasedOn="{StaticResource DarkComboBoxStyle}"/>
+
+        <Style TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="Foreground" Value="#F4F4F8"/>
+            <Setter Property="Background" Value="#20202A"/>
+            <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#3A2025"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#DB3C45"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <!-- ROOT -->
+    <Grid Background="{StaticResource PageBackground}">
+
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="0"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Border Grid.Row="0"
+                    Background="{StaticResource CardBackground}"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="17"
+                    Padding="18,15">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="مدیریت رزروها"
+                                   FontFamily="{StaticResource Peyda}"
+                                   FontSize="25"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource DarkText}"/>
+
+                        <TextBlock Text="برنامه زمانی، ظرفیت و مدیریت رزروهای گیمنت"
+                                   Margin="0,4,0,0"
+                                   FontFamily="{StaticResource Peyda}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource SecondaryText}"/>
+
+                        <TextBlock x:Name="SyncStatusTextBlock"
+                                   Text="در انتظار دریافت اطلاعات"
+                                   Margin="0,7,0,0"
+                                   FontFamily="{StaticResource Peyda}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource WarningText}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- FILTERS -->
+            <Border Grid.Row="2"
+                    Margin="0,14,0,0"
+                    Background="{StaticResource CardBackground}"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="17,15">
+
+                <StackPanel>
+                    <!-- DATE FILTERS -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="تاریخ"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,20,0"
+                                   Style="{StaticResource SectionLabelStyle}"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="امروز" Style="{StaticResource DateFilterButton}"
+                                    Click="TodayButton_Click"/>
+                            <Button Content="فردا" Style="{StaticResource DateFilterButton}"
+                                    Click="TomorrowButton_Click"/>
+                            <Button Content="پس‌فردا" Style="{StaticResource DateFilterButton}"
+                                    Click="DayAfterTomorrowButton_Click"/>
+                            <Button Content="همه تاریخ‌ها" Style="{StaticResource DateFilterButton}"
+                                    Click="AllDatesButton_Click"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button x:Name="PreviousDayButton"
+                                    Content="‹" Width="38" Height="36"
+                                    ToolTip="روز قبل"
+                                    Style="{StaticResource SmallActionButtonStyle}"/>
+                            <Button x:Name="NextDayButton"
+                                    Content="›" Width="38" Height="36"
+                                    Margin="7,0,0,0"
+                                    ToolTip="روز بعد"
+                                    Style="{StaticResource SmallActionButtonStyle}"/>
+                            <Button x:Name="DatePickerButton"
+                                    Content="تقویم شمسی" Height="36"
+                                    Margin="7,0,0,0"
+                                    Style="{StaticResource SmallActionButtonStyle}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,14"/>
+
+                    <!-- STATUS FILTERS -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="وضعیت"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,20,0"
+                                   Style="{StaticResource SectionLabelStyle}"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="همه" Style="{StaticResource StatusFilterButton}"
+                                    Click="AllStatusButton_Click"/>
+                            <Button Content="در انتظار" Style="{StaticResource StatusFilterButton}"
+                                    Click="PendingStatusButton_Click"/>
+                            <Button Content="تأییدشده" Style="{StaticResource StatusFilterButton}"
+                                    Click="ConfirmedStatusButton_Click"/>
+                            <Button Content="تکمیل‌شده" Style="{StaticResource StatusFilterButton}"
+                                    Click="CompletedStatusButton_Click"/>
+                            <Button Content="رد شده" Style="{StaticResource StatusFilterButton}"
+        Click="RejectedStatusButton_Click"/>
+                            <Button Content="لغوشده" Style="{StaticResource StatusFilterButton}"
+                                    Click="CancelledStatusButton_Click"/>
+                        </StackPanel>
+
+                        <Button x:Name="RefreshReservationsButton"
+                                Grid.Column="2"
+                                Content="↻  بروزرسانی"
+                                Height="36"
+                                ToolTip="دریافت مجدد اطلاعات رزروها از سرور"
+                                Style="{StaticResource SmallActionButtonStyle}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- RESERVATION AREA -->
+            <Border Grid.Row="3"
+                    Margin="0,10,0,0"
+                    Background="{StaticResource CardBackground}"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="16"
+                    Padding="12">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*" MinHeight="360"/>
+                        <RowDefinition Height="0"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" MinWidth="560"/>
+                        <ColumnDefinition Width="1.1*" MinWidth="250"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- SEARCH AND ACTIONS -->
+                    <Grid Grid.Row="0" Grid.ColumnSpan="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                Height="44"
+                                Background="{StaticResource SoftBackground}"
+                                BorderBrush="{StaticResource BorderColor}"
+                                BorderThickness="1"
+                                CornerRadius="10">
+                            <Grid>
+                                <TextBox x:Name="SearchTextBox"
+                                         TextChanged="SearchTextBox_TextChanged"
+                                         Margin="14,0,46,0"
+                                         VerticalContentAlignment="Center"
+                                         FontFamily="{StaticResource Peyda}"
+                                         FontSize="13"
+                                         Foreground="{StaticResource DarkText}"
+                                         CaretBrush="{StaticResource PrimaryPurple}"
+                                         Background="Transparent"
+                                         BorderThickness="0"/>
+
+                                <TextBlock x:Name="SearchPlaceholderTextBlock"
+                                           Text="جستجو در نام مشتری، شماره موبایل یا کد رزرو..."
+                                           Margin="14,0,46,0"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource Peyda}"
+                                           FontSize="13"
+                                           Foreground="{StaticResource MutedText}"
+                                           IsHitTestVisible="False"/>
+
+                                <Button x:Name="ClearSearchButton"
+                                        Content="×"
+                                        Width="30" Height="30"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Margin="5,0,0,0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="{StaticResource SecondaryText}"
+                                        FontSize="20"
+                                        Padding="0"
+                                        Visibility="Collapsed"
+                                        ToolTip="پاک کردن جست‌وجو"
+                                        Click="ClearSearchButton_Click"/>
+                            </Grid>
+                        </Border>
+
+                        <Button Grid.Column="1"
+                                Width="100" Height="44"
+                                Margin="10,0,0,0"
+                                Content="جستجو"
+                                Click="SearchButton_Click"
+                                Style="{StaticResource PrimaryButtonStyle}"/>
+
+                        <Button x:Name="NewReservationButton"
+                                Grid.Column="2"
+                                Height="44"
+                                Margin="10,0,0,0"
+                                Content="+  رزرو جدید"
+                                Style="{StaticResource PrimaryButtonStyle}"/>
+                    </Grid>
+
+                    <!-- LEGEND -->
+                    <Border Grid.Row="1" Grid.ColumnSpan="2"
+                            Margin="0,11,0,0"
+                            Background="{StaticResource SoftPurpleBackground}"
+                            BorderBrush="{StaticResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="11"
+                            Padding="14,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="راهنمای رزرو"
+                                       FontFamily="{StaticResource Peyda}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource DarkText}"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,18,0"/>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        Margin="0,0,22,0">
+                                <Border Width="12" Height="12"
+                                        CornerRadius="4"
+                                        Background="{StaticResource OnlineReservationColor}"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,7,0"/>
+                                <TextBlock Text="رزرو آنلاین" Style="{StaticResource LegendTextStyle}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Border Width="12" Height="12"
+                                        CornerRadius="4"
+                                        Background="{StaticResource ManualReservationColor}"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,7,0"/>
+                                <TextBlock Text="رزرو دستی" Style="{StaticResource LegendTextStyle}"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="3"
+                                       Text="زرد = رزروی که توسط اپراتور گیمنت به‌صورت دستی ثبت شده است"
+                                       FontFamily="{StaticResource Peyda}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource SecondaryText}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- LIVE FLOOR MAP -->
+                    <Border Grid.Row="3" Grid.Column="0"
+                            ToolTip="این نقشه وضعیت رزرو و ظرفیت را از روی رزروهای روز انتخاب‌شده نشان می‌دهد؛ وضعیت روشن‌بودن PC نمایش داده نمی‌شود."
+                            Margin="0,8,8,0"
+                            Background="#14151C"
+                            BorderBrush="{StaticResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="13"
+                            Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="2,0,2,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="نقشه زنده سالن" FontFamily="{StaticResource Peyda}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                    <TextBlock x:Name="FloorMapSummaryText" Text="در حال بارگذاری نقشه..." Margin="12,0,0,0" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                                    <Border Width="9" Height="9" CornerRadius="5" Background="#35B779" Margin="0,0,5,0"/>
+                                    <TextBlock Text="آزاد" FontFamily="{StaticResource Peyda}" FontSize="12" Foreground="{StaticResource SecondaryText}" Margin="0,0,12,0"/>
+                                    <Border Width="9" Height="9" CornerRadius="5" Background="#D99A35" Margin="0,0,5,0"/>
+                                    <TextBlock Text="رزرو" FontFamily="{StaticResource Peyda}" FontSize="12" Foreground="{StaticResource SecondaryText}" Margin="0,0,12,0"/>
+                                    <Border Width="9" Height="9" CornerRadius="5" Background="#D95757" Margin="0,0,5,0"/>
+                                    <TextBlock Text="غیرفعال" FontFamily="{StaticResource Peyda}" FontSize="12" Foreground="{StaticResource SecondaryText}"/>
+                                </StackPanel>
+                                <ComboBox x:Name="FloorMapFloorCombo" Grid.Column="2" Width="112" Height="27" Margin="0,0,8,0" FontFamily="{StaticResource Peyda}" FontSize="12" VerticalContentAlignment="Center" SelectionChanged="FloorMapFloorCombo_SelectionChanged" ToolTip="انتخاب طبقه نقشه"/>
+                                <Button x:Name="RefreshFloorMapButton" Grid.Column="3" Content="↻ نقشه" Padding="10,4" MinHeight="27" FontFamily="{StaticResource Peyda}" FontSize="12" Style="{StaticResource SmallActionButtonStyle}" Click="RefreshFloorMapButton_Click"/>
+                                <Button Grid.Column="4" Content="⛶ تمام‌صفحه" Padding="10,4" MinHeight="27" Margin="6,0,0,0" FontFamily="{StaticResource Peyda}" FontSize="12" Style="{StaticResource SmallActionButtonStyle}" Click="FullscreenFloorMapButton_Click"/>
+                                <Button x:Name="LiveMapMultiSelectButton" Grid.Column="5" Content="انتخاب چند سیستم" Padding="10,4" MinHeight="27" Margin="6,0,0,0" FontFamily="{StaticResource Peyda}" FontSize="12" Style="{StaticResource SmallActionButtonStyle}" Click="LiveMapMultiSelectButton_Click"/>
+                            </Grid>
+                            <Border Grid.Row="1" Background="#101117" CornerRadius="9" ClipToBounds="True">
+                                <Viewbox Stretch="Uniform" StretchDirection="Both">
+                                    <Canvas x:Name="LiveFloorMapCanvas" Width="1600" Height="1000" Background="#101117"/>
+                                </Viewbox>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- QUICK ACTIONS / TABLE PANEL -->
+                    <Border Grid.Row="3" Grid.Column="1"
+                            Margin="8,8,0,0"
+                            Background="#171923"
+                            BorderBrush="{StaticResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="13"
+                            Padding="14">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel>
+                                <TextBlock Text="مرکز کنترل رزرو" FontFamily="{StaticResource Peyda}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                <TextBlock Text="عملیات سریع و نمای وضعیت" Margin="0,4,0,12" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                <Border Background="#20232F" CornerRadius="10" Padding="11" Margin="0,0,0,12">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="کل رزروها" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                        <TextBlock x:Name="TotalReservationsText" Grid.Column="1" Text="—" FontFamily="{StaticResource Peyda}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                        <TextBlock Grid.Row="1" Text="در انتظار تأیید" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                        <TextBlock x:Name="PendingReservationsText" Grid.Row="1" Grid.Column="1" Text="—" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource WarningText}"/>
+                                        <TextBlock Grid.Row="2" Text="تأییدشده" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                        <TextBlock x:Name="ConfirmedReservationsText" Grid.Row="2" Grid.Column="1" Text="—" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="16" FontWeight="Bold" Foreground="{StaticResource SuccessText}"/>
+                                        <TextBlock Grid.Row="3" Text="روز انتخاب‌شده" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                        <TextBlock x:Name="SelectedDateText" Grid.Row="3" Grid.Column="1" Text="امروز" Margin="0,9,0,0" FontFamily="{StaticResource Peyda}" FontSize="12" FontWeight="Bold" Foreground="{StaticResource DarkText}"/>
+                                    </Grid>
+                                </Border>
+                                <Button x:Name="FullscreenTimelineButton"
+                                        Content="☷  نمایش جدول رزروها"
+                                        MinHeight="46" Margin="0,0,0,9" Padding="12,10"
+                                        FontFamily="{StaticResource Peyda}" FontSize="13" FontWeight="SemiBold"
+                                        Foreground="#FFFFFF" Background="#DB3C45" BorderBrush="#DB3C45"
+                                        BorderThickness="1" Cursor="Hand"
+                                        Click="FullscreenTimelineButton_Click"/>
+                                <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,0,0,14"/>
+                                <TextBlock Text="راهنمای وضعیت" FontFamily="{StaticResource Peyda}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource DarkText}" Margin="0,0,0,10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,9">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#35B779" Margin="0,0,8,0"/>
+                                    <TextBlock Text="آزاد برای رزرو" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,9">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#D99A35" Margin="0,0,8,0"/>
+                                    <TextBlock Text="دارای رزرو" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                    <Border Width="10" Height="10" CornerRadius="5" Background="#D95757" Margin="0,0,8,0"/>
+                                    <TextBlock Text="غیرفعال در چیدمان" FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}"/>
+                                </StackPanel>
+                                <Border Background="#20232F" CornerRadius="9" Padding="10">
+                                    <TextBlock Text="برای مشاهده جزئیات روی سیستم کلیک کن. برای ثبت گروهی، «انتخاب چند سیستم» را فعال کن و سیستم‌های آزاد را روی نقشه انتخاب کن." FontFamily="{StaticResource Peyda}" FontSize="11" Foreground="{StaticResource SecondaryText}" TextWrapping="Wrap" LineHeight="19"/>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- TIMELINE -->
+                    <Border Grid.Row="4" Visibility="Collapsed"
+                            Background="#111116"
+                            BorderBrush="{StaticResource BorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            ClipToBounds="True">
+
+                        <ScrollViewer x:Name="TimelineScrollViewer"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      SizeChanged="TimelineScrollViewer_SizeChanged"
+                                      CanContentScroll="False"
+                                      PanningMode="Both"
+                                      Background="#111116">
+
+                            <ScrollViewer.Resources>
+                                <Style TargetType="{x:Type ScrollBar}"
+                                       BasedOn="{StaticResource DarkScrollBarStyle}"/>
+                            </ScrollViewer.Resources>
+
+                            <Canvas x:Name="TimelineCanvas"
+                                    Width="1900"
+                                    Height="500"
+                                    Background="#111116"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- LOADING OVERLAY -->
+        <Grid x:Name="LoadingOverlay"
+              Panel.ZIndex="5000"
+              Visibility="Collapsed"
+              Background="{StaticResource LoadingOverlayBackground}">
+
+            <Border Width="360"
+                    MinHeight="210"
+                    Background="{StaticResource CardBackground}"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="20"
+                    Padding="30"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+
+                    <Grid Width="58"
+                          Height="58"
+                          HorizontalAlignment="Center"
+                          Margin="0,0,0,20">
+                        <Ellipse Width="52" Height="52"
+                                 Stroke="#343442"
+                                 StrokeThickness="5"/>
+
+                        <Ellipse Width="52" Height="52"
+                                 Stroke="{StaticResource PrimaryPurple}"
+                                 StrokeThickness="5"
+                                 StrokeDashArray="1 2"
+                                 StrokeStartLineCap="Round"
+                                 StrokeEndLineCap="Round"
+                                 RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <RotateTransform x:Name="LoadingSpinnerRotation"/>
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Triggers>
+                                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation
+                                                Storyboard.TargetProperty="RenderTransform.Angle"
+                                                From="0"
+                                                To="360"
+                                                Duration="0:0:0.9"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Ellipse.Triggers>
+                        </Ellipse>
+                    </Grid>
+
+                    <TextBlock Text="لطفاً صبر کنید"
+                               FontFamily="{StaticResource Peyda}"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource DarkText}"
+                               HorizontalAlignment="Center"/>
+
+                    <TextBlock x:Name="LoadingText"
+                               Text="در حال دریافت اطلاعات رزروها..."
+                               Margin="0,8,0,0"
+                               FontFamily="{StaticResource Peyda}"
+                               FontSize="12"
+                               Foreground="{StaticResource SecondaryText}"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               TextWrapping="Wrap"/>
+
+                    <TextBlock Text="اطلاعات در حال همگام‌سازی با سرور است"
+                               Margin="0,12,0,0"
+                               FontFamily="{StaticResource Peyda}"
+                               FontSize="12"
+                               Foreground="{StaticResource MutedText}"
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
