@@ -26,8 +26,14 @@ namespace LobixApp.Views
 {
     public partial class FloorPlanView : UserControl
     {
-        private const double CanvasWidth = 1600;
-        private const double CanvasHeight = 1000;
+        private const double BaseCanvasWidth = 1600;
+        private const double BaseCanvasHeight = 1000;
+        private const double MaximumCanvasSize = 50000;
+
+        // ابعاد نقشه بر اساس مختصات واقعی آیتم‌ها رشد می‌کند.
+        // مقدار پایه برای حفظ ظاهر و مختصات نقشه‌های فعلی حفظ شده است.
+        private static double CanvasWidth = BaseCanvasWidth;
+        private static double CanvasHeight = BaseCanvasHeight;
         private const double GridSize = 25;
 
         private readonly List<PlanItem> _items = new();
@@ -297,6 +303,7 @@ namespace LobixApp.Views
             ReservationList.ItemsSource = _selectedReservations;
             UnplacedSystemsList.ItemsSource = _unplacedSystems;
 
+            UpdateCanvasSize();
             MapCanvas.Width = CanvasWidth;
             MapCanvas.Height = CanvasHeight;
 
@@ -2401,10 +2408,47 @@ namespace LobixApp.Views
         // RENDER
         // =====================================================
 
+        private void UpdateCanvasSize()
+        {
+            double requiredWidth = BaseCanvasWidth;
+            double requiredHeight = BaseCanvasHeight;
+
+            foreach (PlanItem item in _items)
+            {
+                if (item == null)
+                    continue;
+
+                double x = double.IsFinite(item.X) ? item.X : 0;
+                double y = double.IsFinite(item.Y) ? item.Y : 0;
+                double width = double.IsFinite(item.W) ? Math.Max(10, item.W) : 110;
+                double height = double.IsFinite(item.H) ? Math.Max(10, item.H) : 75;
+
+                requiredWidth = Math.Max(requiredWidth, x + width + 160);
+                requiredHeight = Math.Max(requiredHeight, y + height + 160);
+            }
+
+            CanvasWidth = Math.Clamp(
+                Math.Ceiling(requiredWidth / 100) * 100,
+                BaseCanvasWidth,
+                MaximumCanvasSize);
+
+            CanvasHeight = Math.Clamp(
+                Math.Ceiling(requiredHeight / 100) * 100,
+                BaseCanvasHeight,
+                MaximumCanvasSize);
+
+            MapCanvas.Width = CanvasWidth;
+            MapCanvas.Height = CanvasHeight;
+        }
+
         private void RenderCurrentView()
         {
             if (MapCanvas == null)
                 return;
+
+            // قبل از رسم، فضای نقشه را با توجه به دورترین آیتم‌ها بزرگ کن.
+            // مختصات آیتم‌ها تغییر نمی‌کند؛ فقط محدوده Canvas افزایش می‌یابد.
+            UpdateCanvasSize();
 
             _isRendering = true;
 
@@ -4786,12 +4830,15 @@ namespace LobixApp.Views
                 return;
             }
 
-            double zx =
-                MapScroll.ViewportWidth / CanvasWidth;
+            UpdateCanvasSize();
 
-            double zy =
-                MapScroll.ViewportHeight / CanvasHeight;
+            double availableWidth = Math.Max(1, MapScroll.ViewportWidth - 24);
+            double availableHeight = Math.Max(1, MapScroll.ViewportHeight - 24);
 
+            double zx = availableWidth / CanvasWidth;
+            double zy = availableHeight / CanvasHeight;
+
+            // Fit all of the current map area while respecting the zoom limits.
             SetZoom(Math.Min(zx, zy) * 0.95);
 
             MapScroll.ScrollToHorizontalOffset(0);
