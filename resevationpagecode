@@ -3012,8 +3012,31 @@ function renderBookingMap(response) {
         return;
     }
     const layout = data.layout;
-    const layoutWidth = Math.max(200, Number(layout.width) || 1000);
-    const layoutHeight = Math.max(200, Number(layout.height) || 700);
+    const layoutObjects = layout.objects;
+    // اگر مختصات اشیای نقشه از ابعاد ذخیره‌شده قدیمی عبور کرده باشد،
+    // خود صفحه رزرو نیز محدوده واقعی محتوا را محاسبه و نمایش می‌دهد.
+    const requiredWidth = layoutObjects.reduce(function (max, object) {
+        if (!object || typeof object !== 'object') return max;
+        const x = Number(object.x) || 0;
+        const width = Math.max(1, Number(object.width) || 1);
+        return Math.max(max, x + width + 160);
+    }, 1000);
+    const requiredHeight = layoutObjects.reduce(function (max, object) {
+        if (!object || typeof object !== 'object') return max;
+        const y = Number(object.y) || 0;
+        const height = Math.max(1, Number(object.height) || 1);
+        return Math.max(max, y + height + 160);
+    }, 700);
+    const layoutWidth = Math.max(
+        200,
+        Number(layout.width) || 1000,
+        Math.ceil(requiredWidth / 100) * 100
+    );
+    const layoutHeight = Math.max(
+        200,
+        Number(layout.height) || 700,
+        Math.ceil(requiredHeight / 100) * 100
+    );
 
     // Replace only the live status data on routine polls. Rebuilding the DOM
     // every 15 seconds caused a visible flash and reset the user's zoom/pan.
