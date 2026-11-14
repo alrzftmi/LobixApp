@@ -3118,55 +3118,77 @@ namespace LobixApp.Views
             IEnumerable<PlanItem>? obstacles = null,
             string? ignoreId = null)
         {
+            // اندازه آیتم را مستقل از ابعاد فعلی نقشه اعتبارسنجی می‌کنیم؛
+            // اگر فضا کافی نباشد، خود نقشه مرحله‌ای بزرگ‌تر خواهد شد.
             width = Math.Clamp(
                 width,
                 10,
-                CanvasWidth - LayoutMargin * 2);
+                MaximumCanvasSize - LayoutMargin * 2);
 
             height = Math.Clamp(
                 height,
                 10,
-                CanvasHeight - LayoutMargin * 2);
+                MaximumCanvasSize - LayoutMargin * 2);
 
             IEnumerable<PlanItem> source =
                 obstacles ?? _items;
 
-            // جست‌وجوی ردیفی از بالا به پایین.
-            // هر نقطه فقط زمانی پذیرفته می‌شود که با هیچ آیتمی
-            // در همان طبقه برخورد نداشته باشد.
-
-            double maxX = CanvasWidth - LayoutMargin - width;
-            double maxY = CanvasHeight - LayoutMargin - height;
-
-            for (double y = LayoutMargin;
-                 y <= maxY;
-                 y += GridSize)
+            while (true)
             {
-                for (double x = LayoutMargin;
-                     x <= maxX;
-                     x += GridSize)
-                {
-                    if (IsPositionFree(
-                        x,
-                        y,
-                        width,
-                        height,
-                        floor,
-                        source,
-                        ignoreId))
-                    {
-                        resultX = x;
-                        resultY = y;
+                double maxX = CanvasWidth - LayoutMargin - width;
+                double maxY = CanvasHeight - LayoutMargin - height;
 
-                        return true;
+                // جست‌وجوی ردیفی از بالا به پایین.
+                // مختصات آیتم‌های قبلی دست‌نخورده باقی می‌مانند.
+                for (double y = LayoutMargin;
+                     y <= maxY;
+                     y += GridSize)
+                {
+                    for (double x = LayoutMargin;
+                         x <= maxX;
+                         x += GridSize)
+                    {
+                        if (IsPositionFree(
+                            x,
+                            y,
+                            width,
+                            height,
+                            floor,
+                            source,
+                            ignoreId))
+                        {
+                            resultX = x;
+                            resultY = y;
+
+                            return true;
+                        }
                     }
                 }
+
+                // فضای فعلی پر است؛ به جای رد کردن سیستم جدید،
+                // محدوده نقشه را از سمت راست و پایین گسترش می‌دهیم.
+                if (CanvasWidth >= MaximumCanvasSize &&
+                    CanvasHeight >= MaximumCanvasSize)
+                {
+                    resultX = -1;
+                    resultY = -1;
+                    return false;
+                }
+
+                CanvasWidth = Math.Min(
+                    MaximumCanvasSize,
+                    CanvasWidth + 500);
+
+                CanvasHeight = Math.Min(
+                    MaximumCanvasSize,
+                    CanvasHeight + 500);
+
+                if (MapCanvas != null)
+                {
+                    MapCanvas.Width = CanvasWidth;
+                    MapCanvas.Height = CanvasHeight;
+                }
             }
-
-            resultX = -1;
-            resultY = -1;
-
-            return false;
         }
 
         private bool TryPlaceItem(
@@ -4800,7 +4822,7 @@ namespace LobixApp.Views
 
         private void SetZoom(double value)
         {
-            _zoom = Math.Clamp(value, 0.25, 2.5);
+            _zoom = Math.Clamp(value, 0.05, 2.5);
 
             MapCanvas.LayoutTransform =
                 new ScaleTransform(_zoom, _zoom);
