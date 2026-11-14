@@ -1,1 +1,3932 @@
 
+========== GAMENET INFO ==========
+GAMENET ID: 1233
+GAMENET NAME: Robina
+API CONTEXT: True
+SYSTEMS LOADED: True
+RESERVATIONS IN MEMORY: 0
+
+========== SYSTEMS API ==========
+{
+  "success": true,
+  "api_version": "2.4.3",
+  "product_id": 1233,
+  "physical_systems": [
+    {
+      "system_id": "sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b",
+      "number": 30,
+      "label": "Casual-30",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_88ddd957-b5fb-4723-8116-a4f75724bb23",
+      "number": 31,
+      "label": "Casual-31",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf",
+      "number": 32,
+      "label": "Casual-32",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36",
+      "number": 33,
+      "label": "Casual-33",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d5e43762-7142-4d90-b01a-9d17e91a531b",
+      "number": 34,
+      "label": "Casual-34",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f",
+      "number": 35,
+      "label": "Casual-35",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_3e126829-0383-471b-af86-2757e424b36f",
+      "number": 36,
+      "label": "Casual-36",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_83ade6e1-ebd5-40c4-b13d-d3cb5ad5b5dc",
+      "number": 37,
+      "label": "Casual-37",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_01a8dbe1-fea0-421b-8d5f-c8e623d0c443",
+      "number": 38,
+      "label": "Casual-38",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_8fa307b6-d6b2-4c41-9e72-098df6f62ccf",
+      "number": 39,
+      "label": "Casual-39",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_ade9b85c-7f70-4635-b19d-b3c549d013d3",
+      "number": 40,
+      "label": "Casual-40",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_2d66c20b-ac38-4df0-ae13-828966003b42",
+      "number": 41,
+      "label": "Casual-41",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_8dcc3984-f1ca-4173-9cbf-e1bdffb66798",
+      "number": 42,
+      "label": "Casual-42",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_fa5113fa-8b44-41ce-ad6d-4780dd1ac8e4",
+      "number": 43,
+      "label": "Casual-43",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_f3657a52-935d-4f15-9e52-b1c743906783",
+      "number": 44,
+      "label": "Casual-44",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164",
+      "number": 45,
+      "label": "Casual-45",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_eebb5567-1b10-402c-a294-7a7dcb97eca2",
+      "number": 46,
+      "label": "Casual-46",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0",
+      "number": 47,
+      "label": "Casual-47",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_2cb0a271-ee47-4221-86ab-429ddb70c672",
+      "number": 48,
+      "label": "Casual-48",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_8df1d848-3c45-4a00-9f05-2829ff5fd41a",
+      "number": 66,
+      "label": "Casual-66",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_835495e8-dbea-4dea-9395-ce3c6f5bb221",
+      "number": 67,
+      "label": "Casual-67",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_6061280c-6dbd-4df8-8edc-f332714761ce",
+      "number": 68,
+      "label": "Casual-68",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_ecfe5814-38c2-43a4-b0ec-7d30d8242f09",
+      "number": 69,
+      "label": "Casual-69",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_cfe1aa85-0d91-4785-8864-16a39ca41373",
+      "number": 70,
+      "label": "Casual-70",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_4479c271-8dc4-4c05-a74d-f3f17f31e962",
+      "number": 11,
+      "label": "MID-11",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_2973138e-2719-47d2-9582-c65fb789214a",
+      "number": 12,
+      "label": "MID-12",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_229f5fa1-a222-4168-8e00-1361b21c740f",
+      "number": 13,
+      "label": "MID-13",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_c6f607ce-dc8d-43ec-a785-32ec21975608",
+      "number": 14,
+      "label": "MID-14",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_001e5880-ab66-4067-8cf2-4110a27c7b68",
+      "number": 15,
+      "label": "MID-15",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_c54cf49c-4c6f-4554-ad23-0be7210f73b9",
+      "number": 16,
+      "label": "MID-16",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_044167fd-e138-418e-8a3a-f943747f6c8f",
+      "number": 21,
+      "label": "MID-21",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_11107779-ea8b-4355-8bba-64434c49d789",
+      "number": 22,
+      "label": "MID-22",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9",
+      "number": 23,
+      "label": "MID-23",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8",
+      "number": 24,
+      "label": "MID-24",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_81166c53-27be-42b4-aa62-3210d9aa11ba",
+      "number": 25,
+      "label": "MID-25",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_08622440-f783-4b0f-97c7-7da0133cd10e",
+      "number": 31,
+      "label": "MID-31",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_b1d78489-7ce6-40c1-93e3-1dcaf86dcf83",
+      "number": 32,
+      "label": "MID-32",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_e2d5d96c-1481-4756-992f-329a0296a449",
+      "number": 33,
+      "label": "MID-33",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_430675af-25bf-43b0-a3c7-05d56efd4346",
+      "number": 34,
+      "label": "MID-34",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_457f56d2-0bee-4357-bdbb-4e7dd55ffc57",
+      "number": 35,
+      "label": "MID-35",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_3ba208e5-d202-4ad4-8cc0-7a6c0eba5924",
+      "number": 44,
+      "label": "MID-44",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_fd9ad858-e44c-472c-a2a6-cbdd342f9815",
+      "number": 45,
+      "label": "MID-45",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_270eb78d-9510-42d7-99ce-ea2584e33a96",
+      "number": 46,
+      "label": "MID-46",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_57b4c554-f206-43f4-91d2-d73e3fd8ae74",
+      "number": 47,
+      "label": "MID-47",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_f26e47ce-f42f-45a8-a40d-4a7610337b08",
+      "number": 48,
+      "label": "MID-48",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_e1825c25-e9b5-40dd-905a-2f5b3a7d05c8",
+      "number": 6,
+      "label": "VIP-6",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_9cfdfc37-fc73-425b-a8b8-19a6ee62c273",
+      "number": 7,
+      "label": "VIP-7",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_10c128ba-2a71-4fe0-89b9-9eaa0f0eb3fa",
+      "number": 8,
+      "label": "VIP-8",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_0c8c7f05-195e-41a5-9944-5f7463a5ce46",
+      "number": 9,
+      "label": "VIP-9",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_809a9aac-323c-4c42-98b0-53f5c6c1d640",
+      "number": 10,
+      "label": "VIP-10",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_c3bd135d-66ed-450c-9344-80d1f71632ef",
+      "number": 11,
+      "label": "VIP-11",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d39b0336-c58d-4265-8d52-efe57ad00516",
+      "number": 12,
+      "label": "VIP-12",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_91eed7bc-b968-42a1-993a-9f02f78e7950",
+      "number": 13,
+      "label": "VIP-13",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae",
+      "number": 14,
+      "label": "VIP-14",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_772c2347-477c-47d1-8655-f4ce7074f708",
+      "number": 15,
+      "label": "VIP-15",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_44c2ed6c-e364-401c-9d5e-0b2808c6fe29",
+      "number": 16,
+      "label": "VIP-16",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_2e2d8973-4b74-43b2-aa20-20df9acf8522",
+      "number": 17,
+      "label": "VIP-17",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_e3aee175-9676-4768-8cd1-04c4be1f80c3",
+      "number": 18,
+      "label": "VIP-18",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_6d202ef7-a5e3-447b-8ec8-15690cfee025",
+      "number": 19,
+      "label": "VIP-19",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_0768389a-bade-42fe-bd58-5fde1991df99",
+      "number": 20,
+      "label": "VIP-20",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7",
+      "number": 6,
+      "label": "VIPPlus-6",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292",
+      "number": 7,
+      "label": "VIPPlus-7",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_ea210242-5860-4504-b961-c38601720859",
+      "number": 8,
+      "label": "VIPPlus-8",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9",
+      "number": 9,
+      "label": "VIPPlus-9",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f2c2c549-e60f-45ec-b988-43628d7723ad",
+      "number": 10,
+      "label": "VIPPlus-10",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7",
+      "number": 16,
+      "label": "VIPPlus-16",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4",
+      "number": 17,
+      "label": "VIPPlus-17",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d",
+      "number": 18,
+      "label": "VIPPlus-18",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_9672b444-ea35-468e-a405-32ca8a354c07",
+      "number": 19,
+      "label": "VIPPlus-19",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_1024588e-f140-4fe5-b432-dd58ffbffcef",
+      "number": 20,
+      "label": "VIPPlus-20",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_5ace3575-f5c0-4771-babf-0f077cf82b76",
+      "number": 1,
+      "label": "CIP-1",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T00:42:05\u002B03:30",
+      "updated_at": "2026-11-09T03:11:48\u002B03:30"
+    },
+    {
+      "system_id": "sys_029d78f8-cd63-421f-81a1-4d614ba8d21d",
+      "number": 2,
+      "label": "CIP-2",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_313f20e1-b975-4558-9a86-2f58f86dc90c",
+      "number": 3,
+      "label": "CIP-3",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_30a053f4-43c5-4202-93b5-9e217ab5da17",
+      "number": 4,
+      "label": "CIP-4",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0",
+      "number": 5,
+      "label": "CIP-5",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f96fa64d-1181-4c2d-abb3-76cc918befff",
+      "number": 1,
+      "label": "\u0633\u06CC\u0633\u062A\u0645-1",
+      "category": "\u0633\u06CC\u0633\u062A\u0645",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:40:35\u002B03:30",
+      "updated_at": "2026-11-12T15:45:06\u002B03:30"
+    },
+    {
+      "system_id": "sys_ff145ef3-8b18-4354-9a8c-5188ec6715b8",
+      "number": 26,
+      "label": "MIDPlus-26",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_dc52bbd4-0e28-4581-9376-c923af0166bd",
+      "number": 27,
+      "label": "MIDPlus-27",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_77ed8046-00ca-4543-92e7-218f28e94ff9",
+      "number": 28,
+      "label": "MIDPlus-28",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_84f96ed8-d380-4b7d-b97e-d43e8d2c9206",
+      "number": 29,
+      "label": "MIDPlus-29",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_ed2d9ad3-5064-4fec-b67e-91e1e4247501",
+      "number": 30,
+      "label": "MIDPlus-30",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    }
+  ]
+}
+
+========== LAYOUT API ==========
+{
+  "success": true,
+  "api_version": "2.4.3",
+  "product_id": 1233,
+  "layout": {
+    "version": 1,
+    "width": 1600,
+    "height": 1000,
+    "objects": [
+      {
+        "id": "physical-sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b",
+        "type": "system",
+        "x": 1325,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #30",
+        "system_id": "sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b"
+      },
+      {
+        "id": "physical-sys_88ddd957-b5fb-4723-8116-a4f75724bb23",
+        "type": "system",
+        "x": 825,
+        "y": 150,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #31",
+        "system_id": "sys_88ddd957-b5fb-4723-8116-a4f75724bb23"
+      },
+      {
+        "id": "physical-sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf",
+        "type": "system",
+        "x": 950,
+        "y": 150,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #32",
+        "system_id": "sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf"
+      },
+      {
+        "id": "physical-sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36",
+        "type": "system",
+        "x": 1075,
+        "y": 150,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #33",
+        "system_id": "sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36"
+      },
+      {
+        "id": "physical-sys_d5e43762-7142-4d90-b01a-9d17e91a531b",
+        "type": "system",
+        "x": 1200,
+        "y": 150,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #34",
+        "system_id": "sys_d5e43762-7142-4d90-b01a-9d17e91a531b"
+      },
+      {
+        "id": "physical-sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f",
+        "type": "system",
+        "x": 1325,
+        "y": 150,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #35",
+        "system_id": "sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f"
+      },
+      {
+        "id": "physical-sys_f3657a52-935d-4f15-9e52-b1c743906783",
+        "type": "system",
+        "x": 1300,
+        "y": 450,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #44",
+        "system_id": "sys_f3657a52-935d-4f15-9e52-b1c743906783"
+      },
+      {
+        "id": "physical-sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164",
+        "type": "system",
+        "x": 1300,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #45",
+        "system_id": "sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164"
+      },
+      {
+        "id": "physical-sys_eebb5567-1b10-402c-a294-7a7dcb97eca2",
+        "type": "system",
+        "x": 1300,
+        "y": 650,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #46",
+        "system_id": "sys_eebb5567-1b10-402c-a294-7a7dcb97eca2"
+      },
+      {
+        "id": "physical-sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0",
+        "type": "system",
+        "x": 1300,
+        "y": 750,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #47",
+        "system_id": "sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0"
+      },
+      {
+        "id": "physical-sys_2cb0a271-ee47-4221-86ab-429ddb70c672",
+        "type": "system",
+        "x": 1300,
+        "y": 850,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "Casual #48",
+        "system_id": "sys_2cb0a271-ee47-4221-86ab-429ddb70c672"
+      },
+      {
+        "id": "physical-sys_044167fd-e138-418e-8a3a-f943747f6c8f",
+        "type": "system",
+        "x": 500,
+        "y": 175,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "MID #21",
+        "system_id": "sys_044167fd-e138-418e-8a3a-f943747f6c8f"
+      },
+      {
+        "id": "physical-sys_11107779-ea8b-4355-8bba-64434c49d789",
+        "type": "system",
+        "x": 375,
+        "y": 175,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "MID #22",
+        "system_id": "sys_11107779-ea8b-4355-8bba-64434c49d789"
+      },
+      {
+        "id": "physical-sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9",
+        "type": "system",
+        "x": 250,
+        "y": 175,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "MID #23",
+        "system_id": "sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9"
+      },
+      {
+        "id": "physical-sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8",
+        "type": "system",
+        "x": 125,
+        "y": 175,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "MID #24",
+        "system_id": "sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8"
+      },
+      {
+        "id": "physical-sys_81166c53-27be-42b4-aa62-3210d9aa11ba",
+        "type": "system",
+        "x": 0,
+        "y": 175,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "MID #25",
+        "system_id": "sys_81166c53-27be-42b4-aa62-3210d9aa11ba"
+      },
+      {
+        "id": "physical-sys_c3bd135d-66ed-450c-9344-80d1f71632ef",
+        "type": "system",
+        "x": 500,
+        "y": 425,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIP #11",
+        "system_id": "sys_c3bd135d-66ed-450c-9344-80d1f71632ef"
+      },
+      {
+        "id": "physical-sys_d39b0336-c58d-4265-8d52-efe57ad00516",
+        "type": "system",
+        "x": 375,
+        "y": 425,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIP #12",
+        "system_id": "sys_d39b0336-c58d-4265-8d52-efe57ad00516"
+      },
+      {
+        "id": "physical-sys_91eed7bc-b968-42a1-993a-9f02f78e7950",
+        "type": "system",
+        "x": 250,
+        "y": 425,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIP #13",
+        "system_id": "sys_91eed7bc-b968-42a1-993a-9f02f78e7950"
+      },
+      {
+        "id": "physical-sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae",
+        "type": "system",
+        "x": 125,
+        "y": 425,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIP #14",
+        "system_id": "sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae"
+      },
+      {
+        "id": "physical-sys_772c2347-477c-47d1-8655-f4ce7074f708",
+        "type": "system",
+        "x": 0,
+        "y": 425,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIP #15",
+        "system_id": "sys_772c2347-477c-47d1-8655-f4ce7074f708"
+      },
+      {
+        "id": "physical-sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7",
+        "type": "system",
+        "x": 0,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #6",
+        "system_id": "sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7"
+      },
+      {
+        "id": "physical-sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292",
+        "type": "system",
+        "x": 125,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #7",
+        "system_id": "sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292"
+      },
+      {
+        "id": "physical-sys_ea210242-5860-4504-b961-c38601720859",
+        "type": "system",
+        "x": 250,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #8",
+        "system_id": "sys_ea210242-5860-4504-b961-c38601720859"
+      },
+      {
+        "id": "physical-sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9",
+        "type": "system",
+        "x": 375,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #9",
+        "system_id": "sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9"
+      },
+      {
+        "id": "physical-sys_f2c2c549-e60f-45ec-b988-43628d7723ad",
+        "type": "system",
+        "x": 500,
+        "y": 550,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #10",
+        "system_id": "sys_f2c2c549-e60f-45ec-b988-43628d7723ad"
+      },
+      {
+        "id": "physical-sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7",
+        "type": "system",
+        "x": 500,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #16",
+        "system_id": "sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7"
+      },
+      {
+        "id": "physical-sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4",
+        "type": "system",
+        "x": 375,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #17",
+        "system_id": "sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4"
+      },
+      {
+        "id": "physical-sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d",
+        "type": "system",
+        "x": 250,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #18",
+        "system_id": "sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d"
+      },
+      {
+        "id": "physical-sys_9672b444-ea35-468e-a405-32ca8a354c07",
+        "type": "system",
+        "x": 125,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #19",
+        "system_id": "sys_9672b444-ea35-468e-a405-32ca8a354c07"
+      },
+      {
+        "id": "physical-sys_1024588e-f140-4fe5-b432-dd58ffbffcef",
+        "type": "system",
+        "x": 0,
+        "y": 300,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "VIPPlus #20",
+        "system_id": "sys_1024588e-f140-4fe5-b432-dd58ffbffcef"
+      },
+      {
+        "id": "physical-sys_5ace3575-f5c0-4771-babf-0f077cf82b76",
+        "type": "system",
+        "x": 250,
+        "y": 700,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "CIP #1",
+        "system_id": "sys_5ace3575-f5c0-4771-babf-0f077cf82b76"
+      },
+      {
+        "id": "physical-sys_029d78f8-cd63-421f-81a1-4d614ba8d21d",
+        "type": "system",
+        "x": 25,
+        "y": 700,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "CIP #2",
+        "system_id": "sys_029d78f8-cd63-421f-81a1-4d614ba8d21d"
+      },
+      {
+        "id": "physical-sys_313f20e1-b975-4558-9a86-2f58f86dc90c",
+        "type": "system",
+        "x": 475,
+        "y": 850,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "CIP #3",
+        "system_id": "sys_313f20e1-b975-4558-9a86-2f58f86dc90c"
+      },
+      {
+        "id": "physical-sys_30a053f4-43c5-4202-93b5-9e217ab5da17",
+        "type": "system",
+        "x": 250,
+        "y": 850,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "CIP #4",
+        "system_id": "sys_30a053f4-43c5-4202-93b5-9e217ab5da17"
+      },
+      {
+        "id": "physical-sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0",
+        "type": "system",
+        "x": 25,
+        "y": 850,
+        "width": 110,
+        "height": 75,
+        "rotation": 0,
+        "label": "CIP #5",
+        "system_id": "sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0"
+      },
+      {
+        "id": "468586a195054813886b0fecb0d56f5b",
+        "type": "section",
+        "x": 0,
+        "y": 675,
+        "width": 625,
+        "height": 275,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u0642 CIP"
+      },
+      {
+        "id": "5a5ef51d1f7b4dbe88dea38716d77ae7",
+        "type": "section",
+        "x": 0,
+        "y": 525,
+        "width": 625,
+        "height": 125,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u0642 VIPPus1"
+      },
+      {
+        "id": "48025ff7d1764d3dbdfd8aa3b15c8c5d",
+        "type": "section",
+        "x": 0,
+        "y": 400,
+        "width": 625,
+        "height": 125,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u0642 VIP"
+      },
+      {
+        "id": "8c119d86afed46679c9d6e3d7bfa2ac2",
+        "type": "section",
+        "x": 0,
+        "y": 275,
+        "width": 625,
+        "height": 130,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u06422VIPPlus"
+      },
+      {
+        "id": "8d9f71353c4c475ca73c30c852aef847",
+        "type": "section",
+        "x": 0,
+        "y": 150,
+        "width": 625,
+        "height": 130,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u0642 MID"
+      },
+      {
+        "id": "2122756d46d544438ec0a1a7f1d2a6ad",
+        "type": "section",
+        "x": 800,
+        "y": 150,
+        "width": 650,
+        "height": 250,
+        "rotation": 0,
+        "label": "AQUARIUM"
+      },
+      {
+        "id": "5bf9d614c32340acb498f59ac3c2d566",
+        "type": "section",
+        "x": 1275,
+        "y": 425,
+        "width": 150,
+        "height": 525,
+        "rotation": 0,
+        "label": "\u0627\u062A\u0627\u0642 CASUAL"
+      }
+    ],
+    "updated_at": "2026-11-12T15:47:06\u002B03:30"
+  },
+  "physical_systems": [
+    {
+      "system_id": "sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b",
+      "number": 30,
+      "label": "Casual-30",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_88ddd957-b5fb-4723-8116-a4f75724bb23",
+      "number": 31,
+      "label": "Casual-31",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf",
+      "number": 32,
+      "label": "Casual-32",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36",
+      "number": 33,
+      "label": "Casual-33",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d5e43762-7142-4d90-b01a-9d17e91a531b",
+      "number": 34,
+      "label": "Casual-34",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f",
+      "number": 35,
+      "label": "Casual-35",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_3e126829-0383-471b-af86-2757e424b36f",
+      "number": 36,
+      "label": "Casual-36",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_83ade6e1-ebd5-40c4-b13d-d3cb5ad5b5dc",
+      "number": 37,
+      "label": "Casual-37",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_01a8dbe1-fea0-421b-8d5f-c8e623d0c443",
+      "number": 38,
+      "label": "Casual-38",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_8fa307b6-d6b2-4c41-9e72-098df6f62ccf",
+      "number": 39,
+      "label": "Casual-39",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_ade9b85c-7f70-4635-b19d-b3c549d013d3",
+      "number": 40,
+      "label": "Casual-40",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_2d66c20b-ac38-4df0-ae13-828966003b42",
+      "number": 41,
+      "label": "Casual-41",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_8dcc3984-f1ca-4173-9cbf-e1bdffb66798",
+      "number": 42,
+      "label": "Casual-42",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_fa5113fa-8b44-41ce-ad6d-4780dd1ac8e4",
+      "number": 43,
+      "label": "Casual-43",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:30:01\u002B03:30",
+      "updated_at": "2026-11-12T15:30:01\u002B03:30"
+    },
+    {
+      "system_id": "sys_f3657a52-935d-4f15-9e52-b1c743906783",
+      "number": 44,
+      "label": "Casual-44",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164",
+      "number": 45,
+      "label": "Casual-45",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_eebb5567-1b10-402c-a294-7a7dcb97eca2",
+      "number": 46,
+      "label": "Casual-46",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0",
+      "number": 47,
+      "label": "Casual-47",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_2cb0a271-ee47-4221-86ab-429ddb70c672",
+      "number": 48,
+      "label": "Casual-48",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_8df1d848-3c45-4a00-9f05-2829ff5fd41a",
+      "number": 66,
+      "label": "Casual-66",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_835495e8-dbea-4dea-9395-ce3c6f5bb221",
+      "number": 67,
+      "label": "Casual-67",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_6061280c-6dbd-4df8-8edc-f332714761ce",
+      "number": 68,
+      "label": "Casual-68",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_ecfe5814-38c2-43a4-b0ec-7d30d8242f09",
+      "number": 69,
+      "label": "Casual-69",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_cfe1aa85-0d91-4785-8864-16a39ca41373",
+      "number": 70,
+      "label": "Casual-70",
+      "category": "Casual",
+      "variation_id": 1235,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_4479c271-8dc4-4c05-a74d-f3f17f31e962",
+      "number": 11,
+      "label": "MID-11",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_2973138e-2719-47d2-9582-c65fb789214a",
+      "number": 12,
+      "label": "MID-12",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_229f5fa1-a222-4168-8e00-1361b21c740f",
+      "number": 13,
+      "label": "MID-13",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_c6f607ce-dc8d-43ec-a785-32ec21975608",
+      "number": 14,
+      "label": "MID-14",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_001e5880-ab66-4067-8cf2-4110a27c7b68",
+      "number": 15,
+      "label": "MID-15",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_c54cf49c-4c6f-4554-ad23-0be7210f73b9",
+      "number": 16,
+      "label": "MID-16",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:37:46\u002B03:30",
+      "updated_at": "2026-11-12T15:37:46\u002B03:30"
+    },
+    {
+      "system_id": "sys_044167fd-e138-418e-8a3a-f943747f6c8f",
+      "number": 21,
+      "label": "MID-21",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_11107779-ea8b-4355-8bba-64434c49d789",
+      "number": 22,
+      "label": "MID-22",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9",
+      "number": 23,
+      "label": "MID-23",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8",
+      "number": 24,
+      "label": "MID-24",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_81166c53-27be-42b4-aa62-3210d9aa11ba",
+      "number": 25,
+      "label": "MID-25",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_08622440-f783-4b0f-97c7-7da0133cd10e",
+      "number": 31,
+      "label": "MID-31",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_b1d78489-7ce6-40c1-93e3-1dcaf86dcf83",
+      "number": 32,
+      "label": "MID-32",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_e2d5d96c-1481-4756-992f-329a0296a449",
+      "number": 33,
+      "label": "MID-33",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_430675af-25bf-43b0-a3c7-05d56efd4346",
+      "number": 34,
+      "label": "MID-34",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_457f56d2-0bee-4357-bdbb-4e7dd55ffc57",
+      "number": 35,
+      "label": "MID-35",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:42:15\u002B03:30",
+      "updated_at": "2026-11-12T15:42:15\u002B03:30"
+    },
+    {
+      "system_id": "sys_3ba208e5-d202-4ad4-8cc0-7a6c0eba5924",
+      "number": 44,
+      "label": "MID-44",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_fd9ad858-e44c-472c-a2a6-cbdd342f9815",
+      "number": 45,
+      "label": "MID-45",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_270eb78d-9510-42d7-99ce-ea2584e33a96",
+      "number": 46,
+      "label": "MID-46",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_57b4c554-f206-43f4-91d2-d73e3fd8ae74",
+      "number": 47,
+      "label": "MID-47",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_f26e47ce-f42f-45a8-a40d-4a7610337b08",
+      "number": 48,
+      "label": "MID-48",
+      "category": "MID",
+      "variation_id": 1236,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_e1825c25-e9b5-40dd-905a-2f5b3a7d05c8",
+      "number": 6,
+      "label": "VIP-6",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_9cfdfc37-fc73-425b-a8b8-19a6ee62c273",
+      "number": 7,
+      "label": "VIP-7",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_10c128ba-2a71-4fe0-89b9-9eaa0f0eb3fa",
+      "number": 8,
+      "label": "VIP-8",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_0c8c7f05-195e-41a5-9944-5f7463a5ce46",
+      "number": 9,
+      "label": "VIP-9",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_809a9aac-323c-4c42-98b0-53f5c6c1d640",
+      "number": 10,
+      "label": "VIP-10",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_c3bd135d-66ed-450c-9344-80d1f71632ef",
+      "number": 11,
+      "label": "VIP-11",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_d39b0336-c58d-4265-8d52-efe57ad00516",
+      "number": 12,
+      "label": "VIP-12",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_91eed7bc-b968-42a1-993a-9f02f78e7950",
+      "number": 13,
+      "label": "VIP-13",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae",
+      "number": 14,
+      "label": "VIP-14",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_772c2347-477c-47d1-8655-f4ce7074f708",
+      "number": 15,
+      "label": "VIP-15",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_44c2ed6c-e364-401c-9d5e-0b2808c6fe29",
+      "number": 16,
+      "label": "VIP-16",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_2e2d8973-4b74-43b2-aa20-20df9acf8522",
+      "number": 17,
+      "label": "VIP-17",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_e3aee175-9676-4768-8cd1-04c4be1f80c3",
+      "number": 18,
+      "label": "VIP-18",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_6d202ef7-a5e3-447b-8ec8-15690cfee025",
+      "number": 19,
+      "label": "VIP-19",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_0768389a-bade-42fe-bd58-5fde1991df99",
+      "number": 20,
+      "label": "VIP-20",
+      "category": "VIP",
+      "variation_id": 1237,
+      "active": true,
+      "created_at": "2026-11-12T15:49:36\u002B03:30",
+      "updated_at": "2026-11-12T15:49:36\u002B03:30"
+    },
+    {
+      "system_id": "sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7",
+      "number": 6,
+      "label": "VIPPlus-6",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292",
+      "number": 7,
+      "label": "VIPPlus-7",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_ea210242-5860-4504-b961-c38601720859",
+      "number": 8,
+      "label": "VIPPlus-8",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9",
+      "number": 9,
+      "label": "VIPPlus-9",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f2c2c549-e60f-45ec-b988-43628d7723ad",
+      "number": 10,
+      "label": "VIPPlus-10",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7",
+      "number": 16,
+      "label": "VIPPlus-16",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4",
+      "number": 17,
+      "label": "VIPPlus-17",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d",
+      "number": 18,
+      "label": "VIPPlus-18",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_9672b444-ea35-468e-a405-32ca8a354c07",
+      "number": 19,
+      "label": "VIPPlus-19",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_1024588e-f140-4fe5-b432-dd58ffbffcef",
+      "number": 20,
+      "label": "VIPPlus-20",
+      "category": "VIPPlus",
+      "variation_id": 1238,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_5ace3575-f5c0-4771-babf-0f077cf82b76",
+      "number": 1,
+      "label": "CIP-1",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T00:42:05\u002B03:30",
+      "updated_at": "2026-11-09T03:11:48\u002B03:30"
+    },
+    {
+      "system_id": "sys_029d78f8-cd63-421f-81a1-4d614ba8d21d",
+      "number": 2,
+      "label": "CIP-2",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_313f20e1-b975-4558-9a86-2f58f86dc90c",
+      "number": 3,
+      "label": "CIP-3",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_30a053f4-43c5-4202-93b5-9e217ab5da17",
+      "number": 4,
+      "label": "CIP-4",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0",
+      "number": 5,
+      "label": "CIP-5",
+      "category": "CIP",
+      "variation_id": 1239,
+      "active": true,
+      "created_at": "2026-11-09T01:06:03\u002B03:30",
+      "updated_at": "2026-11-09T01:06:03\u002B03:30"
+    },
+    {
+      "system_id": "sys_f96fa64d-1181-4c2d-abb3-76cc918befff",
+      "number": 1,
+      "label": "\u0633\u06CC\u0633\u062A\u0645-1",
+      "category": "\u0633\u06CC\u0633\u062A\u0645",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:40:35\u002B03:30",
+      "updated_at": "2026-11-12T15:45:06\u002B03:30"
+    },
+    {
+      "system_id": "sys_ff145ef3-8b18-4354-9a8c-5188ec6715b8",
+      "number": 26,
+      "label": "MIDPlus-26",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_dc52bbd4-0e28-4581-9376-c923af0166bd",
+      "number": 27,
+      "label": "MIDPlus-27",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_77ed8046-00ca-4543-92e7-218f28e94ff9",
+      "number": 28,
+      "label": "MIDPlus-28",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_84f96ed8-d380-4b7d-b97e-d43e8d2c9206",
+      "number": 29,
+      "label": "MIDPlus-29",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    },
+    {
+      "system_id": "sys_ed2d9ad3-5064-4fec-b67e-91e1e4247501",
+      "number": 30,
+      "label": "MIDPlus-30",
+      "category": "MIDPlus",
+      "variation_id": 1251,
+      "active": true,
+      "created_at": "2026-11-12T15:45:08\u002B03:30",
+      "updated_at": "2026-11-12T15:45:08\u002B03:30"
+    }
+  ]
+}
+
+========== SYNC API ==========
+FROM: 2026-11-14
+TO: 2026-12-14
+
+SYNC PRODUCT ID: 1233
+
+{
+  "success": true,
+  "api_version": "2.4.3",
+  "server_time": "2026-11-14T19:31:55\u002B03:30",
+  "sync_at": 0,
+  "hash": "f2037c2e1f471b0b46d6edffcbabcc70d93afb7c5b6465cef21fc5b7090f90bc",
+  "data": {
+    "product_id": 1233,
+    "range": {
+      "from": "2026-11-14",
+      "to": "2026-12-14"
+    },
+    "gamenet": {
+      "id": 1233,
+      "name": "Robina",
+      "status": "publish",
+      "stock_status": "",
+      "booking_mode": "auto",
+      "work_start": 8,
+      "work_end": 24
+    },
+    "variations": [
+      {
+        "id": 1235,
+        "name": "CASUAL",
+        "title": "CASUAL",
+        "sku": "",
+        "price": 80000,
+        "regular_price": 80000,
+        "sale_price": null,
+        "stock_status": "instock",
+        "capacity": 13,
+        "system_numbers": [
+          "Casual-36",
+          "Casual-37",
+          "Casual-38",
+          "Casual-39",
+          "Casual-40",
+          "Casual-41",
+          "Casual-42",
+          "Casual-43",
+          "Casual-66",
+          "Casual-67",
+          "Casual-68",
+          "Casual-69",
+          "Casual-70"
+        ],
+        "games": [
+          {
+            "id": 1065,
+            "name": "Apex Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Apex_legends_cover-213x300.jpg"
+          },
+          {
+            "id": 1089,
+            "name": "Battlefield \u06F2\u06F0\u06F4\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield_2042_cover_art-224x300.jpg"
+          },
+          {
+            "id": 1087,
+            "name": "Battlefield \u06F6",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-6-200x300.jpg"
+          },
+          {
+            "id": 1085,
+            "name": "Battlefield \u06F7",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-7-300x225.jpg"
+          },
+          {
+            "id": 1067,
+            "name": "Call Of Duty Warzone",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/images-300x168.jpeg"
+          },
+          {
+            "id": 1051,
+            "name": "CS\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/capsule_616x353-300x172.jpg"
+          },
+          {
+            "id": 1055,
+            "name": "DOTA \u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/dota2_social-300x172.jpg"
+          },
+          {
+            "id": 1063,
+            "name": "League Of Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/League-of-Legends-1-1280x720-1-300x169.jpg"
+          },
+          {
+            "id": 1059,
+            "name": "Pubg",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/pubg-battlegrounds-16v1j-300x169.jpg"
+          },
+          {
+            "id": 1057,
+            "name": "Rainbow six siege",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/EGST_Edition_Thumbnail_1920X1080_1920x1080-a9c8b561b4fd4dd7858b9127e1c6782e-300x169.jpeg"
+          },
+          {
+            "id": 1091,
+            "name": "Resident Evil \u06F9 Requiem",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Resident_Evil_Requiem_Cover_Art-224x300.jpg"
+          },
+          {
+            "id": 1061,
+            "name": "valorant",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Valorant-Pc-Game-20250518-212x300.jpg"
+          }
+        ],
+        "work_start": "",
+        "work_end": "",
+        "booking_mode": "",
+        "description": "",
+        "attributes": {
+          "attribute_%d8%b3%db%8c%d8%b3%d8%aa%d9%85-%d9%87%d8%a7": "CASUAL"
+        }
+      },
+      {
+        "id": 1236,
+        "name": "MID",
+        "title": "MID",
+        "sku": "",
+        "price": 100000,
+        "regular_price": 100000,
+        "sale_price": null,
+        "stock_status": "instock",
+        "capacity": 20,
+        "system_numbers": [
+          "MID-11",
+          "MID-12",
+          "MID-13",
+          "MID-14",
+          "MID-15",
+          "MID-21",
+          "MID-22",
+          "MID-23",
+          "MID-24",
+          "MID-25",
+          "MID-31",
+          "MID-32",
+          "MID-33",
+          "MID-34",
+          "MID-35",
+          "MID-44",
+          "MID-45",
+          "MID-46",
+          "MID-47",
+          "MID-48"
+        ],
+        "games": [
+          {
+            "id": 1065,
+            "name": "Apex Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Apex_legends_cover-213x300.jpg"
+          },
+          {
+            "id": 1089,
+            "name": "Battlefield \u06F2\u06F0\u06F4\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield_2042_cover_art-224x300.jpg"
+          },
+          {
+            "id": 1087,
+            "name": "Battlefield \u06F6",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-6-200x300.jpg"
+          },
+          {
+            "id": 1085,
+            "name": "Battlefield \u06F7",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-7-300x225.jpg"
+          },
+          {
+            "id": 1067,
+            "name": "Call Of Duty Warzone",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/images-300x168.jpeg"
+          },
+          {
+            "id": 1051,
+            "name": "CS\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/capsule_616x353-300x172.jpg"
+          },
+          {
+            "id": 1055,
+            "name": "DOTA \u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/dota2_social-300x172.jpg"
+          },
+          {
+            "id": 1063,
+            "name": "League Of Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/League-of-Legends-1-1280x720-1-300x169.jpg"
+          },
+          {
+            "id": 1059,
+            "name": "Pubg",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/pubg-battlegrounds-16v1j-300x169.jpg"
+          },
+          {
+            "id": 1057,
+            "name": "Rainbow six siege",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/EGST_Edition_Thumbnail_1920X1080_1920x1080-a9c8b561b4fd4dd7858b9127e1c6782e-300x169.jpeg"
+          },
+          {
+            "id": 1091,
+            "name": "Resident Evil \u06F9 Requiem",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Resident_Evil_Requiem_Cover_Art-224x300.jpg"
+          },
+          {
+            "id": 1061,
+            "name": "valorant",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Valorant-Pc-Game-20250518-212x300.jpg"
+          }
+        ],
+        "work_start": "",
+        "work_end": "",
+        "booking_mode": "",
+        "description": "",
+        "attributes": {
+          "attribute_%d8%b3%db%8c%d8%b3%d8%aa%d9%85-%d9%87%d8%a7": "MID"
+        }
+      },
+      {
+        "id": 1251,
+        "name": "MIDPlus",
+        "title": "MIDPlus",
+        "sku": "",
+        "price": 146000,
+        "regular_price": 146000,
+        "sale_price": null,
+        "stock_status": "instock",
+        "capacity": 5,
+        "system_numbers": [
+          "MIDPlus-26",
+          "MIDPlus-27",
+          "MIDPlus-28",
+          "MIDPlus-29",
+          "MIDPlus-30"
+        ],
+        "games": [
+          {
+            "id": 1065,
+            "name": "Apex Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Apex_legends_cover-213x300.jpg"
+          },
+          {
+            "id": 1089,
+            "name": "Battlefield \u06F2\u06F0\u06F4\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield_2042_cover_art-224x300.jpg"
+          },
+          {
+            "id": 1087,
+            "name": "Battlefield \u06F6",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-6-200x300.jpg"
+          },
+          {
+            "id": 1085,
+            "name": "Battlefield \u06F7",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-7-300x225.jpg"
+          },
+          {
+            "id": 1067,
+            "name": "Call Of Duty Warzone",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/images-300x168.jpeg"
+          },
+          {
+            "id": 1051,
+            "name": "CS\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/capsule_616x353-300x172.jpg"
+          },
+          {
+            "id": 1055,
+            "name": "DOTA \u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/dota2_social-300x172.jpg"
+          },
+          {
+            "id": 1063,
+            "name": "League Of Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/League-of-Legends-1-1280x720-1-300x169.jpg"
+          },
+          {
+            "id": 1059,
+            "name": "Pubg",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/pubg-battlegrounds-16v1j-300x169.jpg"
+          },
+          {
+            "id": 1057,
+            "name": "Rainbow six siege",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/EGST_Edition_Thumbnail_1920X1080_1920x1080-a9c8b561b4fd4dd7858b9127e1c6782e-300x169.jpeg"
+          },
+          {
+            "id": 1091,
+            "name": "Resident Evil \u06F9 Requiem",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Resident_Evil_Requiem_Cover_Art-224x300.jpg"
+          },
+          {
+            "id": 1061,
+            "name": "valorant",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Valorant-Pc-Game-20250518-212x300.jpg"
+          }
+        ],
+        "work_start": "",
+        "work_end": "",
+        "booking_mode": "",
+        "description": "",
+        "attributes": {
+          "attribute_%d8%b3%db%8c%d8%b3%d8%aa%d9%85-%d9%87%d8%a7": "MIDPlus"
+        }
+      },
+      {
+        "id": 1237,
+        "name": "VIP",
+        "title": "VIP",
+        "sku": "",
+        "price": 145000,
+        "regular_price": 145000,
+        "sale_price": null,
+        "stock_status": "instock",
+        "capacity": 10,
+        "system_numbers": [
+          "VIP-6",
+          "VIP-7",
+          "VIP-8",
+          "VIP-9",
+          "VIP-10",
+          "VIP-16",
+          "VIP-17",
+          "VIP-18",
+          "VIP-19",
+          "VIP-20"
+        ],
+        "games": [
+          {
+            "id": 1065,
+            "name": "Apex Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Apex_legends_cover-213x300.jpg"
+          },
+          {
+            "id": 1089,
+            "name": "Battlefield \u06F2\u06F0\u06F4\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield_2042_cover_art-224x300.jpg"
+          },
+          {
+            "id": 1087,
+            "name": "Battlefield \u06F6",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-6-200x300.jpg"
+          },
+          {
+            "id": 1085,
+            "name": "Battlefield \u06F7",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-7-300x225.jpg"
+          },
+          {
+            "id": 1067,
+            "name": "Call Of Duty Warzone",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/images-300x168.jpeg"
+          },
+          {
+            "id": 1051,
+            "name": "CS\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/capsule_616x353-300x172.jpg"
+          },
+          {
+            "id": 1055,
+            "name": "DOTA \u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/dota2_social-300x172.jpg"
+          },
+          {
+            "id": 1063,
+            "name": "League Of Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/League-of-Legends-1-1280x720-1-300x169.jpg"
+          },
+          {
+            "id": 1059,
+            "name": "Pubg",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/pubg-battlegrounds-16v1j-300x169.jpg"
+          },
+          {
+            "id": 1057,
+            "name": "Rainbow six siege",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/EGST_Edition_Thumbnail_1920X1080_1920x1080-a9c8b561b4fd4dd7858b9127e1c6782e-300x169.jpeg"
+          },
+          {
+            "id": 1091,
+            "name": "Resident Evil \u06F9 Requiem",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Resident_Evil_Requiem_Cover_Art-224x300.jpg"
+          },
+          {
+            "id": 1061,
+            "name": "valorant",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Valorant-Pc-Game-20250518-212x300.jpg"
+          }
+        ],
+        "work_start": "",
+        "work_end": "",
+        "booking_mode": "",
+        "description": "",
+        "attributes": {
+          "attribute_%d8%b3%db%8c%d8%b3%d8%aa%d9%85-%d9%87%d8%a7": "VIP"
+        }
+      },
+      {
+        "id": 1239,
+        "name": "CIP",
+        "title": "CIP",
+        "sku": "",
+        "price": 265000,
+        "regular_price": 265000,
+        "sale_price": null,
+        "stock_status": "instock",
+        "capacity": 5,
+        "system_numbers": [
+          "CIP-1",
+          "CIP-2",
+          "CIP-3",
+          "CIP-4",
+          "CIP-5"
+        ],
+        "games": [
+          {
+            "id": 1065,
+            "name": "Apex Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Apex_legends_cover-213x300.jpg"
+          },
+          {
+            "id": 1089,
+            "name": "Battlefield \u06F2\u06F0\u06F4\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield_2042_cover_art-224x300.jpg"
+          },
+          {
+            "id": 1087,
+            "name": "Battlefield \u06F6",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-6-200x300.jpg"
+          },
+          {
+            "id": 1085,
+            "name": "Battlefield \u06F7",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Battlefield-7-300x225.jpg"
+          },
+          {
+            "id": 1067,
+            "name": "Call Of Duty Warzone",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/images-300x168.jpeg"
+          },
+          {
+            "id": 1051,
+            "name": "CS\u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/capsule_616x353-300x172.jpg"
+          },
+          {
+            "id": 1055,
+            "name": "DOTA \u06F2",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/dota2_social-300x172.jpg"
+          },
+          {
+            "id": 1063,
+            "name": "League Of Legends",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/League-of-Legends-1-1280x720-1-300x169.jpg"
+          },
+          {
+            "id": 1059,
+            "name": "Pubg",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/pubg-battlegrounds-16v1j-300x169.jpg"
+          },
+          {
+            "id": 1057,
+            "name": "Rainbow six siege",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/EGST_Edition_Thumbnail_1920X1080_1920x1080-a9c8b561b4fd4dd7858b9127e1c6782e-300x169.jpeg"
+          },
+          {
+            "id": 1091,
+            "name": "Resident Evil \u06F9 Requiem",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Resident_Evil_Requiem_Cover_Art-224x300.jpg"
+          },
+          {
+            "id": 1061,
+            "name": "valorant",
+            "image_url": "https://lobixapp.ir/wp-content/uploads/2026/10/Valorant-Pc-Game-20250518-212x300.jpg"
+          }
+        ],
+        "work_start": "",
+        "work_end": "",
+        "booking_mode": "",
+        "description": "",
+        "attributes": {
+          "attribute_%d8%b3%db%8c%d8%b3%d8%aa%d9%85-%d9%87%d8%a7": "CIP"
+        }
+      }
+    ],
+    "manual_bookings": [],
+    "online_bookings": []
+  }
+}
+
+========== MAPPED RESERVATIONS ==========
+TOTAL: 0
+
+[]
+
+========== MAP VISIBILITY DIAGNOSTICS ==========
+GAMENET ID: 1233
+CURRENT FLOOR: همکف
+TOTAL ITEMS: 88
+PHYSICAL SYSTEMS: 81
+VISIBLE SYSTEMS: 81
+UNPLACED SYSTEMS: 20
+
+========== FLOOR DISTRIBUTION ==========
+همکف: 81 systems
+
+========== PHYSICAL SYSTEMS IN MEMORY ==========
+[
+  {
+    "Id": "physical-sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b",
+    "Name": "Casual #30",
+    "SystemId": "sys_e790dbc4-4919-4bd8-a9b2-85fa3121800b",
+    "SystemNumber": "30",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1325,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_88ddd957-b5fb-4723-8116-a4f75724bb23",
+    "Name": "Casual #31",
+    "SystemId": "sys_88ddd957-b5fb-4723-8116-a4f75724bb23",
+    "SystemNumber": "31",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 825,
+    "Y": 150,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf",
+    "Name": "Casual #32",
+    "SystemId": "sys_1a0824cb-afed-456f-953b-6e58c8e5c9cf",
+    "SystemNumber": "32",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 950,
+    "Y": 150,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36",
+    "Name": "Casual #33",
+    "SystemId": "sys_9bcda01b-6fae-4b8a-822b-b4d2eb289d36",
+    "SystemNumber": "33",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1075,
+    "Y": 150,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_d5e43762-7142-4d90-b01a-9d17e91a531b",
+    "Name": "Casual #34",
+    "SystemId": "sys_d5e43762-7142-4d90-b01a-9d17e91a531b",
+    "SystemNumber": "34",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1200,
+    "Y": 150,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f",
+    "Name": "Casual #35",
+    "SystemId": "sys_f36d9b45-5b7e-4f9e-bb07-e964403c659f",
+    "SystemNumber": "35",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1325,
+    "Y": 150,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f3657a52-935d-4f15-9e52-b1c743906783",
+    "Name": "Casual #44",
+    "SystemId": "sys_f3657a52-935d-4f15-9e52-b1c743906783",
+    "SystemNumber": "44",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1300,
+    "Y": 450,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164",
+    "Name": "Casual #45",
+    "SystemId": "sys_e6a93fad-5d37-40cc-80f3-9a4dabfc7164",
+    "SystemNumber": "45",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1300,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_eebb5567-1b10-402c-a294-7a7dcb97eca2",
+    "Name": "Casual #46",
+    "SystemId": "sys_eebb5567-1b10-402c-a294-7a7dcb97eca2",
+    "SystemNumber": "46",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1300,
+    "Y": 650,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0",
+    "Name": "Casual #47",
+    "SystemId": "sys_d96376d3-26c4-4ab8-8967-7d53a9e4fcf0",
+    "SystemNumber": "47",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1300,
+    "Y": 750,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_2cb0a271-ee47-4221-86ab-429ddb70c672",
+    "Name": "Casual #48",
+    "SystemId": "sys_2cb0a271-ee47-4221-86ab-429ddb70c672",
+    "SystemNumber": "48",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1300,
+    "Y": 850,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_044167fd-e138-418e-8a3a-f943747f6c8f",
+    "Name": "MID #21",
+    "SystemId": "sys_044167fd-e138-418e-8a3a-f943747f6c8f",
+    "SystemNumber": "21",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 500,
+    "Y": 175,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_11107779-ea8b-4355-8bba-64434c49d789",
+    "Name": "MID #22",
+    "SystemId": "sys_11107779-ea8b-4355-8bba-64434c49d789",
+    "SystemNumber": "22",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 375,
+    "Y": 175,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9",
+    "Name": "MID #23",
+    "SystemId": "sys_395ba22a-77eb-44f7-87b9-6fdaf28d1db9",
+    "SystemNumber": "23",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 175,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8",
+    "Name": "MID #24",
+    "SystemId": "sys_c6e991c9-998b-46c7-8aa0-441d8c94d6b8",
+    "SystemNumber": "24",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 125,
+    "Y": 175,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_81166c53-27be-42b4-aa62-3210d9aa11ba",
+    "Name": "MID #25",
+    "SystemId": "sys_81166c53-27be-42b4-aa62-3210d9aa11ba",
+    "SystemNumber": "25",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 0,
+    "Y": 175,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_c3bd135d-66ed-450c-9344-80d1f71632ef",
+    "Name": "VIP #11",
+    "SystemId": "sys_c3bd135d-66ed-450c-9344-80d1f71632ef",
+    "SystemNumber": "11",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 500,
+    "Y": 425,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_d39b0336-c58d-4265-8d52-efe57ad00516",
+    "Name": "VIP #12",
+    "SystemId": "sys_d39b0336-c58d-4265-8d52-efe57ad00516",
+    "SystemNumber": "12",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 375,
+    "Y": 425,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_91eed7bc-b968-42a1-993a-9f02f78e7950",
+    "Name": "VIP #13",
+    "SystemId": "sys_91eed7bc-b968-42a1-993a-9f02f78e7950",
+    "SystemNumber": "13",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 425,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae",
+    "Name": "VIP #14",
+    "SystemId": "sys_f6e4e84c-3d2a-4bc4-8098-86184e3522ae",
+    "SystemNumber": "14",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 125,
+    "Y": 425,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_772c2347-477c-47d1-8655-f4ce7074f708",
+    "Name": "VIP #15",
+    "SystemId": "sys_772c2347-477c-47d1-8655-f4ce7074f708",
+    "SystemNumber": "15",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 0,
+    "Y": 425,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7",
+    "Name": "VIPPlus #6",
+    "SystemId": "sys_761215d5-d15e-46e0-8fd9-7ed484f6bff7",
+    "SystemNumber": "6",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 0,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292",
+    "Name": "VIPPlus #7",
+    "SystemId": "sys_431780a7-36a8-4ce1-ad63-1c46c6d8a292",
+    "SystemNumber": "7",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 125,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_ea210242-5860-4504-b961-c38601720859",
+    "Name": "VIPPlus #8",
+    "SystemId": "sys_ea210242-5860-4504-b961-c38601720859",
+    "SystemNumber": "8",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9",
+    "Name": "VIPPlus #9",
+    "SystemId": "sys_483e4d8d-b84a-4266-8e22-43b8c8ae85c9",
+    "SystemNumber": "9",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 375,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f2c2c549-e60f-45ec-b988-43628d7723ad",
+    "Name": "VIPPlus #10",
+    "SystemId": "sys_f2c2c549-e60f-45ec-b988-43628d7723ad",
+    "SystemNumber": "10",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 500,
+    "Y": 550,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7",
+    "Name": "VIPPlus #16",
+    "SystemId": "sys_f51212bb-f9da-4b1e-bb62-aa3a684f50c7",
+    "SystemNumber": "16",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 500,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4",
+    "Name": "VIPPlus #17",
+    "SystemId": "sys_936ec12d-a8cf-4a00-82e8-8caf57571dd4",
+    "SystemNumber": "17",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 375,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d",
+    "Name": "VIPPlus #18",
+    "SystemId": "sys_0dcb6bd6-52c7-4a7c-b417-e6f49521012d",
+    "SystemNumber": "18",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_9672b444-ea35-468e-a405-32ca8a354c07",
+    "Name": "VIPPlus #19",
+    "SystemId": "sys_9672b444-ea35-468e-a405-32ca8a354c07",
+    "SystemNumber": "19",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 125,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_1024588e-f140-4fe5-b432-dd58ffbffcef",
+    "Name": "VIPPlus #20",
+    "SystemId": "sys_1024588e-f140-4fe5-b432-dd58ffbffcef",
+    "SystemNumber": "20",
+    "VariationId": 1238,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 0,
+    "Y": 300,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_5ace3575-f5c0-4771-babf-0f077cf82b76",
+    "Name": "CIP #1",
+    "SystemId": "sys_5ace3575-f5c0-4771-babf-0f077cf82b76",
+    "SystemNumber": "1",
+    "VariationId": 1239,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 700,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_029d78f8-cd63-421f-81a1-4d614ba8d21d",
+    "Name": "CIP #2",
+    "SystemId": "sys_029d78f8-cd63-421f-81a1-4d614ba8d21d",
+    "SystemNumber": "2",
+    "VariationId": 1239,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 25,
+    "Y": 700,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_313f20e1-b975-4558-9a86-2f58f86dc90c",
+    "Name": "CIP #3",
+    "SystemId": "sys_313f20e1-b975-4558-9a86-2f58f86dc90c",
+    "SystemNumber": "3",
+    "VariationId": 1239,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 475,
+    "Y": 850,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_30a053f4-43c5-4202-93b5-9e217ab5da17",
+    "Name": "CIP #4",
+    "SystemId": "sys_30a053f4-43c5-4202-93b5-9e217ab5da17",
+    "SystemNumber": "4",
+    "VariationId": 1239,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 250,
+    "Y": 850,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0",
+    "Name": "CIP #5",
+    "SystemId": "sys_4d0b72be-2690-4dbf-9b24-e18c918cb9a0",
+    "SystemNumber": "5",
+    "VariationId": 1239,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 25,
+    "Y": 850,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_3e126829-0383-471b-af86-2757e424b36f",
+    "Name": "Casual #36",
+    "SystemId": "sys_3e126829-0383-471b-af86-2757e424b36f",
+    "SystemNumber": "36",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 30,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_83ade6e1-ebd5-40c4-b13d-d3cb5ad5b5dc",
+    "Name": "Casual #37",
+    "SystemId": "sys_83ade6e1-ebd5-40c4-b13d-d3cb5ad5b5dc",
+    "SystemNumber": "37",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 180,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_01a8dbe1-fea0-421b-8d5f-c8e623d0c443",
+    "Name": "Casual #38",
+    "SystemId": "sys_01a8dbe1-fea0-421b-8d5f-c8e623d0c443",
+    "SystemNumber": "38",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 330,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_8fa307b6-d6b2-4c41-9e72-098df6f62ccf",
+    "Name": "Casual #39",
+    "SystemId": "sys_8fa307b6-d6b2-4c41-9e72-098df6f62ccf",
+    "SystemNumber": "39",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 480,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_ade9b85c-7f70-4635-b19d-b3c549d013d3",
+    "Name": "Casual #40",
+    "SystemId": "sys_ade9b85c-7f70-4635-b19d-b3c549d013d3",
+    "SystemNumber": "40",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 630,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_2d66c20b-ac38-4df0-ae13-828966003b42",
+    "Name": "Casual #41",
+    "SystemId": "sys_2d66c20b-ac38-4df0-ae13-828966003b42",
+    "SystemNumber": "41",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 780,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_8dcc3984-f1ca-4173-9cbf-e1bdffb66798",
+    "Name": "Casual #42",
+    "SystemId": "sys_8dcc3984-f1ca-4173-9cbf-e1bdffb66798",
+    "SystemNumber": "42",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 930,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_fa5113fa-8b44-41ce-ad6d-4780dd1ac8e4",
+    "Name": "Casual #43",
+    "SystemId": "sys_fa5113fa-8b44-41ce-ad6d-4780dd1ac8e4",
+    "SystemNumber": "43",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1080,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_8df1d848-3c45-4a00-9f05-2829ff5fd41a",
+    "Name": "Casual #66",
+    "SystemId": "sys_8df1d848-3c45-4a00-9f05-2829ff5fd41a",
+    "SystemNumber": "66",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1230,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_835495e8-dbea-4dea-9395-ce3c6f5bb221",
+    "Name": "Casual #67",
+    "SystemId": "sys_835495e8-dbea-4dea-9395-ce3c6f5bb221",
+    "SystemNumber": "67",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 1380,
+    "Y": 30,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_6061280c-6dbd-4df8-8edc-f332714761ce",
+    "Name": "Casual #68",
+    "SystemId": "sys_6061280c-6dbd-4df8-8edc-f332714761ce",
+    "SystemNumber": "68",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 680,
+    "Y": 430,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_ecfe5814-38c2-43a4-b0ec-7d30d8242f09",
+    "Name": "Casual #69",
+    "SystemId": "sys_ecfe5814-38c2-43a4-b0ec-7d30d8242f09",
+    "SystemNumber": "69",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 830,
+    "Y": 430,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_cfe1aa85-0d91-4785-8864-16a39ca41373",
+    "Name": "Casual #70",
+    "SystemId": "sys_cfe1aa85-0d91-4785-8864-16a39ca41373",
+    "SystemNumber": "70",
+    "VariationId": 1235,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 980,
+    "Y": 430,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_4479c271-8dc4-4c05-a74d-f3f17f31e962",
+    "Name": "MID #11",
+    "SystemId": "sys_4479c271-8dc4-4c05-a74d-f3f17f31e962",
+    "SystemNumber": "11",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 680,
+    "Y": 530,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_2973138e-2719-47d2-9582-c65fb789214a",
+    "Name": "MID #12",
+    "SystemId": "sys_2973138e-2719-47d2-9582-c65fb789214a",
+    "SystemNumber": "12",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 830,
+    "Y": 530,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_229f5fa1-a222-4168-8e00-1361b21c740f",
+    "Name": "MID #13",
+    "SystemId": "sys_229f5fa1-a222-4168-8e00-1361b21c740f",
+    "SystemNumber": "13",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 980,
+    "Y": 530,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_c6f607ce-dc8d-43ec-a785-32ec21975608",
+    "Name": "MID #14",
+    "SystemId": "sys_c6f607ce-dc8d-43ec-a785-32ec21975608",
+    "SystemNumber": "14",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 680,
+    "Y": 630,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_001e5880-ab66-4067-8cf2-4110a27c7b68",
+    "Name": "MID #15",
+    "SystemId": "sys_001e5880-ab66-4067-8cf2-4110a27c7b68",
+    "SystemNumber": "15",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 830,
+    "Y": 630,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_c54cf49c-4c6f-4554-ad23-0be7210f73b9",
+    "Name": "MID #16",
+    "SystemId": "sys_c54cf49c-4c6f-4554-ad23-0be7210f73b9",
+    "SystemNumber": "16",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 980,
+    "Y": 630,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_08622440-f783-4b0f-97c7-7da0133cd10e",
+    "Name": "MID #31",
+    "SystemId": "sys_08622440-f783-4b0f-97c7-7da0133cd10e",
+    "SystemNumber": "31",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 680,
+    "Y": 730,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_b1d78489-7ce6-40c1-93e3-1dcaf86dcf83",
+    "Name": "MID #32",
+    "SystemId": "sys_b1d78489-7ce6-40c1-93e3-1dcaf86dcf83",
+    "SystemNumber": "32",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 830,
+    "Y": 730,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_e2d5d96c-1481-4756-992f-329a0296a449",
+    "Name": "MID #33",
+    "SystemId": "sys_e2d5d96c-1481-4756-992f-329a0296a449",
+    "SystemNumber": "33",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 980,
+    "Y": 730,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_430675af-25bf-43b0-a3c7-05d56efd4346",
+    "Name": "MID #34",
+    "SystemId": "sys_430675af-25bf-43b0-a3c7-05d56efd4346",
+    "SystemNumber": "34",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 680,
+    "Y": 830,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_457f56d2-0bee-4357-bdbb-4e7dd55ffc57",
+    "Name": "MID #35",
+    "SystemId": "sys_457f56d2-0bee-4357-bdbb-4e7dd55ffc57",
+    "SystemNumber": "35",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 830,
+    "Y": 830,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_3ba208e5-d202-4ad4-8cc0-7a6c0eba5924",
+    "Name": "MID #44",
+    "SystemId": "sys_3ba208e5-d202-4ad4-8cc0-7a6c0eba5924",
+    "SystemNumber": "44",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": 980,
+    "Y": 830,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_fd9ad858-e44c-472c-a2a6-cbdd342f9815",
+    "Name": "MID #45",
+    "SystemId": "sys_fd9ad858-e44c-472c-a2a6-cbdd342f9815",
+    "SystemNumber": "45",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_270eb78d-9510-42d7-99ce-ea2584e33a96",
+    "Name": "MID #46",
+    "SystemId": "sys_270eb78d-9510-42d7-99ce-ea2584e33a96",
+    "SystemNumber": "46",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_57b4c554-f206-43f4-91d2-d73e3fd8ae74",
+    "Name": "MID #47",
+    "SystemId": "sys_57b4c554-f206-43f4-91d2-d73e3fd8ae74",
+    "SystemNumber": "47",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f26e47ce-f42f-45a8-a40d-4a7610337b08",
+    "Name": "MID #48",
+    "SystemId": "sys_f26e47ce-f42f-45a8-a40d-4a7610337b08",
+    "SystemNumber": "48",
+    "VariationId": 1236,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_e1825c25-e9b5-40dd-905a-2f5b3a7d05c8",
+    "Name": "VIP #6",
+    "SystemId": "sys_e1825c25-e9b5-40dd-905a-2f5b3a7d05c8",
+    "SystemNumber": "6",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_9cfdfc37-fc73-425b-a8b8-19a6ee62c273",
+    "Name": "VIP #7",
+    "SystemId": "sys_9cfdfc37-fc73-425b-a8b8-19a6ee62c273",
+    "SystemNumber": "7",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_10c128ba-2a71-4fe0-89b9-9eaa0f0eb3fa",
+    "Name": "VIP #8",
+    "SystemId": "sys_10c128ba-2a71-4fe0-89b9-9eaa0f0eb3fa",
+    "SystemNumber": "8",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_0c8c7f05-195e-41a5-9944-5f7463a5ce46",
+    "Name": "VIP #9",
+    "SystemId": "sys_0c8c7f05-195e-41a5-9944-5f7463a5ce46",
+    "SystemNumber": "9",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_809a9aac-323c-4c42-98b0-53f5c6c1d640",
+    "Name": "VIP #10",
+    "SystemId": "sys_809a9aac-323c-4c42-98b0-53f5c6c1d640",
+    "SystemNumber": "10",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_44c2ed6c-e364-401c-9d5e-0b2808c6fe29",
+    "Name": "VIP #16",
+    "SystemId": "sys_44c2ed6c-e364-401c-9d5e-0b2808c6fe29",
+    "SystemNumber": "16",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_2e2d8973-4b74-43b2-aa20-20df9acf8522",
+    "Name": "VIP #17",
+    "SystemId": "sys_2e2d8973-4b74-43b2-aa20-20df9acf8522",
+    "SystemNumber": "17",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_e3aee175-9676-4768-8cd1-04c4be1f80c3",
+    "Name": "VIP #18",
+    "SystemId": "sys_e3aee175-9676-4768-8cd1-04c4be1f80c3",
+    "SystemNumber": "18",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_6d202ef7-a5e3-447b-8ec8-15690cfee025",
+    "Name": "VIP #19",
+    "SystemId": "sys_6d202ef7-a5e3-447b-8ec8-15690cfee025",
+    "SystemNumber": "19",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_0768389a-bade-42fe-bd58-5fde1991df99",
+    "Name": "VIP #20",
+    "SystemId": "sys_0768389a-bade-42fe-bd58-5fde1991df99",
+    "SystemNumber": "20",
+    "VariationId": 1237,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_f96fa64d-1181-4c2d-abb3-76cc918befff",
+    "Name": "\u0633\u06CC\u0633\u062A\u0645 #1",
+    "SystemId": "sys_f96fa64d-1181-4c2d-abb3-76cc918befff",
+    "SystemNumber": "1",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_ff145ef3-8b18-4354-9a8c-5188ec6715b8",
+    "Name": "MIDPlus #26",
+    "SystemId": "sys_ff145ef3-8b18-4354-9a8c-5188ec6715b8",
+    "SystemNumber": "26",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_dc52bbd4-0e28-4581-9376-c923af0166bd",
+    "Name": "MIDPlus #27",
+    "SystemId": "sys_dc52bbd4-0e28-4581-9376-c923af0166bd",
+    "SystemNumber": "27",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_77ed8046-00ca-4543-92e7-218f28e94ff9",
+    "Name": "MIDPlus #28",
+    "SystemId": "sys_77ed8046-00ca-4543-92e7-218f28e94ff9",
+    "SystemNumber": "28",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_84f96ed8-d380-4b7d-b97e-d43e8d2c9206",
+    "Name": "MIDPlus #29",
+    "SystemId": "sys_84f96ed8-d380-4b7d-b97e-d43e8d2c9206",
+    "SystemNumber": "29",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  },
+  {
+    "Id": "physical-sys_ed2d9ad3-5064-4fec-b67e-91e1e4247501",
+    "Name": "MIDPlus #30",
+    "SystemId": "sys_ed2d9ad3-5064-4fec-b67e-91e1e4247501",
+    "SystemNumber": "30",
+    "VariationId": 1251,
+    "Status": "free",
+    "Type": "computer",
+    "Floor": "\u0647\u0645\u06A9\u0641",
+    "X": -1,
+    "Y": -1,
+    "W": 110,
+    "H": 75,
+    "IsVisible": true,
+    "IsPhysicalSystem": true
+  }
+]
