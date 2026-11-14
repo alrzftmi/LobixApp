@@ -1,0 +1,1070 @@
+<UserControl x:Class="LobixApp.Views.FloorPlanView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             Background="#0D0E13"
+             Foreground="#F2F3F7"
+             FontFamily="Peyda"
+             Loaded="FloorPlanView_Loaded"
+             Unloaded="FloorPlanView_Unloaded"
+             PreviewKeyDown="Root_PreviewKeyDown">
+
+    <UserControl.Resources>
+
+        <!-- ================= COLORS ================= -->
+
+        <SolidColorBrush x:Key="Bg" Color="#0D0E13"/>
+        <SolidColorBrush x:Key="Panel" Color="#151720"/>
+        <SolidColorBrush x:Key="Panel2" Color="#1B1E29"/>
+        <SolidColorBrush x:Key="Input" Color="#10121A"/>
+        <SolidColorBrush x:Key="Line" Color="#292D3A"/>
+        <SolidColorBrush x:Key="Muted" Color="#9298AA"/>
+        <SolidColorBrush x:Key="Accent" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="Text" Color="#F2F3F7"/>
+        <SolidColorBrush x:Key="Green" Color="#42C98A"/>
+        <SolidColorBrush x:Key="Yellow" Color="#E5A93D"/>
+
+        <!-- ================= TEXT STYLES ================= -->
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        </Style>
+
+        <Style x:Key="MutedText"
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="SectionTitle"
+               TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="#AEB4C5"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,15,0,7"/>
+        </Style>
+
+        <!-- ================= PANEL STYLE ================= -->
+
+        <Style x:Key="PanelBorder"
+               TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
+        <!-- ================= BUTTON STYLES ================= -->
+
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="Background" Value="#20232E"/>
+            <Setter Property="BorderBrush" Value="#303442"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Background"
+                                        Value="#2B303D"/>
+                                <Setter TargetName="ButtonBorder"
+                                        Property="BorderBrush"
+                                        Value="#454B5D"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.7"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder"
+                                        Property="Opacity"
+                                        Value="0.3"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="AccentButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="QuietButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style x:Key="IconButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource QuietButton}">
+            <Setter Property="Width" Value="34"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="17"/>
+        </Style>
+
+        <Style x:Key="DebugButton"
+               TargetType="{x:Type Button}"
+               BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Foreground" Value="#E5A93D"/>
+            <Setter Property="Background" Value="#292319"/>
+            <Setter Property="BorderBrush" Value="#66502A"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        </Style>
+
+        <!-- ================= TEXTBOX STYLE ================= -->
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="{StaticResource Input}"/>
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="Margin" Value="0,3,0,7"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinHeight" Value="32"/>
+        </Style>
+
+        <!-- ================= COMBOBOX STYLE ================= -->
+
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="Background" Value="{StaticResource Input}"/>
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="Margin" Value="0,3,0,7"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+
+        <Style TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="Background" Value="{StaticResource Panel2}"/>
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="Padding" Value="9,7"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+            <Style.Triggers>
+
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#34303A"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#45252D"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+
+        <!-- ================= EXPANDER STYLE ================= -->
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="Foreground" Value="{StaticResource Text}"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+        </Style>
+
+        <!-- ================= SEPARATOR STYLE ================= -->
+
+        <Style TargetType="{x:Type Separator}">
+            <Setter Property="Background" Value="{StaticResource Line}"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="0,10,0,7"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <!-- ================= ROOT ================= -->
+
+    <Grid x:Name="Root"
+          Margin="12">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ================= HEADER ================= -->
+
+        <Border Grid.Row="0"
+                Background="{StaticResource Panel}"
+                BorderBrush="{StaticResource Line}"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="11"
+                Margin="0,0,0,8">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel VerticalAlignment="Center">
+
+                    <TextBlock Text="مدیریت سالن"
+                               FontSize="17"
+                               FontWeight="Bold"/>
+
+                    <TextBlock x:Name="GamenetTitle"
+                               Text="لابیکس / چیدمان و مدیریت سیستم‌ها"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,3,0,0"/>
+
+                </StackPanel>
+
+                <WrapPanel Grid.Column="1"
+                           VerticalAlignment="Center">
+
+                    <Border Background="#20232E"
+                            CornerRadius="6"
+                            Padding="9,6"
+                            Margin="2,0,7,0">
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <Ellipse x:Name="ConnectionDot"
+                                     Width="7"
+                                     Height="7"
+                                     Fill="#E5A93D"
+                                     Margin="0,0,7,0"/>
+
+                            <TextBlock x:Name="ConnectionText"
+                                       Text="در حال اتصال"
+                                       FontSize="10"/>
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <Button Content="ذخیره تغییرات"
+                            Style="{StaticResource AccentButton}"
+                            Click="Save_Click"
+                            Padding="13,7"/>
+
+                    <Button Content="بارگذاری مجدد"
+                            Click="Reload_Click"/>
+
+                    <Button Content="↶"
+                            Style="{StaticResource IconButton}"
+                            Click="Undo_Click"
+                            ToolTip="بازگشت"/>
+
+                    <Button Content="↷"
+                            Style="{StaticResource IconButton}"
+                            Click="Redo_Click"
+                            ToolTip="تکرار"/>
+
+                    <Button Content="⋯"
+                            Style="{StaticResource IconButton}"
+                            ToolTip="خروجی و عملیات بیشتر">
+
+                        <Button.ContextMenu>
+                            <ContextMenu FlowDirection="RightToLeft">
+
+                                <MenuItem Header="خروجی JSON"
+                                          Click="Export_Click"/>
+
+                                <MenuItem Header="ورود JSON"
+                                          Click="Import_Click"/>
+
+                                <Separator/>
+
+                                <MenuItem Header="خروجی تصویر PNG"
+                                          Click="ExportPng_Click"/>
+
+                            </ContextMenu>
+                        </Button.ContextMenu>
+
+                    </Button>
+
+                </WrapPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ================= SUMMARY ================= -->
+
+        <Border Grid.Row="1"
+                Background="{StaticResource Panel}"
+                BorderBrush="{StaticResource Line}"
+                BorderThickness="1"
+                CornerRadius="9"
+                Padding="10"
+                Margin="0,0,0,8">
+
+            <Grid>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
+                            Orientation="Horizontal">
+
+                    <TextBlock Text="کل سیستم‌ها"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,9,0"/>
+
+                    <TextBlock x:Name="TotalSystemsText"
+                               Text="۰"
+                               FontSize="16"
+                               FontWeight="Bold"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal">
+
+                    <Ellipse Width="7"
+                             Height="7"
+                             Fill="{StaticResource Green}"
+                             Margin="0,0,7,0"/>
+
+                    <TextBlock Text="آزاد"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,7,0"/>
+
+                    <TextBlock x:Name="FreeSystemsText"
+                               Text="۰"
+                               Foreground="{StaticResource Green}"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal">
+
+                    <Ellipse Width="7"
+                             Height="7"
+                             Fill="{StaticResource Yellow}"
+                             Margin="0,0,7,0"/>
+
+                    <TextBlock Text="رزرو"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,7,0"/>
+
+                    <TextBlock x:Name="ReservedSystemsText"
+                               Text="۰"
+                               Foreground="{StaticResource Yellow}"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="3"
+                            Orientation="Horizontal">
+
+                    <Ellipse Width="7"
+                             Height="7"
+                             Fill="{StaticResource Accent}"
+                             Margin="0,0,7,0"/>
+
+                    <TextBlock Text="مشغول"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,0,7,0"/>
+
+                    <TextBlock x:Name="OccupiedSystemsText"
+                               Text="۰"
+                               Foreground="{StaticResource Accent}"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+
+                </StackPanel>
+
+                <StackPanel Grid.Column="4"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left">
+
+                    <TextBlock x:Name="LastSyncText"
+                               Text="آخرین همگام‌سازی: —"
+                               Style="{StaticResource MutedText}"
+                               FontSize="9"/>
+
+                    <TextBlock x:Name="DirtyText"
+                               Text="تغییر ذخیره‌نشده ندارید"
+                               Foreground="{StaticResource Green}"
+                               FontSize="9"
+                               Margin="0,3,0,0"/>
+
+                </StackPanel>
+
+            </Grid>
+
+        </Border>
+
+        <!-- ================= MAIN WORKSPACE ================= -->
+
+        <Grid Grid.Row="2">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="205"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ================= DETAILS PANEL ================= -->
+
+            <Border Grid.Column="0"
+                    Style="{StaticResource PanelBorder}"
+                    Margin="0,0,8,0">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              CanContentScroll="False">
+
+                    <StackPanel>
+
+                        <TextBlock Text="مشخصات انتخاب"
+                                   FontSize="14"
+                                   FontWeight="Bold"/>
+
+                        <TextBlock x:Name="SelectionHint"
+                                   Text="برای مشاهده مشخصات، یک آیتم را انتخاب کنید."
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="0,6,0,10"/>
+
+                        <TextBlock Text="نام / شماره"
+                                   Style="{StaticResource SectionTitle}"
+                                   Margin="0,5,0,5"/>
+
+                        <TextBox x:Name="NameBox"/>
+
+                        <TextBlock Text="نوع آیتم"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <ComboBox x:Name="ItemType">
+
+                            <ComboBoxItem Content="کامپیوتر" Tag="computer"/>
+                            <ComboBoxItem Content="کنسول" Tag="console"/>
+                            <ComboBoxItem Content="میز" Tag="desk"/>
+                            <ComboBoxItem Content="دیوار" Tag="wall"/>
+                            <ComboBoxItem Content="در" Tag="door"/>
+                            <ComboBoxItem Content="برچسب" Tag="label"/>
+                            <ComboBoxItem Content="ناحیه" Tag="area"/>
+                            <ComboBoxItem Content="امکانات" Tag="decoration"/>
+
+                        </ComboBox>
+
+                        <TextBlock Text="وضعیت"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <ComboBox x:Name="ItemStatus">
+
+                            <ComboBoxItem Content="آزاد" Tag="free"/>
+                            <ComboBoxItem Content="رزرو" Tag="reserved"/>
+                            <ComboBoxItem Content="در حال استفاده" Tag="occupied"/>
+                            <ComboBoxItem Content="خاموش" Tag="offline"/>
+                            <ComboBoxItem Content="نامشخص" Tag="unknown"/>
+
+                        </ComboBox>
+
+                        <TextBlock Text="ابعاد و موقعیت"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        Margin="0,0,5,0">
+
+                                <TextBlock Text="عرض"
+           Style="{StaticResource MutedText}"/>
+
+                                <TextBox x:Name="WidthBox"/>
+
+                                <TextBlock Text="موقعیت X"
+           Style="{StaticResource MutedText}"/>
+
+                                <TextBox x:Name="XBox"/>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Margin="5,0,0,0">
+
+                                <TextBlock Text="ارتفاع"
+           Style="{StaticResource MutedText}"/>
+
+                                <TextBox x:Name="HeightBox"/>
+
+                                <TextBlock Text="موقعیت Y"
+           Style="{StaticResource MutedText}"/>
+
+                                <TextBox x:Name="YBox"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                        <TextBlock Text="طبقه"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <ComboBox x:Name="ItemFloor"/>
+
+                        <Button Content="اعمال تغییرات"
+                                Style="{StaticResource AccentButton}"
+                                Click="Apply_Click"
+                                Margin="0,7,0,3"/>
+
+                        <Grid Margin="0,2,0,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
+                                    Content="قفل / بازکردن"
+                                    Click="Lock_Click"/>
+
+                            <Button Grid.Column="1"
+                                    x:Name="DuplicateButton"
+                                    Content="تکثیر"
+                                    Click="Duplicate_Click"/>
+
+                        </Grid>
+
+                        <Button x:Name="RemoveButton"
+                                Content="حذف آیتم"
+                                Click="Remove_Click"
+                                Foreground="#FF858A"
+                                Margin="2,3,2,0"/>
+
+                        <TextBlock Text="تراز کردن"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
+                                    Content="تراز افقی"
+                                    Click="AlignH_Click"/>
+
+                            <Button Grid.Column="1"
+                                    Content="تراز عمودی"
+                                    Click="AlignV_Click"/>
+
+                        </Grid>
+
+                        <Separator/>
+
+                        <TextBlock Text="رزروهای این سیستم"
+                                   Style="{StaticResource SectionTitle}"
+                                   Margin="0,5,0,5"/>
+
+                        <TextBlock x:Name="ReservationHint"
+                                   Text="رزروی برای این سیستم ثبت نشده است."
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"/>
+
+                        <ItemsControl x:Name="ReservationList"
+                                      Margin="0,8,0,0">
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border Background="{StaticResource Panel2}"
+                                            BorderBrush="{StaticResource Line}"
+                                            BorderThickness="1"
+                                            CornerRadius="6"
+                                            Padding="8"
+                                            Margin="0,0,0,6">
+
+                                        <StackPanel>
+
+                                            <DockPanel>
+
+                                                <Border Width="7"
+                                                        Height="7"
+                                                        CornerRadius="4"
+                                                        Background="{Binding Color}"
+                                                        Margin="0,0,7,0"/>
+
+                                                <TextBlock Text="{Binding Title}"
+                                                           FontWeight="SemiBold"
+                                                           FontSize="11"/>
+
+                                            </DockPanel>
+
+                                            <TextBlock Text="{Binding DateTimeText}"
+                                                       Foreground="#B5BBCB"
+                                                       FontSize="10"
+                                                       Margin="0,4,0,0"/>
+
+                                            <TextBlock Text="{Binding Customer}"
+                                                       Foreground="{StaticResource Muted}"
+                                                       FontSize="10"/>
+
+                                        </StackPanel>
+
+                                    </Border>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+
+                        <TextBlock Text="خلاصه سالن"
+                                   Style="{StaticResource SectionTitle}"/>
+
+                        <TextBlock x:Name="Summary"
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"/>
+
+                    </StackPanel>
+
+                </ScrollViewer>
+
+            </Border>
+
+            <!-- ================= MAP PANEL ================= -->
+
+            <Border Grid.Column="1"
+                    Background="#11141C"
+                    BorderBrush="{StaticResource Line}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    ClipToBounds="True">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- MAP TOOLBAR -->
+
+                    <Border Grid.Row="0"
+                            Background="{StaticResource Panel}"
+                            Padding="8"
+                            BorderBrush="{StaticResource Line}"
+                            BorderThickness="0,0,0,1">
+
+                        <Grid>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <WrapPanel VerticalAlignment="Center">
+
+                                <TextBlock Text="طبقه"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,0,5,0"/>
+
+                                <ComboBox x:Name="FloorSelector"
+                                          Width="105"
+                                          Margin="0,0,10,0"
+                                          SelectionChanged="Floor_Changed"/>
+
+                                <TextBlock Text="فیلتر"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,0,5,0"/>
+
+                                <ComboBox x:Name="TypeFilter"
+                                          Width="110"
+                                          Margin="0,0,8,0"
+                                          SelectionChanged="Filter_Changed">
+
+                                    <ComboBoxItem Content="همه نوع‌ها"
+                                                  Tag="all"
+                                                  IsSelected="True"/>
+
+                                    <ComboBoxItem Content="کامپیوتر" Tag="computer"/>
+                                    <ComboBoxItem Content="کنسول" Tag="console"/>
+                                    <ComboBoxItem Content="میز" Tag="desk"/>
+                                    <ComboBoxItem Content="دیوار" Tag="wall"/>
+                                    <ComboBoxItem Content="برچسب" Tag="label"/>
+                                    <ComboBoxItem Content="ناحیه" Tag="area"/>
+
+                                </ComboBox>
+
+                                <TextBox x:Name="SearchBox"
+                                         Width="125"
+                                         Margin="0"
+                                         ToolTip="جست‌وجوی آیتم‌ها"
+                                         TextChanged="Filter_Changed"/>
+
+                            </WrapPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+
+                                <Button Content="−"
+                                        Style="{StaticResource IconButton}"
+                                        Click="ZoomOut_Click"/>
+
+                                <TextBlock x:Name="ZoomText"
+                                           Text="100%"
+                                           FontSize="10"
+                                           Foreground="{StaticResource Muted}"
+                                           Margin="5,0"/>
+
+                                <Button Content="+"
+                                        Style="{StaticResource IconButton}"
+                                        Click="ZoomIn_Click"/>
+
+                                <Button Content="⛶"
+                                        Style="{StaticResource IconButton}"
+                                        Click="ZoomFit_Click"
+                                        ToolTip="نمایش تمام نقشه"/>
+
+                                <Button Content="▦"
+                                        Style="{StaticResource IconButton}"
+                                        Click="Grid_Click"
+                                        ToolTip="نمایش / مخفی کردن شبکه"/>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                    <!-- MAP SCROLL AREA -->
+
+                    <ScrollViewer x:Name="MapScroll"
+                                  Grid.Row="1"
+                                  FlowDirection="LeftToRight"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto"
+                                  CanContentScroll="False"
+                                  PanningMode="Both"
+                                  IsDeferredScrollingEnabled="False"
+                                  Background="#10121A"
+                                  Focusable="True"
+                                  HorizontalContentAlignment="Left"
+                                  VerticalContentAlignment="Top">
+
+                        <Canvas x:Name="MapCanvas"
+                                Width="1600"
+                                Height="1000"
+                                FlowDirection="RightToLeft"
+                                Background="#171B25"
+                                ClipToBounds="False"/>
+
+                    </ScrollViewer>
+
+                </Grid>
+
+            </Border>
+
+            <!-- ================= TOOLS PANEL ================= -->
+
+            <Border Grid.Column="2"
+                    Style="{StaticResource PanelBorder}"
+                    Margin="8,0,0,0">
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              CanContentScroll="False">
+
+                    <StackPanel>
+
+                        <TextBlock Text="ابزارها"
+                                   FontSize="14"
+                                   FontWeight="Bold"/>
+
+                        <!-- DESIGN TOOLS -->
+
+                        <TextBlock Text="طراحی سالن"
+                                   Style="{StaticResource SectionTitle}"
+                                   Margin="0,9,0,5"/>
+
+                        <Button Content="＋  دیوار"
+                                Click="AddWall_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="＋  در"
+                                Click="AddDoor_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="＋  ناحیه"
+                                Click="AddArea_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="＋  برچسب"
+                                Click="AddLabel_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="＋  امکانات و دکور"
+                                Click="AddDecoration_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Separator/>
+
+                        <!-- SELECTION AND ARRANGEMENT -->
+
+                        <TextBlock Text="انتخاب و چیدمان"
+                                   Style="{StaticResource SectionTitle}"
+                                   Margin="0,3,0,5"/>
+
+                        <Button Content="انتخاب همه"
+                                Click="SelectAll_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="گروه‌بندی"
+                                Click="Group_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="لغو گروه‌بندی"
+                                Click="Ungroup_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="چیدمان خودکار"
+                                Click="AutoArrange_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Button Content="مرتب‌سازی سیستم‌ها"
+                                Click="SortSystems_Click"
+                                HorizontalContentAlignment="Right"/>
+
+                        <Separator/>
+
+                        <!-- UNPLACED SYSTEMS -->
+
+                        <TextBlock Text="سیستم‌های قرارنگرفته"
+                                   Style="{StaticResource SectionTitle}"
+                                   Margin="0,3,0,5"/>
+
+                        <Border Background="{StaticResource Panel2}"
+                                CornerRadius="6"
+                                Padding="8"
+                                Margin="0,0,0,6">
+
+                            <TextBlock x:Name="UnplacedCountText"
+                                       Text="۰ سیستم"
+                                       Foreground="{StaticResource Muted}"
+                                       FontSize="10"/>
+
+                        </Border>
+
+                        <ItemsControl x:Name="UnplacedSystemsList">
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Button Content="{Binding Name}"
+                                            Tag="{Binding Id}"
+                                            Click="PlaceUnplaced_Click"
+                                            HorizontalContentAlignment="Right"
+                                            Margin="0,2"
+                                            Padding="8,6"/>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+
+                        <Separator/>
+
+                        <!-- MORE OPERATIONS -->
+
+                        <Expander Header="عملیات بیشتر"
+                                  IsExpanded="False">
+
+                            <StackPanel Margin="0,7,0,0">
+
+                                <Button Content="نمای کارت‌ها"
+                                        Click="Cards_Click"
+                                        HorizontalContentAlignment="Right"/>
+
+                                <Button Content="نمای نقشه"
+                                        Click="MapView_Click"
+                                        HorizontalContentAlignment="Right"/>
+
+                                <Button Content="قالب پیش‌فرض"
+                                        Click="Template_Click"
+                                        HorizontalContentAlignment="Right"/>
+
+                                <Button Content="همگام‌سازی سیستم‌ها"
+                                        Click="SyncSystems_Click"
+                                        HorizontalContentAlignment="Right"/>
+
+                                <Button Content="نمایش تمام نقشه"
+                                        Click="ZoomFit_Click"
+                                        HorizontalContentAlignment="Right"/>
+
+                                <Separator/>
+
+                                <TextBlock Text="ابزار عیب‌یابی"
+                                           Style="{StaticResource SectionTitle}"
+                                           Margin="0,5,0,5"/>
+
+                                <Button Content="گزارش عیب‌یابی API"
+                                        Style="{StaticResource DebugButton}"
+                                        Click="DebugFloorPlanApi_Click"
+                                        ToolTip="نمایش شناسه گیم‌نت و پاسخ خام API"/>
+
+                            </StackPanel>
+
+                        </Expander>
+
+                        <!-- KEYBOARD SHORTCUTS -->
+
+                        <Expander Header="راهنمای میانبرها"
+                                  IsExpanded="False">
+
+                            <StackPanel Margin="0,8,0,0">
+
+                                <TextBlock Text="Ctrl + S    ذخیره"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Ctrl + Z    بازگشت"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Ctrl + Y    تکرار"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Ctrl + A    انتخاب همه"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Delete    حذف انتخاب"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Esc    لغو انتخاب"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                                <TextBlock Text="Space + Drag    حرکت نقشه"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,3"/>
+
+                            </StackPanel>
+
+                        </Expander>
+
+                    </StackPanel>
+
+                </ScrollViewer>
+
+            </Border>
+
+        </Grid>
+
+        <!-- ================= FOOTER ================= -->
+
+        <Grid Grid.Row="3"
+              Margin="2,8,2,0">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="Footer"
+                       Text="آماده"
+                       Foreground="{StaticResource Muted}"
+                       FontSize="10"/>
+
+            <TextBlock x:Name="ServerStatus"
+                       Grid.Column="1"
+                       Text="وضعیت سرور: بررسی نشده"
+                       Foreground="{StaticResource Muted}"
+                       FontSize="10"/>
+
+        </Grid>
+
+        <!-- ================= LOADING OVERLAY ================= -->
+
+        <Border x:Name="FloorPlanLoadingOverlay"
+                Grid.RowSpan="4"
+                Background="#E60D0E13"
+                Visibility="Collapsed"
+                Panel.ZIndex="100">
+
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                <ProgressBar Width="190"
+                             Height="4"
+                             IsIndeterminate="True"
+                             Foreground="{StaticResource Accent}"
+                             Background="{StaticResource Panel2}"/>
+
+                <TextBlock Text="در حال دریافت اطلاعات سالن..."
+                           Margin="0,14,0,0"
+                           FontSize="12"
+                           Foreground="{StaticResource Text}"/>
+
+            </StackPanel>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>
