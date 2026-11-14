@@ -806,8 +806,8 @@
                                   VerticalContentAlignment="Top">
 
                         <Canvas x:Name="MapCanvas"
-                                Width="1600"
-                                Height="1000"
+                                MinWidth="1600"
+                                MinHeight="1000"
                                 FlowDirection="RightToLeft"
                                 Background="#171B25"
                                 ClipToBounds="False"/>
