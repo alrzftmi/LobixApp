@@ -524,10 +524,8 @@ namespace LobixApp.Views
                 BookingPhoneTextBox_PreviewKeyDown;
 
             BookingCustomerTextBox.TextChanged += (_, _) => BuildBookingReviewSummary();
-            BookingCustomerIdTextBox.TextChanged += (_, _) => BuildBookingReviewSummary();
             BookingPhoneTextBox.TextChanged += (_, _) => BuildBookingReviewSummary();
             BookingNoteTextBox.TextChanged += (_, _) => BuildBookingReviewSummary();
-            BookingGameTextBox.TextChanged += (_, _) => BuildBookingReviewSummary();
 
             // -------------------------------------------------
             // CREATE BOOKING
@@ -667,13 +665,11 @@ namespace LobixApp.Views
         private void ValidateCustomerFieldsForReview()
         {
             string customer = BookingCustomerTextBox.Text.Trim();
-            string customerId = BookingCustomerIdTextBox.Text.Trim();
             string phone = ConvertPersianDigitsToEnglish(BookingPhoneTextBox.Text.Trim());
 
             if (string.IsNullOrWhiteSpace(customer) &&
-                string.IsNullOrWhiteSpace(customerId) &&
                 string.IsNullOrWhiteSpace(phone))
-                throw new Exception("حداقل یکی از نام مشتری، شماره موبایل یا شناسه مشتری را وارد کنید.");
+                throw new Exception("نام یا شناسه مشتری، یا شماره موبایل را وارد کنید.");
 
             if (!string.IsNullOrWhiteSpace(phone) &&
                 (phone.Length != 11 || !phone.StartsWith("09", StringComparison.Ordinal) || !phone.All(char.IsDigit)))
@@ -698,10 +694,8 @@ namespace LobixApp.Views
                 .Where(item => item.Value > 0)
                 .Select(item => $"{GetVariationName(item.Key)} × {ToPersianNumber(item.Value)}"));
 
-            string game = BookingGameTextBox.Text.Trim();
             string customer = BookingCustomerTextBox.Text.Trim();
             string phone = ConvertPersianDigitsToEnglish(BookingPhoneTextBox.Text.Trim());
-            string customerId = BookingCustomerIdTextBox.Text.Trim();
             decimal total = _selectedQuantities.Sum(item =>
                 item.Value > 0 && _variationPrices.TryGetValue(item.Key, out decimal price)
                     ? price * item.Value * _selectedBookingHours : 0m);
@@ -711,10 +705,8 @@ namespace LobixApp.Views
                 $"ساعت ورود: {ToPersianNumber(_selectedStartHour ?? "—")}\n" +
                 $"مدت بازی: {ToPersianNumber(_selectedBookingHours)} ساعت\n" +
                 $"سیستم‌ها: {(string.IsNullOrWhiteSpace(systems) ? "انتخاب نشده" : systems)}\n" +
-                $"بازی: {(string.IsNullOrWhiteSpace(game) ? "مشخص نشده" : game)}\n" +
-                $"مشتری: {(string.IsNullOrWhiteSpace(customer) ? "—" : customer)}\n" +
+                $"نام / شناسه مشتری: {(string.IsNullOrWhiteSpace(customer) ? "—" : customer)}\n" +
                 $"موبایل: {(string.IsNullOrWhiteSpace(phone) ? "—" : ToPersianNumber(phone))}\n" +
-                $"شناسه مشتری: {(string.IsNullOrWhiteSpace(customerId) ? "—" : customerId)}\n" +
                 $"مبلغ نهایی: {ToPersianNumber(total.ToString("N0", CultureInfo.InvariantCulture))} تومان";
         }
 
@@ -4900,23 +4892,14 @@ namespace LobixApp.Views
                 string customer =
                     BookingCustomerTextBox.Text.Trim();
 
-
-                // -------------------------------------------------
-                // CUSTOMER ID
-                // -------------------------------------------------
-
-                string customerId =
-                    BookingCustomerIdTextBox.Text.Trim();
-
-                // اگر فقط ID وارد شده باشد،
-                // همان ID به عنوان نام/نمایش مشتری نیز ذخیره می‌شود.
-                if (string.IsNullOrWhiteSpace(customer))
+                if (string.IsNullOrWhiteSpace(customer) &&
+                    !string.IsNullOrWhiteSpace(BookingPhoneTextBox.Text.Trim()))
                 {
-                    if (!string.IsNullOrWhiteSpace(customerId))
-                        customer = customerId;
-                    else if (!string.IsNullOrWhiteSpace(BookingPhoneTextBox.Text.Trim()))
-                        customer = ConvertPersianDigitsToEnglish(BookingPhoneTextBox.Text.Trim());
+                    customer = ConvertPersianDigitsToEnglish(BookingPhoneTextBox.Text.Trim());
                 }
+
+                // The single customer field accepts either a display name or customer identifier.
+                // Keep the API's dedicated CustomerId property empty unless a separate ID is collected.
 
 
                 // -------------------------------------------------
@@ -4958,8 +4941,7 @@ namespace LobixApp.Views
                 // -------------------------------------------------
 
                 if (string.IsNullOrWhiteSpace(customer) &&
-                    string.IsNullOrWhiteSpace(phone) &&
-                    string.IsNullOrWhiteSpace(customerId))
+                    string.IsNullOrWhiteSpace(phone))
                 {
                     throw new Exception(
                         "حداقل یکی از نام، شماره موبایل یا ID مشتری را وارد کنید."
@@ -4973,16 +4955,6 @@ namespace LobixApp.Views
 
                 string note =
                     BookingNoteTextBox.Text.Trim();
-
-                string selectedGame = BookingGameTextBox.Text.Trim();
-                if (!string.IsNullOrWhiteSpace(selectedGame))
-                {
-                    string gameNote = "بازی انتخاب‌شده: " + selectedGame;
-                    note = string.IsNullOrWhiteSpace(note) ? gameNote : note + Environment.NewLine + gameNote;
-                    if (note.Length > 1000)
-                        throw new Exception("مجموع توضیحات و نام بازی نباید بیشتر از ۱۰۰۰ نویسه باشد.");
-                }
-
 
                 // -------------------------------------------------
                 // SYSTEMS
@@ -5107,7 +5079,7 @@ namespace LobixApp.Views
                             customer,
 
                         CustomerId =
-                            customerId,
+                            string.Empty,
 
                         Phone =
                             phone,
@@ -5219,13 +5191,8 @@ namespace LobixApp.Views
                 // -------------------------------------------------
 
                 BookingCustomerTextBox.Clear();
-
-                BookingCustomerIdTextBox.Clear();
-
                 BookingPhoneTextBox.Clear();
-
                 BookingNoteTextBox.Clear();
-                BookingGameTextBox.Clear();
 
                 _selectedQuantities.Clear();
                 foreach (HashSet<string> selectedNumbers in _selectedSystemNumbers.Values)
@@ -5668,90 +5635,67 @@ namespace LobixApp.Views
             if (string.IsNullOrWhiteSpace(_selectedStartHour) ||
                 !TryGetHourNumber(_selectedStartHour, out int selectedHour))
             {
-                LiveCapacityTotalsTextBlock.Text =
-                    "برای مشاهده ظرفیت، ابتدا یک ساعت انتخاب کن.";
+                LiveCapacitySummaryPanel.Visibility = Visibility.Collapsed;
+                LiveCapacityTotalsTextBlock.Text = "برای مشاهده ظرفیت، ابتدا یک ساعت انتخاب کن.";
                 return;
             }
 
-            int totalCapacity = 0;
-            int totalReserved = 0;
-            int totalAvailable = 0;
-            int loadedSystems = 0;
-
+            int totalCapacity = 0, totalReserved = 0, totalAvailable = 0, loadedSystems = 0;
             foreach (int variationId in _variationNames.Keys.OrderBy(id => id))
             {
-                if (!_availability.TryGetValue(
-                        variationId,
-                        out AvailabilityResponse? response) ||
-                    response?.Availability?.Hours == null)
-                {
-                    continue;
-                }
-
-
-                AvailabilityHour? hourInfo =
-                    response.Availability.Hours.FirstOrDefault(
-                        hour => hour.Hour == selectedHour);
-
-
-                if (hourInfo == null)
-                    continue;
+                if (!_availability.TryGetValue(variationId, out AvailabilityResponse? response) ||
+                    response?.Availability?.Hours == null) continue;
+                AvailabilityHour? hourInfo = response.Availability.Hours.FirstOrDefault(hour => hour.Hour == selectedHour);
+                if (hourInfo == null) continue;
 
                 int capacity = Math.Max(0, hourInfo.Capacity);
                 int reserved = Math.Max(0, hourInfo.Reserved);
                 int available = Math.Max(0, hourInfo.Available);
-
+                int freeCount = hourInfo.Bookable ? available : 0;
                 totalCapacity += capacity;
                 totalReserved += reserved;
-                totalAvailable += available;
+                totalAvailable += freeCount;
                 loadedSystems++;
 
-                bool unavailable = !hourInfo.Bookable || available <= 0;
-
-                Border itemBorder = new Border
+                var card = new Border
                 {
-                    Background = new SolidColorBrush(Color.FromRgb(35, 35, 49)),
-                    CornerRadius = new CornerRadius(8),
-                    Padding = new Thickness(12, 9, 12, 9),
-                    Margin = new Thickness(0, 0, 0, 7)
+                    Width = 158, MinHeight = 48, Margin = new Thickness(0, 7, 7, 0),
+                    Padding = new Thickness(10, 7, 10, 7), CornerRadius = new CornerRadius(8),
+                    BorderThickness = new Thickness(1),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(91, 43, 53)),
+                    Background = new SolidColorBrush(Color.FromRgb(50, 29, 36))
                 };
-
-                TextBlock itemText = new TextBlock
+                var content = new Grid();
+                content.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                content.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                content.Children.Add(new TextBlock
                 {
-                    Text =
-                        $"{GetVariationName(variationId)} | " +
-                        $"{(!hourInfo.Bookable ? "غیرقابل رزرو" : available <= 0 ? "تکمیل ظرفیت" : "ظرفیت موجود")}\n" +
-                        $"ظرفیت: {ToPersianNumber(capacity)}   " +
-                        $"رزروشده: {ToPersianNumber(reserved)}   " +
-                        $"باقی‌مانده: {ToPersianNumber(available)}",
-                    Foreground = new SolidColorBrush(
-                        unavailable
-                            ? Color.FromRgb(255, 126, 126)
-                            : Color.FromRgb(105, 214, 160)),
-                    FontSize = 12,
-                    TextWrapping = TextWrapping.Wrap,
-                    FlowDirection = FlowDirection.RightToLeft
+                    Text = GetVariationName(variationId), Foreground = Brushes.White, FontSize = 11,
+                    FontWeight = FontWeights.SemiBold, VerticalAlignment = VerticalAlignment.Center,
+                    TextTrimming = TextTrimming.CharacterEllipsis
+                });
+                var count = new TextBlock
+                {
+                    Text = ToPersianNumber(freeCount) + " خالی",
+                    Foreground = new SolidColorBrush(Color.FromRgb(255, 137, 146)),
+                    FontSize = 12, FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(8, 0, 0, 0)
                 };
-
-                itemBorder.Child = itemText;
-                LiveCapacitySummaryPanel.Children.Add(itemBorder);
+                Grid.SetColumn(count, 1);
+                content.Children.Add(count);
+                card.Child = content;
+                LiveCapacitySummaryPanel.Children.Add(card);
             }
 
             if (loadedSystems == 0)
             {
-                LiveCapacityTotalsTextBlock.Text =
-                    "برای این ساعت اطلاعات ظرفیت دریافت نشده است.";
+                LiveCapacitySummaryPanel.Visibility = Visibility.Collapsed;
+                LiveCapacityTotalsTextBlock.Text = "برای این ساعت اطلاعات ظرفیت دریافت نشده است.";
                 return;
             }
-
-            LiveCapacityTotalsTextBlock.Text =
-                $"ساعت: {ToPersianNumber(selectedHour)} | " +
-                $"سیستم‌های بررسی‌شده: {ToPersianNumber(loadedSystems)}\n" +
-                $"مجموع ظرفیت: {ToPersianNumber(totalCapacity)} | " +
-                $"رزروشده: {ToPersianNumber(totalReserved)} | " +
-                $"باقی‌مانده: {ToPersianNumber(totalAvailable)}";
+            LiveCapacitySummaryPanel.Visibility = Visibility.Visible;
+            LiveCapacityTotalsTextBlock.Text = $"ساعت {ToPersianNumber(selectedHour)} · {ToPersianNumber(totalAvailable)} سیستم آزاد از {ToPersianNumber(totalCapacity)}";
         }
-
 
 
     }
