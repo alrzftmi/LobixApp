@@ -120,7 +120,7 @@ namespace LobixApp.Views
         // زمان پایان به دقیقه از ابتدای روز
         private int? _selectedEndMinuteOfDay;
 
-        // مدت واقعی رزرو بر حسب دقیقه
+        // مدت رزرو بر حسب دقیقه
         private int _selectedDurationMinutes = 60;
 
         // متغیرهای سازگاری با منطق ساعت‌محور فعلی
@@ -690,9 +690,23 @@ namespace LobixApp.Views
             if (BookingReviewSummaryTextBlock == null)
                 return;
 
-            string systems = string.Join("، ", _selectedQuantities
-                .Where(item => item.Value > 0)
-                .Select(item => $"{GetVariationName(item.Key)} × {ToPersianNumber(item.Value)}"));
+            var selectedGroups = _selectedSystemNumbers
+                .Where(item => item.Value != null && item.Value.Count > 0)
+                .OrderBy(item => item.Key)
+                .Select(item =>
+                    $"{GetVariationName(item.Key)}: " +
+                    string.Join("، ", item.Value
+                        .OrderBy(number => number, StringComparer.OrdinalIgnoreCase)
+                        .Select(number => ToPersianNumber(number))))
+                .ToList();
+
+            string systems = string.Join(" | ", selectedGroups);
+            string hours = "—";
+            if (TryGetHourNumber(_selectedStartHour ?? string.Empty, out int startHour))
+            {
+                hours = string.Join("، ", Enumerable.Range(0, Math.Max(1, _selectedBookingHours))
+                    .Select(offset => ToPersianNumber((startHour + offset).ToString("00", CultureInfo.InvariantCulture))));
+            }
 
             string customer = BookingCustomerTextBox.Text.Trim();
             string phone = ConvertPersianDigitsToEnglish(BookingPhoneTextBox.Text.Trim());
@@ -702,9 +716,9 @@ namespace LobixApp.Views
 
             BookingReviewSummaryTextBlock.Text =
                 $"تاریخ: {PersianDateTextBlock.Text}\n" +
-                $"ساعت ورود: {ToPersianNumber(_selectedStartHour ?? "—")}\n" +
-                $"مدت بازی: {ToPersianNumber(_selectedBookingHours)} ساعت\n" +
-                $"سیستم‌ها: {(string.IsNullOrWhiteSpace(systems) ? "انتخاب نشده" : systems)}\n" +
+                $"سیستم‌های انتخاب‌شده: {(string.IsNullOrWhiteSpace(systems) ? "انتخاب نشده" : systems)}\n" +
+                $"ساعت‌های رزرو: {hours}\n" +
+                $"مدت رزرو: {ToPersianNumber(_selectedBookingHours)} ساعت\n" +
                 $"نام / شناسه مشتری: {(string.IsNullOrWhiteSpace(customer) ? "—" : customer)}\n" +
                 $"موبایل: {(string.IsNullOrWhiteSpace(phone) ? "—" : ToPersianNumber(phone))}\n" +
                 $"مبلغ نهایی: {ToPersianNumber(total.ToString("N0", CultureInfo.InvariantCulture))} تومان";
