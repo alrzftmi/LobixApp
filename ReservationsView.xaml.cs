@@ -203,6 +203,7 @@ namespace LobixApp.Views
                 await LoadFloorMapAsync();
             else
                 RenderLiveFloorMap();
+            UpdateLiveMapZoom();
         }
 
         private void ReservationsView_Unloaded(
@@ -2133,6 +2134,14 @@ namespace LobixApp.Views
             SetActive(TodayDateButton, selected == DateTime.Today);
             SetActive(TomorrowDateButton, selected == DateTime.Today.AddDays(1));
             SetActive(DayAfterTomorrowDateButton, selected == DateTime.Today.AddDays(2));
+
+            bool canChangeDate = !_guidedBookingMode;
+            if (TodayDateButton != null) TodayDateButton.IsEnabled = canChangeDate;
+            if (TomorrowDateButton != null) TomorrowDateButton.IsEnabled = canChangeDate;
+            if (DayAfterTomorrowDateButton != null) DayAfterTomorrowDateButton.IsEnabled = canChangeDate;
+            if (PreviousDayButton != null) PreviousDayButton.IsEnabled = canChangeDate;
+            if (NextDayButton != null) NextDayButton.IsEnabled = canChangeDate;
+            if (DatePickerButton != null) DatePickerButton.IsEnabled = canChangeDate;
         }
 
         // =========================================================
@@ -3213,7 +3222,7 @@ namespace LobixApp.Views
                         TextAlignment = TextAlignment.Center,
                         TextWrapping = TextWrapping.Wrap,
                         TextTrimming = TextTrimming.CharacterEllipsis,
-                        MaxHeight = Math.Max(24, Math.Min(38, item.Height * 0.42)),
+                        MaxHeight = Math.Max(28, Math.Min(40, Math.Max(72, item.Height) * 0.42)),
                         Margin = new Thickness(1, 2, 1, 0),
                         Padding = new Thickness(2, 1, 2, 1),
                         MaxWidth = Math.Max(30, item.Width - 8)
@@ -5738,6 +5747,7 @@ namespace LobixApp.Views
 
                         _liveMapMultiSelectMode = false;
                         _guidedBookingMode = false;
+                        UpdateDateQuickFilterButtons();
 
                         if (LiveMapMultiSelectButton != null)
                         {
