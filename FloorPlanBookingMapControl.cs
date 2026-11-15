@@ -34,7 +34,10 @@ public sealed class FloorPlanBookingMapControl : UserControl
     };
     private ScrollViewer? _mapScrollViewer;
     private double _mapZoom = 1.0;
-    private readonly TextBlock _zoomPercent = new() { Text = "۱۰۰٪", MinWidth = 48, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White, FontSize = 11, Margin = new Thickness(0, 0, 9, 0) };
+    private readonly TextBlock _zoomPercent = new() { Text = "۱۰۰٪", MinWidth = 48, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White, FontSize = 11, Margin = new Thickness(10, 0, 10, 0) };
+    private readonly ComboBox _floorSelector = new() { Width = 118, Height = 30, Padding = new Thickness(7, 4, 7, 4), FontSize = 11, FontFamily = new System.Windows.Media.FontFamily("Peyda"), Foreground = Brushes.White, Background = new SolidColorBrush(Color.FromRgb(27, 30, 41)), BorderBrush = new SolidColorBrush(Color.FromRgb(52, 55, 68)), BorderThickness = new Thickness(1), ToolTip = "انتخاب طبقه سالن", VerticalContentAlignment = VerticalAlignment.Center };
+    private string _selectedFloor = "همکف";
+    private bool _updatingFloorSelector;
     private readonly TextBlock _status = new() { Margin = new Thickness(8), Foreground = Brushes.Gainsboro };
     private readonly Dictionary<string, (string Number, int VariationId, string Category, bool Active)> _systems = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _selectedNumbers = new(StringComparer.OrdinalIgnoreCase);
@@ -78,16 +81,43 @@ public sealed class FloorPlanBookingMapControl : UserControl
         header.Children.Add(new TextBlock { Text = "نقشه سالن", FontSize = 15, FontWeight = FontWeights.Bold, Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center });
 
         var actions = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
-        var zoomOut = new Button { Content = "−", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
+        _floorSelector.Resources[SystemColors.WindowBrushKey] = new SolidColorBrush(Color.FromRgb(27, 30, 41));
+        _floorSelector.Resources[SystemColors.ControlBrushKey] = new SolidColorBrush(Color.FromRgb(27, 30, 41));
+        _floorSelector.ItemContainerStyle = new Style(typeof(ComboBoxItem))
+        {
+            Setters =
+            {
+                new Setter(Control.ForegroundProperty, Brushes.White),
+                new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(27, 30, 41))),
+                new Setter(Control.PaddingProperty, new Thickness(9, 7, 9, 7)),
+                new Setter(Control.FontFamilyProperty, new System.Windows.Media.FontFamily("Peyda"))
+            }
+        };
+        _floorSelector.ItemContainerStyle.Triggers.Add(new Trigger
+        {
+            Property = ComboBoxItem.IsHighlightedProperty,
+            Value = true,
+            Setters = { new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(69, 37, 45))), new Setter(Control.ForegroundProperty, Brushes.White) }
+        });
+        _floorSelector.SelectionChanged += async (_, _) =>
+        {
+            if (_updatingFloorSelector || _floorSelector.SelectedItem is not string floor || floor == _selectedFloor)
+                return;
+            _selectedFloor = floor;
+            _loadTask = LoadMapAsync();
+            await _loadTask;
+        };
+        actions.Children.Add(_floorSelector);
+        var zoomOut = new Button { Content = "−", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(2, 0, 2, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
         _zoomPercent.Text = "۱۰۰٪";
-        var zoomIn = new Button { Content = "+", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
+        var zoomIn = new Button { Content = "+", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(2, 0, 2, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
         zoomOut.Click += (_, _) => ChangeZoom(1.0 / 1.15);
         zoomIn.Click += (_, _) => ChangeZoom(1.15);
         actions.Children.Add(zoomOut);
         actions.Children.Add(_zoomPercent);
         actions.Children.Add(zoomIn);
 
-        var refresh = new Button { Content = "بازخوانی", Padding = new Thickness(10, 4, 10, 4), Margin = new Thickness(3, 0, 0, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 11 };
+        var refresh = new Button { Content = "بازخوانی", Padding = new Thickness(10, 4, 10, 4), Margin = new Thickness(12, 0, 0, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 11 };
         refresh.Click += async (_, _) => { _loadTask = LoadMapAsync(); await _loadTask; };
         actions.Children.Add(refresh);
         Grid.SetColumn(actions, 1);
@@ -318,9 +348,34 @@ public sealed class FloorPlanBookingMapControl : UserControl
                     return;
                 }
                 UpdateCanvasSize(objects);
+
+                var floorNames = objects.EnumerateArray()
+                    .Select(item => Read(item, "floor", "Floor").Trim())
+                    .Select(value => string.IsNullOrWhiteSpace(value) ? "همکف" : value)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .OrderBy(value => value, StringComparer.CurrentCulture)
+                    .ToList();
+                if (floorNames.Count == 0)
+                    floorNames.Add("همکف");
+
+                _updatingFloorSelector = true;
+                _floorSelector.Items.Clear();
+                foreach (string floorName in floorNames)
+                    _floorSelector.Items.Add(floorName);
+                if (!floorNames.Contains(_selectedFloor, StringComparer.OrdinalIgnoreCase))
+                    _selectedFloor = floorNames[0];
+                _floorSelector.SelectedItem = floorNames.First(value => value.Equals(_selectedFloor, StringComparison.OrdinalIgnoreCase));
+                _updatingFloorSelector = false;
+
                 int count = 0;
                 foreach (var item in objects.EnumerateArray())
                 {
+                    string itemFloor = Read(item, "floor", "Floor").Trim();
+                    if (string.IsNullOrWhiteSpace(itemFloor))
+                        itemFloor = "همکف";
+                    if (!itemFloor.Equals(_selectedFloor, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
                     string type = Read(item, "type", "Type");
                     string label = Read(item, "label", "name", "Name");
                     string systemId = Read(item, "system_id", "SystemId", "systemId").Trim();
@@ -369,15 +424,17 @@ public sealed class FloorPlanBookingMapControl : UserControl
                             ? (string.IsNullOrWhiteSpace(label) ? "سیستم" : label)
                             : resolvedCategory;
                         string displayNumber = resolvedNumber.Trim().TrimStart('#', '＃');
-                        foreach (string separator in new[] { "#", "＃", " -" , "-" })
+                        // Show category on the first line and the number once below it.
+                        // Remove repeated suffixes such as VIP#1, VIP-1, VIP 1 or VIP1.
+                        if (displayNumber.Length > 0 &&
+                            displayTitle.EndsWith(displayNumber, StringComparison.OrdinalIgnoreCase))
                         {
-                            string suffix = separator.Trim() + displayNumber;
-                            if (displayNumber.Length > 0 &&
-                                displayTitle.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
-                            {
-                                displayTitle = displayTitle.Substring(0, displayTitle.Length - suffix.Length).Trim();
-                                break;
-                            }
+                            string prefix = displayTitle.Substring(0, displayTitle.Length - displayNumber.Length)
+                                .TrimEnd()
+                                .TrimEnd('#', '＃', '-', '–', '—')
+                                .TrimEnd();
+                            if (prefix.Length > 0)
+                                displayTitle = prefix;
                         }
                         double titleFontSize = Math.Clamp(Math.Min(w / 7.0, h * 0.25), 8.0, 13.0);
                         double numberFontSize = Math.Clamp(Math.Min(w / 5.8, h * 0.31), 9.0, 15.0);
