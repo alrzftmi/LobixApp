@@ -638,11 +638,11 @@
 
                                     <Button x:Name="CreateRealBookingButton"
                                             Grid.Column="2"
-                                            Content="ثبت رزرو"
+                                            Content="بررسی نهایی"
                                             Style="{StaticResource PrimaryButton}"
                                             MinWidth="112"
                                             MinHeight="38"
-                                            Click="CreateRealBookingButton_Click"/>
+                                            Click="OpenBookingReview_Click"/>
                                 </Grid>
                             </Grid>
                         </Grid>
