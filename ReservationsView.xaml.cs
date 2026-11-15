@@ -916,7 +916,7 @@ namespace LobixApp.Views
                 Width = totalWidth,
                 Height = totalHeight,
                 Fill = new SolidColorBrush(
-                    Color.FromRgb(17, 17, 22) // #111116
+                    Color.FromRgb(13, 14, 19) // #111116
                 )
             };
 
@@ -935,11 +935,11 @@ namespace LobixApp.Views
                 Height = HeaderHeight,
 
                 Background = new SolidColorBrush(
-                    Color.FromRgb(27, 27, 36) // #1B1B24
+                    Color.FromRgb(21, 23, 32) // #1B1B24
                 ),
 
                 BorderBrush = new SolidColorBrush(
-                    Color.FromRgb(55, 55, 68) // خطوط مرزی
+                    Color.FromRgb(41, 45, 58) // خطوط مرزی
                 ),
 
                 BorderThickness = new Thickness(0, 0, 0, 1)
@@ -961,7 +961,7 @@ namespace LobixApp.Views
                 FontWeight = FontWeights.SemiBold,
 
                 Foreground = new SolidColorBrush(
-                    Color.FromRgb(244, 244, 248) // #F4F4F8
+                    Color.FromRgb(242, 243, 247) // #F4F4F8
                 ),
 
                 TextAlignment = TextAlignment.Center,
@@ -985,7 +985,7 @@ namespace LobixApp.Views
                     Height = 5000,
 
                     Fill = new SolidColorBrush(
-                        Color.FromRgb(55, 55, 68)
+                        Color.FromRgb(41, 45, 58)
                     )
                 };
 
@@ -1005,7 +1005,7 @@ namespace LobixApp.Views
                     FontWeight = FontWeights.SemiBold,
 
                     Foreground = new SolidColorBrush(
-                        Color.FromRgb(244, 244, 248)
+                        Color.FromRgb(242, 243, 247)
                     ),
 
                     TextAlignment = TextAlignment.Center,
@@ -1037,8 +1037,8 @@ namespace LobixApp.Views
 
                     Fill = new SolidColorBrush(
                         index % 2 == 0
-                            ? Color.FromRgb(27, 27, 36)  // #1B1B24
-                            : Color.FromRgb(32, 32, 42)  // #20202A
+                            ? Color.FromRgb(21, 23, 32)  // #1B1B24
+                            : Color.FromRgb(27, 30, 41)  // #20202A
                     )
                 };
 
@@ -1054,7 +1054,7 @@ namespace LobixApp.Views
                     Height = 1,
 
                     Fill = new SolidColorBrush(
-                        Color.FromRgb(55, 55, 68)
+                        Color.FromRgb(41, 45, 58)
                     )
                 };
 
@@ -1072,11 +1072,11 @@ namespace LobixApp.Views
                     Height = RowHeight,
 
                     Background = new SolidColorBrush(
-                        Color.FromRgb(27, 27, 36)
+                        Color.FromRgb(21, 23, 32)
                     ),
 
                     BorderBrush = new SolidColorBrush(
-                        Color.FromRgb(55, 55, 68)
+                        Color.FromRgb(41, 45, 58)
                     ),
 
                     BorderThickness = new Thickness(0, 0, 1, 0)
@@ -1099,7 +1099,7 @@ namespace LobixApp.Views
                     FontWeight = FontWeights.SemiBold,
 
                     Foreground = new SolidColorBrush(
-                        Color.FromRgb(244, 244, 248)
+                        Color.FromRgb(242, 243, 247)
                     ),
 
                     TextAlignment = TextAlignment.Center,
@@ -2121,11 +2121,11 @@ namespace LobixApp.Views
             {
                 if (button == null) return;
                 button.Background = new SolidColorBrush(active
-                    ? Color.FromRgb(220, 55, 66)
-                    : Color.FromRgb(35, 37, 47));
+                    ? Color.FromRgb(219, 60, 69)
+                    : Color.FromRgb(27, 30, 41));
                 button.BorderBrush = new SolidColorBrush(active
                     ? Color.FromRgb(245, 95, 104)
-                    : Color.FromRgb(68, 71, 84));
+                    : Color.FromRgb(41, 45, 58));
                 button.Foreground = Brushes.White;
                 button.FontWeight = active ? FontWeights.Bold : FontWeights.Medium;
             }
@@ -2804,7 +2804,7 @@ namespace LobixApp.Views
             {
                 Width = 1600,
                 Height = 1000,
-                Background = new SolidColorBrush(Color.FromRgb(16, 17, 23))
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19))
             };
 
             LiveMapScrollViewer.Content = placeholder;
@@ -2948,8 +2948,8 @@ namespace LobixApp.Views
             {
                 Width = target.Width,
                 Height = HeaderHeight,
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 68)),
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
                 BorderThickness = new Thickness(0, 0, 0, 1)
             });
             var systemsTitle = new TextBlock
@@ -2989,7 +2989,7 @@ namespace LobixApp.Views
                 {
                     Width = 1,
                     Height = HeaderHeight,
-                    Fill = new SolidColorBrush(Color.FromRgb(55, 55, 68))
+                    Fill = new SolidColorBrush(Color.FromRgb(41, 45, 58))
                 };
                 Canvas.SetLeft(separator, left);
                 Canvas.SetTop(separator, 0);
@@ -3075,7 +3075,7 @@ namespace LobixApp.Views
                 else free++;
 
                 Color fillColor = isDisabled
-                    ? Color.FromRgb(65, 67, 78)
+                    ? Color.FromRgb(41, 45, 58)
                     : isReserved
                         ? Color.FromRgb(116, 35, 43)
                         : Color.FromRgb(22, 112, 75);
@@ -4032,7 +4032,7 @@ namespace LobixApp.Views
                 Owner = Window.GetWindow(this),
                 FlowDirection = FlowDirection.RightToLeft,
                 ResizeMode = ResizeMode.NoResize,
-                Background = new SolidColorBrush(Color.FromRgb(19, 20, 28)),
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
                 FontFamily = FindResource("Peyda") as FontFamily
             };
 
@@ -4049,7 +4049,7 @@ namespace LobixApp.Views
             {
                 Text = "پس از تأیید، نقشه اصلی سالن برای انتخاب سیستم‌های آزاد فعال می‌شود.",
                 FontSize = 12,
-                Foreground = new SolidColorBrush(Color.FromRgb(166, 171, 188)),
+                Foreground = new SolidColorBrush(Color.FromRgb(146, 152, 170)),
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 18)
             });
@@ -4062,7 +4062,7 @@ namespace LobixApp.Views
                 Padding = new Thickness(14, 0, 14, 0),
                 Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
                 Foreground = Brushes.White,
-                BorderBrush = new SolidColorBrush(Color.FromRgb(75, 79, 96)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
                 BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 14
@@ -4093,14 +4093,14 @@ namespace LobixApp.Views
                     FontSize = 14,
                     Foreground = Brushes.White,
                     Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(75, 79, 96)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
                     ItemContainerStyle = itemStyle,
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     VerticalContentAlignment = VerticalAlignment.Center
                 };
                 combo.Resources[SystemColors.WindowBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
                 combo.Resources[SystemColors.ControlBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
-                combo.Resources[SystemColors.HighlightBrushKey] = new SolidColorBrush(Color.FromRgb(220, 55, 66));
+                combo.Resources[SystemColors.HighlightBrushKey] = new SolidColorBrush(Color.FromRgb(219, 60, 69));
                 combo.Resources[SystemColors.HighlightTextBrushKey] = Brushes.White;
 
                 for (int h = first; h <= last; h++)
@@ -4238,8 +4238,8 @@ namespace LobixApp.Views
                     ResizeMode = ResizeMode.CanResize,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     FlowDirection = FlowDirection.RightToLeft,
-                    Background = new SolidColorBrush(Color.FromRgb(17, 17, 22)),
-                    Foreground = new SolidColorBrush(Color.FromRgb(244, 244, 248)),
+                    Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
+                    Foreground = new SolidColorBrush(Color.FromRgb(242, 243, 247)),
                     FontFamily = FindResource("Peyda") as FontFamily
                 };
 
@@ -4455,7 +4455,7 @@ namespace LobixApp.Views
             {
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-                Background = new SolidColorBrush(Color.FromRgb(17, 17, 22)),
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
                 Content = root
             };
 
@@ -4593,7 +4593,7 @@ namespace LobixApp.Views
                 FlowDirection = FlowDirection.RightToLeft,
 
                 Background = new SolidColorBrush(
-                    Color.FromRgb(27, 27, 36)
+                    Color.FromRgb(21, 23, 32)
                 ),
 
                 ResizeMode = ResizeMode.NoResize
@@ -4668,13 +4668,13 @@ namespace LobixApp.Views
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
                 Foreground = new SolidColorBrush(
-                    Color.FromRgb(244, 244, 248)
+                    Color.FromRgb(242, 243, 247)
                 ),
                 Background = new SolidColorBrush(
-                    Color.FromRgb(32, 32, 42)
+                    Color.FromRgb(27, 30, 41)
                 ),
                 BorderBrush = new SolidColorBrush(
-                    Color.FromRgb(52, 52, 66)
+                    Color.FromRgb(41, 45, 58)
                 ),
                 BorderThickness = new Thickness(1),
                 Cursor = System.Windows.Input.Cursors.Hand
@@ -4713,10 +4713,10 @@ namespace LobixApp.Views
             {
                 Height = 38,
                 Background = new SolidColorBrush(
-                    Color.FromRgb(32, 32, 42)
+                    Color.FromRgb(27, 30, 41)
                 ),
                 Foreground = new SolidColorBrush(
-                    Color.FromRgb(244, 244, 248)
+                    Color.FromRgb(242, 243, 247)
                 ),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
@@ -4749,11 +4749,11 @@ namespace LobixApp.Views
                 Height = 38,
 
                 Background = new SolidColorBrush(
-                    Color.FromRgb(32, 32, 42)
+                    Color.FromRgb(27, 30, 41)
                 ),
 
                 Foreground = new SolidColorBrush(
-                    Color.FromRgb(244, 244, 248)
+                    Color.FromRgb(242, 243, 247)
                 ),
 
                 FontFamily = FindResource("Peyda") as FontFamily,
@@ -4774,7 +4774,7 @@ namespace LobixApp.Views
                 Text = "ابتدا نوع سیستم را انتخاب کنید.",
 
                 Foreground = new SolidColorBrush(
-                    Color.FromRgb(170, 170, 185)
+                    Color.FromRgb(146, 152, 170)
                 ),
 
                 FontFamily = FindResource("Peyda") as FontFamily,
@@ -4798,7 +4798,7 @@ namespace LobixApp.Views
                     $"حالت رزرو گروهی فعال است؛ {multiSystems.Count} دستگاه انتخاب شده.";
 
                 systemNumberHint.Foreground =
-                    new SolidColorBrush(Color.FromRgb(168, 130, 255));
+                    new SolidColorBrush(Color.FromRgb(219, 60, 69));
 
                 TextBlock selectedSystemsText = new TextBlock
                 {
@@ -4823,7 +4823,7 @@ namespace LobixApp.Views
                     ),
 
                     Foreground = new SolidColorBrush(
-                        Color.FromRgb(220, 220, 235)
+                        Color.FromRgb(242, 243, 247)
                     ),
 
                     FontFamily = FindResource("Peyda") as FontFamily,
@@ -5194,7 +5194,7 @@ namespace LobixApp.Views
             TextBlock durationSummary = new TextBlock
             {
                 Text = string.Empty,
-                Foreground = new SolidColorBrush(Color.FromRgb(168, 130, 255)),
+                Foreground = new SolidColorBrush(Color.FromRgb(219, 60, 69)),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 12,
                 Margin = new Thickness(0, 4, 0, 8)
@@ -6135,8 +6135,8 @@ namespace LobixApp.Views
                 ResizeMode = ResizeMode.NoResize,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 FlowDirection = FlowDirection.RightToLeft,
-                Background = new SolidColorBrush(Color.FromRgb(17, 17, 22)),
-                Foreground = new SolidColorBrush(Color.FromRgb(244, 244, 248)),
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
+                Foreground = new SolidColorBrush(Color.FromRgb(242, 243, 247)),
                 FontFamily = FindResource("Peyda") as FontFamily
             };
 
@@ -6149,7 +6149,7 @@ namespace LobixApp.Views
 
             var root = new Grid
             {
-                Background = new SolidColorBrush(Color.FromRgb(17, 17, 22))
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19))
             };
 
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(58) });
@@ -6159,7 +6159,7 @@ namespace LobixApp.Views
             // نوار بالای پنجره
             var toolbar = new Grid
             {
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
                 Margin = new Thickness(0),
             };
 
@@ -6199,8 +6199,8 @@ namespace LobixApp.Views
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
                 Foreground = Brushes.White,
-                Background = new SolidColorBrush(Color.FromRgb(32, 32, 42)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(65, 65, 80)),
+                Background = new SolidColorBrush(Color.FromRgb(27, 30, 41)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
                 BorderThickness = new Thickness(1),
                 ToolTip = "جست‌وجو در نام، موبایل، کد رزرو یا سیستم"
             };
@@ -6243,7 +6243,7 @@ namespace LobixApp.Views
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 CanContentScroll = false,
                 PanningMode = PanningMode.Both,
-                Background = new SolidColorBrush(Color.FromRgb(17, 17, 22))
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19))
             };
 
             fullscreenScrollViewer.Resources.Add(
@@ -6257,7 +6257,7 @@ namespace LobixApp.Views
             {
                 Width = TimelineCanvas.Width,
                 Height = HeaderHeight,
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36))
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32))
             };
             var fullscreenHeaderScrollViewer = new ScrollViewer
             {
@@ -6265,7 +6265,7 @@ namespace LobixApp.Views
                 VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
                 CanContentScroll = false,
                 IsHitTestVisible = false,
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
                 Content = fullscreenHeaderCanvas
             };
             Grid.SetRow(fullscreenHeaderScrollViewer, 1);
@@ -6372,7 +6372,7 @@ namespace LobixApp.Views
 
                     Foreground =
     new SolidColorBrush(
-        Color.FromRgb(244, 244, 248)
+        Color.FromRgb(242, 243, 247)
     ),
 
                     Margin =
@@ -6434,7 +6434,7 @@ namespace LobixApp.Views
 
                     Foreground =
                         new SolidColorBrush(
-                            Color.FromRgb(165, 167, 181)
+                            Color.FromRgb(146, 152, 170)
                         )
                 };
 
@@ -6454,7 +6454,7 @@ namespace LobixApp.Views
 
                     Foreground =
                         new SolidColorBrush(
-                            Color.FromRgb(244, 244, 248)
+                            Color.FromRgb(242, 243, 247)
                         ),
 
                     TextWrapping =
@@ -6472,8 +6472,8 @@ namespace LobixApp.Views
 
             panel.Children.Add(new Border
             {
-                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(52, 52, 66)),
+                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(10),
                 Padding = new Thickness(12, 10, 12, 10),
@@ -6508,17 +6508,17 @@ namespace LobixApp.Views
 
                 Background =
     new SolidColorBrush(
-        Color.FromRgb(32, 32, 42)
+        Color.FromRgb(27, 30, 41)
     ),
 
                 Foreground =
     new SolidColorBrush(
-        Color.FromRgb(244, 244, 248)
+        Color.FromRgb(242, 243, 247)
     ),
 
                 BorderBrush =
     new SolidColorBrush(
-        Color.FromRgb(52, 52, 66)
+        Color.FromRgb(41, 45, 58)
     )
             };
         }
@@ -6534,7 +6534,7 @@ namespace LobixApp.Views
                     Color.FromRgb(35, 35, 45)
                 ),
                 BorderBrush = new SolidColorBrush(
-                    Color.FromRgb(65, 65, 80)
+                    Color.FromRgb(41, 45, 58)
                 ),
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(8)
@@ -6597,7 +6597,7 @@ namespace LobixApp.Views
 
                     Foreground =
     new SolidColorBrush(
-        Color.FromRgb(176, 176, 191)
+        Color.FromRgb(146, 152, 170)
     ),
 
                     Margin =
