@@ -615,7 +615,7 @@ namespace LobixApp.Views
 
                     case 2:
                         if (!_durationExplicitlySelected)
-                            throw new Exception("مدت بازی را انتخاب کنید.");
+                            throw new Exception("مدت رزرو را انتخاب کنید.");
 
                         string? durationError = GetDurationValidationError(_selectedBookingHours);
                         if (!string.IsNullOrWhiteSpace(durationError))
@@ -689,7 +689,7 @@ namespace LobixApp.Views
                 throw new Exception("ساعت ورود انتخاب نشده است.");
 
             if (!_durationExplicitlySelected)
-                throw new Exception("مدت بازی انتخاب نشده است.");
+                throw new Exception("مدت رزرو انتخاب نشده است.");
         }
 
         private void BuildBookingReviewSummary()
