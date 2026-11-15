@@ -636,7 +636,7 @@ status filter row                    </StackPanel>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                             <Border Width="10" Height="10" CornerRadius="5"
-                                                    Background="#D99A35" Margin="0,0,8,0"/>
+                                                    Background="#E0444D" Margin="0,0,8,0"/>
                                             <TextBlock Text="دارای رزرو" Style="{StaticResource LegendTextStyle}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
