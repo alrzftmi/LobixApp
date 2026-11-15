@@ -5,25 +5,25 @@
              FlowDirection="RightToLeft"
              SnapsToDevicePixels="True"
              UseLayoutRounding="True"
-             Background="#0D0E13"
+             Background="#101116"
              FontFamily="pack://application:,,,/Fonts/#Peyda">
 
     <UserControl.Resources>
 
         <!-- COLORS -->
-        <SolidColorBrush x:Key="PageBg" Color="#0D0E13"/>
-        <SolidColorBrush x:Key="PanelBg" Color="#151720"/>
-        <SolidColorBrush x:Key="PanelAlt" Color="#1C1F29"/>
+        <SolidColorBrush x:Key="PageBg" Color="#101116"/>
+        <SolidColorBrush x:Key="PanelBg" Color="#191B23"/>
+        <SolidColorBrush x:Key="PanelAlt" Color="#20232D"/>
         <SolidColorBrush x:Key="InputBg" Color="#101219"/>
-        <SolidColorBrush x:Key="LineBrush" Color="#2B2E3A"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#DB3C45"/>
-        <SolidColorBrush x:Key="AccentHoverBrush" Color="#C92F39"/>
-        <SolidColorBrush x:Key="AccentSoftBrush" Color="#321D24"/>
+        <SolidColorBrush x:Key="LineBrush" Color="#343744"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#E0444D"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#C93640"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#382329"/>
         <SolidColorBrush x:Key="TextBrush" Color="#F4F4F7"/>
-        <SolidColorBrush x:Key="SubTextBrush" Color="#A5A7B5"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#747887"/>
-        <SolidColorBrush x:Key="GreenBrush" Color="#55D6A0"/>
-        <SolidColorBrush x:Key="GreenBgBrush" Color="#172B25"/>
+        <SolidColorBrush x:Key="SubTextBrush" Color="#A7AAB8"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#777C8C"/>
+        <SolidColorBrush x:Key="GreenBrush" Color="#50D6A0"/>
+        <SolidColorBrush x:Key="GreenBgBrush" Color="#18352C"/>
         <SolidColorBrush x:Key="WarningBrush" Color="#E8B96A"/>
 
         <FontFamily x:Key="PeydaFont">pack://application:,,,/Fonts/#Peyda</FontFamily>
@@ -867,7 +867,9 @@
                                        Margin="8,0"/>
 
                             <Button Grid.Column="2"
-                                    Content="تأیید و ثبت رزرو"
+                                    Content="ثبت رزرو"
+                                    MinWidth="120"
+                                    MinHeight="40"
                                     Style="{StaticResource PrimaryButton}"
                                     Click="CreateRealBookingButton_Click"/>
                         </Grid>
