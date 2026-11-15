@@ -5127,6 +5127,8 @@ namespace LobixApp.Views
             });
 
             startMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
+            if (_guidedBookingMode && startTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock startColon)
+                startColon.Visibility = Visibility.Collapsed;
             startTimePanel.Children.Add(startMinuteCombo);
 
             // کنترل‌های ساعت و دقیقه پایان
@@ -5147,6 +5149,8 @@ namespace LobixApp.Views
             });
 
             endMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
+            if (_guidedBookingMode && endTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock endColon)
+                endColon.Visibility = Visibility.Collapsed;
             endTimePanel.Children.Add(endMinuteCombo);
 
             // افزودن به فرم
