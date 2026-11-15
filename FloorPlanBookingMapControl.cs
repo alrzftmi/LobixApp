@@ -83,7 +83,7 @@ public sealed class FloorPlanBookingMapControl : UserControl
         _status.TextWrapping = TextWrapping.NoWrap;
         top.Children.Add(_status);
         root.Children.Add(top);
-        var viewport = new Border { BorderBrush = new SolidColorBrush(Color.FromRgb(62, 64, 76)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = new Thickness(8), Background = new SolidColorBrush(Color.FromRgb(26, 27, 35)), ClipToBounds = true };
+        var viewport = new Border { BorderBrush = new SolidColorBrush(Color.FromRgb(62, 64, 76)), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = new Thickness(8), Background = new SolidColorBrush(Color.FromRgb(20, 16, 20)), ClipToBounds = true };
         _mapScrollViewer = new ScrollViewer
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -92,12 +92,14 @@ public sealed class FloorPlanBookingMapControl : UserControl
             VerticalAlignment = VerticalAlignment.Stretch,
             CanContentScroll = false,
             PanningMode = PanningMode.Both,
+            Background = new SolidColorBrush(Color.FromRgb(20, 16, 20)),
+            BorderThickness = new Thickness(0),
+            Focusable = false,
+            SnapsToDevicePixels = true,
             Content = _canvas
         };
 
         _mapScrollViewer.PreviewMouseWheel += MapScrollViewer_PreviewMouseWheel;
-
-        viewport.Child = _mapScrollViewer;
 
         viewport.Child = _mapScrollViewer;
         root.Children.Add(viewport);
@@ -131,15 +133,15 @@ public sealed class FloorPlanBookingMapControl : UserControl
                 booked
                     ? Color.FromRgb(107, 37, 43)
                     : selected
-                        ? Color.FromRgb(39, 68, 112)
-                        : Color.FromRgb(28, 91, 66));
+                        ? Color.FromRgb(76, 35, 44)
+                        : Color.FromRgb(39, 31, 36));
 
             button.BorderBrush = new SolidColorBrush(
                 booked
                     ? Color.FromRgb(228, 91, 100)
                     : selected
-                        ? Color.FromRgb(115, 174, 255)
-                        : Color.FromRgb(69, 177, 132));
+                        ? Color.FromRgb(255, 137, 146)
+                        : Color.FromRgb(116, 66, 75));
 
             button.ToolTip = booked
                 ? "این سیستم در این بازه زمانی رزرو شده است."
@@ -338,7 +340,7 @@ public sealed class FloorPlanBookingMapControl : UserControl
                     double h = Math.Clamp(ReadDouble(item, 60, "height", "h", "H"), 12, 1000);
                     double rotation = ReadDouble(item, 0, "rotation", "Rotation");
                     Brush fill = type.ToLowerInvariant() switch { "room" => new SolidColorBrush(Color.FromArgb(75, 219, 60, 69)), "wall" => new SolidColorBrush(Color.FromRgb(125, 129, 140)), "desk" => new SolidColorBrush(Color.FromRgb(55, 59, 70)), "entrance" => new SolidColorBrush(Color.FromRgb(31, 82, 68)), "section" or "area" => new SolidColorBrush(Color.FromArgb(90, 76, 91, 113)), _ => new SolidColorBrush(Color.FromRgb(45, 48, 60)) };
-                    Brush stroke = isSystem ? new SolidColorBrush(Color.FromRgb(69, 177, 132)) : Brushes.Gray;
+                    Brush stroke = isSystem ? new SolidColorBrush(Color.FromRgb(116, 66, 75)) : Brushes.Gray;
                     if (isSystem && hasPhysical)
                     {
                         string resolvedNumber = resolved.Number;
@@ -349,27 +351,61 @@ public sealed class FloorPlanBookingMapControl : UserControl
 );
                         bool booked = _isBooked(resolvedVariationId, resolvedNumber);
                         bool selected = _isSelected(resolvedVariationId, resolvedNumber);
-                        string displayLabel = string.IsNullOrWhiteSpace(label)
-                            ? $"{resolvedCategory} {resolvedNumber}".Trim()
-                            : label;
+                        string displayTitle = string.IsNullOrWhiteSpace(resolvedCategory)
+                            ? (string.IsNullOrWhiteSpace(label) ? "سیستم" : label)
+                            : resolvedCategory;
+                        string displayNumber = resolvedNumber.Trim().TrimStart('#', '＃');
+                        double titleFontSize = Math.Clamp(Math.Min(w / 7.0, h * 0.25), 8.0, 13.0);
+                        double numberFontSize = Math.Clamp(Math.Min(w / 5.8, h * 0.31), 9.0, 15.0);
+                        var tileText = new StackPanel
+                        {
+                            Orientation = Orientation.Vertical, HorizontalAlignment = HorizontalAlignment.Stretch,
+                            VerticalAlignment = VerticalAlignment.Center, ClipToBounds = true, Margin = new Thickness(2)
+                        };
+                        tileText.Children.Add(new TextBlock
+                        {
+                            Text = displayTitle, Foreground = Brushes.White, FontSize = titleFontSize,
+                            FontWeight = FontWeights.SemiBold, TextAlignment = TextAlignment.Center,
+                            HorizontalAlignment = HorizontalAlignment.Stretch, TextWrapping = TextWrapping.NoWrap,
+                            TextTrimming = TextTrimming.CharacterEllipsis
+                        });
+                        tileText.Children.Add(new TextBlock
+                        {
+                            Text = displayNumber, Foreground = new SolidColorBrush(Color.FromRgb(255, 218, 220)),
+                            FontSize = numberFontSize, FontWeight = FontWeights.Bold,
+                            TextAlignment = TextAlignment.Center, HorizontalAlignment = HorizontalAlignment.Stretch,
+                            TextWrapping = TextWrapping.NoWrap, TextTrimming = TextTrimming.CharacterEllipsis
+                        });
                         if (!resolved.Active)
                         {
-                            var inactive = new Border { Width = w, Height = h, Tag = "map-object", Background = new SolidColorBrush(Color.FromRgb(65, 65, 70)), BorderBrush = Brushes.DimGray, BorderThickness = new Thickness(1.2), Child = new TextBlock { Text = displayLabel, Foreground = Brushes.LightGray, FontSize = 20, FontWeight = FontWeights.SemiBold, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(4) } };
+                            var inactive = new Border
+                            {
+                                Width = w, Height = h, Tag = "map-object",
+                                Background = new SolidColorBrush(Color.FromRgb(43, 35, 39)),
+                                BorderBrush = new SolidColorBrush(Color.FromRgb(91, 43, 53)),
+                                BorderThickness = new Thickness(1.2), CornerRadius = new CornerRadius(7),
+                                Padding = new Thickness(2), ClipToBounds = true, Child = tileText
+                            };
+                            foreach (var textBlock in tileText.Children.OfType<TextBlock>())
+                                textBlock.Foreground = Brushes.LightGray;
                             Canvas.SetLeft(inactive, x); Canvas.SetTop(inactive, y); _canvas.Children.Add(inactive); count++; continue;
                         }
                         var button = new Button
                         {
                             Width = w,
                             Height = h,
-                            Content = displayLabel,
+                            Content = tileText,
+                            HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                            VerticalContentAlignment = VerticalAlignment.Center,
+                            ClipToBounds = true,
                             Tag = "map-object",
 
                             Background = new SolidColorBrush(
         booked
             ? Color.FromRgb(107, 37, 43)
             : selected
-                ? Color.FromRgb(39, 68, 112)
-                : Color.FromRgb(28, 91, 66)),
+                ? Color.FromRgb(76, 35, 44)
+                : Color.FromRgb(39, 31, 36)),
 
                             Foreground = Brushes.White,
 
@@ -377,17 +413,17 @@ public sealed class FloorPlanBookingMapControl : UserControl
         booked
             ? Color.FromRgb(228, 91, 100)
             : selected
-                ? Color.FromRgb(115, 174, 255)
-                : Color.FromRgb(69, 177, 132)),
+                ? Color.FromRgb(255, 137, 146)
+                : Color.FromRgb(116, 66, 75)),
 
                             BorderThickness = new Thickness(1.5),
                             FontWeight = FontWeights.SemiBold,
-                            FontSize = 24,
-                            Padding = new Thickness(4),
+                            FontSize = 12,
+                            Padding = new Thickness(2),
 
-                            ToolTip = booked
+                            ToolTip = $"{displayTitle} {displayNumber} · " + (booked
         ? "این سیستم در این بازه زمانی رزرو شده است."
-        : "برای انتخاب یا لغو انتخاب این سیستم کلیک کنید"
+        : "برای انتخاب یا لغو انتخاب این سیستم کلیک کنید")
                         };
 
                         int capturedVariation = resolvedVariationId;
@@ -407,21 +443,18 @@ public sealed class FloorPlanBookingMapControl : UserControl
 
                             button.Background = new SolidColorBrush(
                                 nowSelected
-                                    ? Color.FromRgb(39, 68, 112)
-                                    : Color.FromRgb(28, 91, 66));
+                                    ? Color.FromRgb(76, 35, 44)
+                                    : Color.FromRgb(39, 31, 36));
 
                             button.BorderBrush = new SolidColorBrush(
                                 nowSelected
-                                    ? Color.FromRgb(115, 174, 255)
-                                    : Color.FromRgb(69, 177, 132));
+                                    ? Color.FromRgb(255, 137, 146)
+                                    : Color.FromRgb(116, 66, 75));
 
                             _status.Text = nowSelected
                                 ? $"{displayLabel} انتخاب شد."
                                 : $"{displayLabel} از انتخاب خارج شد.";
                         };
-
-                        button.RenderTransformOrigin = new Point(.5, .5);
-                        button.RenderTransform = new RotateTransform(rotation);
 
                         button.RenderTransformOrigin = new Point(.5, .5);
                         button.RenderTransform = new RotateTransform(rotation);
@@ -434,8 +467,6 @@ public sealed class FloorPlanBookingMapControl : UserControl
                         count++;
 
                         continue;
-                        button.RenderTransformOrigin = new Point(.5, .5); button.RenderTransform = new RotateTransform(rotation);
-                        Canvas.SetLeft(button, x); Canvas.SetTop(button, y); Panel.SetZIndex(button, 100); _canvas.Children.Add(button); count++; continue;
                     }
                     var border = new Border { Width = w, Height = h, Tag = "map-object", Background = fill, BorderBrush = stroke, BorderThickness = new Thickness(1.2), CornerRadius = new CornerRadius(type.Equals("wall", StringComparison.OrdinalIgnoreCase) ? 3 : 9), RenderTransformOrigin = new Point(.5, .5), RenderTransform = new RotateTransform(rotation), Child = new TextBlock { Text = label, Foreground = Brushes.White, FontSize = 20, FontWeight = FontWeights.SemiBold, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Center, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(4) } };
                     Canvas.SetLeft(border, x); Canvas.SetTop(border, y); Panel.SetZIndex(border, 0); _canvas.Children.Add(border);
