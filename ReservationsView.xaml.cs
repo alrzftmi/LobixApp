@@ -49,6 +49,7 @@ namespace LobixApp.Views
         private int _guidedEndHour = StartHour + 1;
         private double _liveMapZoom = 1.0;
         private double _liveMapFitScale = 1.0;
+        private ControlTemplate? _liveMapTileTemplate;
         private string _selectedStatus = "all";
         private string _searchText = string.Empty;
 
@@ -198,6 +199,9 @@ namespace LobixApp.Views
             RoutedEventArgs e)
         {
             DrawTimeline();
+            Dispatcher.BeginInvoke(new Action(() =>
+                TimelineScrollViewer?.ScrollToVerticalOffset(HeaderHeight)),
+                DispatcherPriority.Loaded);
             if (!_floorMapLoaded)
                 await LoadFloorMapAsync();
             else
@@ -3083,12 +3087,13 @@ namespace LobixApp.Views
                 var button = new Button
                 {
                     Width = item.Width,
-                    Height = Math.Max(48, item.Height),
+                    Height = Math.Max(72, item.Height),
                     Background = new SolidColorBrush(fillColor),
                     Foreground = Brushes.White,
                     BorderBrush = new SolidColorBrush(borderColor),
-                    BorderThickness = new Thickness(isMapSelected ? 4 : 2),
-                    Padding = new Thickness(3),
+                    BorderThickness = new Thickness(isMapSelected ? 3 : 1.5),
+                    Padding = new Thickness(4),
+                    Template = GetLiveMapTileTemplate(),
                     Cursor = Cursors.Hand,
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 16,
@@ -3105,6 +3110,28 @@ namespace LobixApp.Views
             }
             if (FloorMapSummaryText != null)
                 FloorMapSummaryText.Text = $"{_selectedMapFloor}  •  آزاد {free}  •  رزرو {reserved}  •  غیرفعال {disabled}";
+        }
+
+        private ControlTemplate GetLiveMapTileTemplate()
+        {
+            if (_liveMapTileTemplate != null) return _liveMapTileTemplate;
+
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.SetValue(Border.CornerRadiusProperty, new CornerRadius(9));
+            border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Control.BackgroundProperty));
+            border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Control.BorderBrushProperty));
+            border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Control.BorderThicknessProperty));
+            border.SetValue(Border.SnapsToDevicePixelsProperty, true);
+
+            var presenter = new FrameworkElementFactory(typeof(ContentPresenter));
+            presenter.SetValue(ContentPresenter.ContentProperty, new TemplateBindingExtension(ContentControl.ContentProperty));
+            presenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, new TemplateBindingExtension(Control.HorizontalContentAlignmentProperty));
+            presenter.SetValue(ContentPresenter.VerticalAlignmentProperty, new TemplateBindingExtension(Control.VerticalContentAlignmentProperty));
+            presenter.SetValue(ContentPresenter.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
+            border.AppendChild(presenter);
+
+            _liveMapTileTemplate = new ControlTemplate(typeof(Button)) { VisualTree = border };
+            return _liveMapTileTemplate;
         }
 
         private UIElement BuildMapSystemContent(LiveMapObject item, ReservationItem? booking, bool disabled, string serverState, bool selected = false)
@@ -3688,6 +3715,13 @@ namespace LobixApp.Views
 
             if (_guidedBookingMode)
             {
+                if (GetServerAvailabilityState(item).Equals("off", StringComparison.OrdinalIgnoreCase))
+                {
+                    LobixDialog.Show("این سیستم در حال حاضر غیرفعال است و امکان رزرو آن وجود ندارد.",
+                        "سیستم غیرفعال", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
                 string key = GetLiveMapSelectionKey(item);
                 ReservationItem? conflict = FindGuidedIntervalConflict(item);
                 if (conflict != null)
@@ -6074,11 +6108,9 @@ namespace LobixApp.Views
                 Background = new SolidColorBrush(Color.FromRgb(17, 17, 22))
             };
 
-            root.RowDefinitions.Add(
-                new RowDefinition { Height = new GridLength(58) });
-
-            root.RowDefinitions.Add(
-                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(58) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(HeaderHeight) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // نوار بالای پنجره
             var toolbar = new Grid
@@ -6177,7 +6209,25 @@ namespace LobixApp.Views
                     BasedOn = FindResource("DarkScrollBarStyle") as Style
                 });
 
-            Grid.SetRow(fullscreenScrollViewer, 1);
+            var fullscreenHeaderCanvas = new Canvas
+            {
+                Width = TimelineCanvas.Width,
+                Height = HeaderHeight,
+                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36))
+            };
+            var fullscreenHeaderScrollViewer = new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                CanContentScroll = false,
+                IsHitTestVisible = false,
+                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
+                Content = fullscreenHeaderCanvas
+            };
+            Grid.SetRow(fullscreenHeaderScrollViewer, 1);
+            root.Children.Add(fullscreenHeaderScrollViewer);
+
+            Grid.SetRow(fullscreenScrollViewer, 2);
             root.Children.Add(fullscreenScrollViewer);
 
             // یک Canvas نمی‌تواند هم‌زمان فرزند دو ScrollViewer باشد.
@@ -6186,7 +6236,14 @@ namespace LobixApp.Views
             fullscreenScrollViewer.Content = TimelineCanvas;
 
             _activeTimelineScrollViewer = fullscreenScrollViewer;
+            _activeTimelineHeaderScrollViewer = fullscreenHeaderScrollViewer;
+            _activeTimelineHeaderCanvas = fullscreenHeaderCanvas;
             _timelineFullscreenWindow = fullscreenWindow;
+            fullscreenScrollViewer.ScrollChanged += (_, args) =>
+            {
+                if (Math.Abs(fullscreenHeaderScrollViewer.HorizontalOffset - args.HorizontalOffset) > 0.5)
+                    fullscreenHeaderScrollViewer.ScrollToHorizontalOffset(args.HorizontalOffset);
+            };
 
             fullscreenWindow.Content = root;
 
@@ -6209,6 +6266,7 @@ namespace LobixApp.Views
             fullscreenWindow.Loaded += (_, _) =>
             {
                 DrawTimeline();
+                fullscreenScrollViewer.ScrollToVerticalOffset(HeaderHeight);
             };
 
             // هنگام بسته شدن، Canvas را به صفحه اصلی برگردان.
@@ -6219,6 +6277,8 @@ namespace LobixApp.Views
                 TimelineScrollViewer.Content = TimelineCanvas;
 
                 _activeTimelineScrollViewer = TimelineScrollViewer;
+                _activeTimelineHeaderScrollViewer = TimelineHeaderScrollViewer;
+                _activeTimelineHeaderCanvas = TimelineStickyHeaderCanvas;
                 _timelineFullscreenWindow = null;
 
                 DrawTimeline();
