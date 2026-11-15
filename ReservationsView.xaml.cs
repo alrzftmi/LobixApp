@@ -4156,6 +4156,12 @@ namespace LobixApp.Views
                     validation.Text = "انتخاب روز گذشته امکان‌پذیر نیست.";
                     return;
                 }
+                if (chosenDate.Date == DateTime.Today &&
+                    DateTime.Now >= chosenDate.Date.AddHours(startHour))
+                {
+                    validation.Text = "ساعت شروع انتخاب‌شده گذشته است؛ ساعت دیگری یا روز آینده را انتخاب کنید.";
+                    return;
+                }
 
                 _guidedBookingDate = chosenDate.Date;
                 _guidedStartHour = startHour;
