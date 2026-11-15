@@ -785,16 +785,20 @@
 
                                 <Button Content="−"
                                         Style="{StaticResource IconButton}"
+                                        Margin="0,0,10,0"
                                         Click="ZoomOut_Click"/>
 
                                 <TextBlock x:Name="ZoomText"
                                            Text="100%"
                                            FontSize="10"
                                            Foreground="{StaticResource Muted}"
-                                           Margin="5,0"/>
+                                           Margin="0,0,10,0"
+                                           MinWidth="42"
+                                           TextAlignment="Center"/>
 
                                 <Button Content="+"
                                         Style="{StaticResource IconButton}"
+                                        Margin="0,0,10,0"
                                         Click="ZoomIn_Click"/>
 
                                 <Button Content="⛶"
