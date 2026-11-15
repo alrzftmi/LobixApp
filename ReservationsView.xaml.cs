@@ -3074,20 +3074,17 @@ namespace LobixApp.Views
                 else if (isReserved) reserved++;
                 else free++;
 
-                Color reservationColor = _guidedBookingMode
-                    ? Color.FromRgb(190, 48, 58)
-                    : GetReservationMapColor(booking, item.SystemNumber);
                 Color fillColor = isDisabled
-                    ? Color.FromRgb(65, 49, 55)
+                    ? Color.FromRgb(65, 67, 78)
                     : isReserved
-                        ? (_guidedBookingMode ? Color.FromRgb(116, 35, 43) : reservationColor)
-                        : (_guidedBookingMode ? Color.FromRgb(22, 112, 75) : Color.FromRgb(29, 89, 65));
+                        ? Color.FromRgb(116, 35, 43)
+                        : Color.FromRgb(22, 112, 75);
                 Color borderColor = isDisabled
-                    ? Color.FromRgb(170, 90, 100)
+                    ? Color.FromRgb(130, 135, 150)
                     : isMapSelected
                         ? Color.FromRgb(115, 174, 255)
                         : isReserved
-                            ? (_guidedBookingMode ? Color.FromRgb(245, 91, 100) : reservationColor)
+                            ? Color.FromRgb(245, 91, 100)
                             : Color.FromRgb(61, 205, 139);
                 if (isMapSelected && !isDisabled) fillColor = Color.FromRgb(39, 68, 112);
 
