@@ -334,10 +334,9 @@
                                        VerticalAlignment="Center"
                                        Style="{StaticResource SectionLabelStyle}"/>
                             <WrapPanel Grid.Column="1" VerticalAlignment="Center">
-                                <Button Content="امروز" Style="{StaticResource DateFilterButton}" Click="TodayButton_Click"/>
-                                <Button Content="فردا" Style="{StaticResource DateFilterButton}" Click="TomorrowButton_Click"/>
-                                <Button Content="پس‌فردا" Style="{StaticResource DateFilterButton}" Click="DayAfterTomorrowButton_Click"/>
-                                <Button Content="همه تاریخ‌ها" Style="{StaticResource DateFilterButton}" Click="AllDatesButton_Click"/>
+                                <Button x:Name="TodayDateButton" Content="امروز" Style="{StaticResource DateFilterButton}" Click="TodayButton_Click"/>
+                                <Button x:Name="TomorrowDateButton" Content="فردا" Style="{StaticResource DateFilterButton}" Click="TomorrowButton_Click"/>
+                                <Button x:Name="DayAfterTomorrowDateButton" Content="پس‌فردا" Style="{StaticResource DateFilterButton}" Click="DayAfterTomorrowButton_Click"/>
                             </WrapPanel>
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
                                 <Button x:Name="PreviousDayButton"
@@ -358,25 +357,7 @@
                                         Style="{StaticResource SmallActionButtonStyle}"/>
                             </StackPanel>
                         </Grid>
-                        <Border Height="1" Background="{StaticResource BorderLight}" Margin="0,10"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="65"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="وضعیت"
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource SectionLabelStyle}"/>
-                            <WrapPanel Grid.Column="1" VerticalAlignment="Center">
-                                <Button Content="همه" Style="{StaticResource StatusFilterButton}" Click="AllStatusButton_Click"/>
-                                <Button Content="در انتظار" Style="{StaticResource StatusFilterButton}" Click="PendingStatusButton_Click"/>
-                                <Button Content="تأییدشده" Style="{StaticResource StatusFilterButton}" Click="ConfirmedStatusButton_Click"/>
-                                <Button Content="تکمیل‌شده" Style="{StaticResource StatusFilterButton}" Click="CompletedStatusButton_Click"/>
-                                <Button Content="رد شده" Style="{StaticResource StatusFilterButton}" Click="RejectedStatusButton_Click"/>
-                                <Button Content="لغوشده" Style="{StaticResource StatusFilterButton}" Click="CancelledStatusButton_Click"/>
-                            </WrapPanel>
-                        </Grid>
-                    </StackPanel>
+status filter row                    </StackPanel>
                 </Border>
 
                 <!-- Search -->
@@ -582,6 +563,9 @@
                                             Margin="0,0,6,0"
                                             Style="{StaticResource SmallActionButtonStyle}"
                                             Click="FullscreenFloorMapButton_Click"/>
+                                    <Button Content="−" Width="30" Height="30" ToolTip="کوچک‌نمایی نقشه" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomOutButton_Click"/>
+                                    <Button Content="۱۰۰٪" Width="48" Height="30" ToolTip="بازنشانی بزرگ‌نمایی" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomResetButton_Click"/>
+                                    <Button Content="+" Width="30" Height="30" ToolTip="بزرگ‌نمایی نقشه" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomInButton_Click"/>
                                     <Button x:Name="LiveMapMultiSelectButton"
                                             Content="انتخاب چند سیستم"
                                             Height="30"
@@ -595,14 +579,19 @@
                                     BorderThickness="1"
                                     CornerRadius="10"
                                     ClipToBounds="True">
-                                <Grid>
-                                    <Viewbox Stretch="Uniform" StretchDirection="Both">
-                                        <Canvas x:Name="LiveFloorMapCanvas"
-                                                Width="1600"
-                                                Height="1000"
-                                                Background="#11131A"/>
-                                    </Viewbox>
-                                </Grid>
+                                <ScrollViewer x:Name="LiveMapScrollViewer"
+                                              HorizontalScrollBarVisibility="Auto"
+                                              VerticalScrollBarVisibility="Auto"
+                                              CanContentScroll="False"
+                                              PanningMode="Both"
+                                              Background="#11131A"
+                                              PreviewMouseWheel="LiveMapScrollViewer_PreviewMouseWheel"
+                                              SizeChanged="LiveMapScrollViewer_SizeChanged">
+                                    <Canvas x:Name="LiveFloorMapCanvas"
+                                            Width="1600"
+                                            Height="1000"
+                                            Background="#11131A"/>
+                                </ScrollViewer>
                             </Border>
                         </Grid>
                     </Border>
@@ -755,22 +744,42 @@
                                 BorderThickness="1"
                                 CornerRadius="10"
                                 ClipToBounds="True">
-                            <ScrollViewer x:Name="TimelineScrollViewer"
-                                          HorizontalScrollBarVisibility="Auto"
-                                          VerticalScrollBarVisibility="Auto"
-                                          SizeChanged="TimelineScrollViewer_SizeChanged"
-                                          CanContentScroll="False"
-                                          PanningMode="Both"
-                                          Background="#11131A">
-                                <ScrollViewer.Resources>
-                                    <Style TargetType="{x:Type ScrollBar}"
-                                           BasedOn="{StaticResource DarkScrollBarStyle}"/>
-                                </ScrollViewer.Resources>
-                                <Canvas x:Name="TimelineCanvas"
-                                        Width="1900"
-                                        Height="500"
-                                        Background="#11131A"/>
-                            </ScrollViewer>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="42"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <ScrollViewer x:Name="TimelineHeaderScrollViewer"
+                                              Grid.Row="0"
+                                              HorizontalScrollBarVisibility="Hidden"
+                                              VerticalScrollBarVisibility="Disabled"
+                                              CanContentScroll="False"
+                                              IsHitTestVisible="False"
+                                              Background="#1B1B24">
+                                    <Canvas x:Name="TimelineStickyHeaderCanvas"
+                                            Height="42"
+                                            Width="1900"
+                                            Background="#1B1B24"/>
+                                </ScrollViewer>
+                                <ScrollViewer x:Name="TimelineScrollViewer"
+                                              Grid.Row="1"
+                                              HorizontalScrollBarVisibility="Auto"
+                                              VerticalScrollBarVisibility="Auto"
+                                              SizeChanged="TimelineScrollViewer_SizeChanged"
+                                              ScrollChanged="TimelineScrollViewer_ScrollChanged"
+                                              CanContentScroll="False"
+                                              PanningMode="Both"
+                                              Background="#11131A">
+                                    <ScrollViewer.Resources>
+                                        <Style TargetType="{x:Type ScrollBar}"
+                                               BasedOn="{StaticResource DarkScrollBarStyle}"/>
+                                    </ScrollViewer.Resources>
+                                    <Canvas x:Name="TimelineCanvas"
+                                            Width="1900"
+                                            Height="500"
+                                            Background="#11131A"/>
+                                </ScrollViewer>
+                            </Grid>
                         </Border>
                     </Grid>
                 </Border>
