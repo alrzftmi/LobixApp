@@ -696,6 +696,7 @@ namespace LobixApp.Views
             DrawHourHeader(
                 totalWidth
             );
+            DrawStickyTimelineHeader(totalWidth);
 
             DrawSystemRows(
                 systemRows,
@@ -2785,8 +2786,7 @@ namespace LobixApp.Views
 
         private void FullscreenFloorMapButton_Click(object sender, RoutedEventArgs e)
         {
-            if (LiveFloorMapCanvas == null ||
-                LiveFloorMapCanvas.Parent is not Viewbox originalViewbox)
+            if (LiveFloorMapCanvas == null || LiveMapScrollViewer == null)
                 return;
 
             var placeholder = new Canvas
@@ -2796,7 +2796,7 @@ namespace LobixApp.Views
                 Background = new SolidColorBrush(Color.FromRgb(16, 17, 23))
             };
 
-            originalViewbox.Child = placeholder;
+            LiveMapScrollViewer.Content = placeholder;
 
             double zoom = 1.0;
 
@@ -2875,14 +2875,116 @@ namespace LobixApp.Views
 
                 LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
 
-                originalViewbox.Child = LiveFloorMapCanvas;
-
+                LiveMapScrollViewer.Content = LiveFloorMapCanvas;
+                UpdateLiveMapZoom();
                 RenderLiveFloorMap();
             };
 
             window.ShowDialog();
         }
 
+
+        private void UpdateLiveMapZoom()
+        {
+            if (LiveMapScrollViewer == null || LiveFloorMapCanvas == null) return;
+            double width = LiveMapScrollViewer.ViewportWidth;
+            double height = LiveMapScrollViewer.ViewportHeight;
+            if (width <= 0 || height <= 0) return;
+            _liveMapFitScale = Math.Min(width / 1600.0, height / 1000.0);
+            double scale = Math.Clamp(_liveMapFitScale * _liveMapZoom, 0.2, 4.0);
+            LiveFloorMapCanvas.LayoutTransform = new ScaleTransform(scale, scale);
+        }
+
+        private void LiveMapScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e) => UpdateLiveMapZoom();
+
+        private void LiveMapScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl)) return;
+            e.Handled = true;
+            ChangeLiveMapZoom(e.Delta > 0 ? 0.1 : -0.1);
+        }
+
+        private void ChangeLiveMapZoom(double delta)
+        {
+            _liveMapZoom = Math.Clamp(_liveMapZoom + delta, 0.5, 2.5);
+            UpdateLiveMapZoom();
+        }
+
+        private void MapZoomInButton_Click(object sender, RoutedEventArgs e) => ChangeLiveMapZoom(0.1);
+        private void MapZoomOutButton_Click(object sender, RoutedEventArgs e) => ChangeLiveMapZoom(-0.1);
+        private void MapZoomResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            _liveMapZoom = 1.0;
+            UpdateLiveMapZoom();
+            LiveMapScrollViewer?.ScrollToHome();
+        }
+
+        private void TimelineScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (_activeTimelineHeaderScrollViewer != null &&
+                Math.Abs(_activeTimelineHeaderScrollViewer.HorizontalOffset - e.HorizontalOffset) > 0.5)
+                _activeTimelineHeaderScrollViewer.ScrollToHorizontalOffset(e.HorizontalOffset);
+        }
+
+        private void DrawStickyTimelineHeader(double totalWidth)
+        {
+            Canvas? target = _activeTimelineHeaderCanvas ?? TimelineStickyHeaderCanvas;
+            if (target == null) return;
+            target.Children.Clear();
+            target.Width = Math.Max(totalWidth, TimelineCanvas?.Width ?? totalWidth);
+            target.Height = HeaderHeight;
+            target.Children.Add(new Border
+            {
+                Width = target.Width,
+                Height = HeaderHeight,
+                Background = new SolidColorBrush(Color.FromRgb(27, 27, 36)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(55, 55, 68)),
+                BorderThickness = new Thickness(0, 0, 0, 1)
+            });
+            var systemsTitle = new TextBlock
+            {
+                Text = "سیستم‌ها",
+                Width = LeftColumnWidth,
+                Height = HeaderHeight,
+                FontFamily = FindResource("Peyda") as FontFamily,
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = Brushes.White,
+                TextAlignment = TextAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Canvas.SetLeft(systemsTitle, 0);
+            Canvas.SetTop(systemsTitle, 0);
+            target.Children.Add(systemsTitle);
+            for (int hour = StartHour; hour < EndHour; hour++)
+            {
+                double left = LeftColumnWidth + ((hour - StartHour) * HourWidth);
+                var label = new TextBlock
+                {
+                    Text = $"{hour:00}:00",
+                    Width = HourWidth,
+                    Height = HeaderHeight,
+                    FontFamily = FindResource("Peyda") as FontFamily,
+                    FontSize = 12,
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = Brushes.White,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                Canvas.SetLeft(label, left);
+                Canvas.SetTop(label, 0);
+                target.Children.Add(label);
+                var separator = new Rectangle
+                {
+                    Width = 1,
+                    Height = HeaderHeight,
+                    Fill = new SolidColorBrush(Color.FromRgb(55, 55, 68))
+                };
+                Canvas.SetLeft(separator, left);
+                Canvas.SetTop(separator, 0);
+                target.Children.Add(separator);
+            }
+        }
 
         private void FloorMapFloorCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -2943,13 +3045,15 @@ namespace LobixApp.Views
                     DrawFloorDecoration(item);
                     continue;
                 }
-                ReservationItem? booking = FindMapReservation(item);
+                ReservationItem? booking = _guidedBookingMode
+                    ? FindGuidedIntervalConflict(item)
+                    : FindMapReservation(item);
                 string serverState = GetServerAvailabilityState(item);
                 bool hasLocalSchedule = HasMapReservationForSystemOnDate(item);
                 // The API availability endpoint may return a day-level/next-slot state.
                 // Once we have local reservations for this system/date, those exact
                 // intervals are authoritative; never turn one booking into all-day occupancy.
-                bool serverSaysOccupied = !hasLocalSchedule &&
+                bool serverSaysOccupied = !_guidedBookingMode && !hasLocalSchedule &&
                     (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) ||
                      serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase));
                 bool isDisabled = item.Disabled || serverState.Equals("off", StringComparison.OrdinalIgnoreCase);
@@ -2959,15 +3063,27 @@ namespace LobixApp.Views
                 else if (isReserved) reserved++;
                 else free++;
 
-                Color reservationColor = GetReservationMapColor(booking, item.SystemNumber);
-                Color fillColor = isDisabled ? Color.FromRgb(75, 43, 48) : isReserved ? reservationColor : Color.FromRgb(29, 89, 65);
-                Color borderColor = isDisabled ? Color.FromRgb(212, 91, 91) : isMapSelected ? Color.FromRgb(115, 174, 255) : isReserved ? reservationColor : Color.FromRgb(61, 188, 130);
+                Color reservationColor = _guidedBookingMode
+                    ? Color.FromRgb(190, 48, 58)
+                    : GetReservationMapColor(booking, item.SystemNumber);
+                Color fillColor = isDisabled
+                    ? Color.FromRgb(65, 49, 55)
+                    : isReserved
+                        ? (_guidedBookingMode ? Color.FromRgb(116, 35, 43) : reservationColor)
+                        : (_guidedBookingMode ? Color.FromRgb(22, 112, 75) : Color.FromRgb(29, 89, 65));
+                Color borderColor = isDisabled
+                    ? Color.FromRgb(170, 90, 100)
+                    : isMapSelected
+                        ? Color.FromRgb(115, 174, 255)
+                        : isReserved
+                            ? (_guidedBookingMode ? Color.FromRgb(245, 91, 100) : reservationColor)
+                            : Color.FromRgb(61, 205, 139);
                 if (isMapSelected && !isDisabled) fillColor = Color.FromRgb(39, 68, 112);
 
                 var button = new Button
                 {
                     Width = item.Width,
-                    Height = Math.Max(28, item.Height),
+                    Height = Math.Max(48, item.Height),
                     Background = new SolidColorBrush(fillColor),
                     Foreground = Brushes.White,
                     BorderBrush = new SolidColorBrush(borderColor),
@@ -2977,7 +3093,7 @@ namespace LobixApp.Views
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 16,
                     FontWeight = FontWeights.SemiBold,
-                    Content = BuildMapSystemContent(item, booking, isDisabled, serverState),
+                    Content = BuildMapSystemContent(item, booking, isDisabled, serverState, isMapSelected),
                     ToolTip = BuildMapSystemTooltip(item, booking, isDisabled, serverState),
                     Tag = item
                 };
@@ -2991,7 +3107,7 @@ namespace LobixApp.Views
                 FloorMapSummaryText.Text = $"{_selectedMapFloor}  •  آزاد {free}  •  رزرو {reserved}  •  غیرفعال {disabled}";
         }
 
-        private UIElement BuildMapSystemContent(LiveMapObject item, ReservationItem? booking, bool disabled, string serverState)
+        private UIElement BuildMapSystemContent(LiveMapObject item, ReservationItem? booking, bool disabled, string serverState, bool selected = false)
         {
             double side = Math.Min(item.Width, item.Height);
             bool compact = side < 76;
@@ -3026,7 +3142,7 @@ namespace LobixApp.Views
             if (!string.IsNullOrWhiteSpace(item.SystemNumber))
                 panel.Children.Add(new TextBlock
                 {
-                    Text = $"شماره {item.SystemNumber}",
+                    Text = item.SystemNumber,
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontWeight = FontWeights.Medium,
                     FontSize = metaSize,
@@ -3039,6 +3155,7 @@ namespace LobixApp.Views
 
             string statusText;
             if (disabled) statusText = "غیرفعال";
+            else if (selected) statusText = "انتخاب شده";
             else if (booking != null) statusText = IsManualReservation(booking) ? "رزرو دستی" : "رزرو آنلاین";
             else if (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) || serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase)) statusText = "رزرو";
             else statusText = "آزاد";
@@ -3069,8 +3186,9 @@ namespace LobixApp.Views
                         Foreground = Brushes.White,
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         TextAlignment = TextAlignment.Center,
-                        TextWrapping = TextWrapping.NoWrap,
+                        TextWrapping = TextWrapping.Wrap,
                         TextTrimming = TextTrimming.CharacterEllipsis,
+                        MaxHeight = Math.Max(24, Math.Min(38, item.Height * 0.42)),
                         Margin = new Thickness(1, 2, 1, 0),
                         Padding = new Thickness(2, 1, 2, 1),
                         MaxWidth = Math.Max(30, item.Width - 8)
@@ -3277,6 +3395,31 @@ namespace LobixApp.Views
             return null;
         }
 
+        private ReservationItem? FindGuidedIntervalConflict(LiveMapObject item)
+        {
+            DateTime date = _guidedBookingDate.Date;
+            int requestedStart = _guidedStartHour * 60;
+            int requestedEnd = _guidedEndHour * 60;
+            string number = NormalizeMapSystemNumber(item.SystemNumber);
+
+            return _allReservations
+                .Where(r => ParseDate(r.Date).Date == date)
+                .Where(r => !string.Equals(NormalizeStatus(r.OperatorStatus), "rejected", StringComparison.OrdinalIgnoreCase))
+                .Where(r => !new[] { "cancelled", "canceled", "completed", "refunded", "failed", "rejected" }
+                    .Contains(NormalizeStatus(r.Status), StringComparer.OrdinalIgnoreCase))
+                .Where(r =>
+                {
+                    int start = ParseTimeMinutes(r.StartTime);
+                    int end = start + Math.Max(5, GetReservationDurationMinutes(r));
+                    if (start >= requestedEnd || requestedStart >= end) return false;
+                    return r.Systems?.Any(s =>
+                        MapSystemNumbersMatch(s.SystemNumber, number) &&
+                        (s.VariationId <= 0 || item.VariationId <= 0 || s.VariationId == item.VariationId)) == true;
+                })
+                .OrderBy(r => ParseTimeMinutes(r.StartTime))
+                .FirstOrDefault();
+        }
+
         private static Color GetReservationMapColor(
        ReservationItem? booking,
        string? systemNumber = null)
@@ -3411,6 +3554,25 @@ namespace LobixApp.Views
             object sender,
             RoutedEventArgs e)
         {
+            if (_guidedBookingMode)
+            {
+                if (_selectedLiveMapObjects.Count == 0)
+                {
+                    LobixDialog.Show("ابتدا حداقل یک سیستم آزاد را روی نقشه انتخاب کنید.",
+                        "انتخاب سیستم", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                var selectedForBooking = _selectedLiveMapObjects
+                    .GroupBy(GetLiveMapSelectionKey)
+                    .Select(group => group.First())
+                    .ToList();
+
+                await ShowBookingEditorAsync(null, null, selectedForBooking);
+                RenderLiveFloorMap();
+                return;
+            }
+
             // -------------------------------------------------
             // START MULTI SELECT
             // -------------------------------------------------
@@ -3521,7 +3683,35 @@ namespace LobixApp.Views
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning
                 );
+                return;
+            }
 
+            if (_guidedBookingMode)
+            {
+                string key = GetLiveMapSelectionKey(item);
+                ReservationItem? conflict = FindGuidedIntervalConflict(item);
+                if (conflict != null)
+                {
+                    LobixDialog.Show(
+                        $"این سیستم در بازه انتخابی رزرو است.\n{FormatTimeOfDay(ParseTimeMinutes(conflict.StartTime))} تا {FormatTimeOfDay(ParseTimeMinutes(conflict.StartTime) + GetReservationDurationMinutes(conflict))}",
+                        "سیستم در دسترس نیست", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                if (_selectedLiveMapSystems.Contains(key))
+                {
+                    _selectedLiveMapSystems.Remove(key);
+                    _selectedLiveMapObjects.RemoveAll(x =>
+                        string.Equals(GetLiveMapSelectionKey(x), key, StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                {
+                    _selectedLiveMapSystems.Add(key);
+                    _selectedLiveMapObjects.Add(item);
+                }
+                RenderLiveFloorMap();
+                if (FloorMapSummaryText != null)
+                    FloorMapSummaryText.Text = $"{_selectedLiveMapObjects.Count} سیستم انتخاب شده • {_guidedStartHour:00}:00 تا {_guidedEndHour:00}:00";
                 return;
             }
 
@@ -5515,6 +5705,7 @@ namespace LobixApp.Views
                         _selectedLiveMapObjects.Clear();
 
                         _liveMapMultiSelectMode = false;
+                        _guidedBookingMode = false;
 
                         if (LiveMapMultiSelectButton != null)
                         {
