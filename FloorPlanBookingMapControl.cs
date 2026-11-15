@@ -33,7 +33,7 @@ public sealed class FloorPlanBookingMapControl : UserControl
         ClipToBounds = false
     };
     private ScrollViewer? _mapScrollViewer;
-    private double _mapZoom = 1.0;
+    private double _mapZoom = 1.0;\n    private readonly TextBlock _zoomPercent = new();
     private readonly TextBlock _status = new() { Margin = new Thickness(8), Foreground = Brushes.Gainsboro };
     private readonly Dictionary<string, (string Number, int VariationId, string Category, bool Active)> _systems = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _selectedNumbers = new(StringComparer.OrdinalIgnoreCase);
@@ -75,9 +75,22 @@ public sealed class FloorPlanBookingMapControl : UserControl
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
         header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
         header.Children.Add(new TextBlock { Text = "نقشه سالن", FontSize = 15, FontWeight = FontWeights.Bold, Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center });
+
+        var actions = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
+        var zoomOut = new Button { Content = "−", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
+        _zoomPercent = new TextBlock { Text = "۱۰۰٪", MinWidth = 48, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White, FontSize = 11, Margin = new Thickness(0, 0, 9, 0) };
+        var zoomIn = new Button { Content = "+", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
+        zoomOut.Click += (_, _) => ChangeZoom(1.0 / 1.15);
+        zoomIn.Click += (_, _) => ChangeZoom(1.15);
+        actions.Children.Add(zoomOut);
+        actions.Children.Add(_zoomPercent);
+        actions.Children.Add(zoomIn);
+
         var refresh = new Button { Content = "بازخوانی", Padding = new Thickness(10, 4, 10, 4), Margin = new Thickness(3, 0, 0, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 11 };
         refresh.Click += async (_, _) => { _loadTask = LoadMapAsync(); await _loadTask; };
-        Grid.SetColumn(refresh, 1); header.Children.Add(refresh);
+        actions.Children.Add(refresh);
+        Grid.SetColumn(actions, 1);
+        header.Children.Add(actions);
         top.Children.Add(header);
         _status.FontSize = 11;
         _status.TextWrapping = TextWrapping.NoWrap;
@@ -355,6 +368,16 @@ public sealed class FloorPlanBookingMapControl : UserControl
                             ? (string.IsNullOrWhiteSpace(label) ? "سیستم" : label)
                             : resolvedCategory;
                         string displayNumber = resolvedNumber.Trim().TrimStart('#', '＃');
+                        foreach (string separator in new[] { "#", "＃", " -" , "-" })
+                        {
+                            string suffix = separator.Trim() + displayNumber;
+                            if (displayNumber.Length > 0 &&
+                                displayTitle.EndsWith(suffix, StringComparison.OrdinalIgnoreCase))
+                            {
+                                displayTitle = displayTitle.Substring(0, displayTitle.Length - suffix.Length).Trim();
+                                break;
+                            }
+                        }
                         double titleFontSize = Math.Clamp(Math.Min(w / 7.0, h * 0.25), 8.0, 13.0);
                         double numberFontSize = Math.Clamp(Math.Min(w / 5.8, h * 0.31), 9.0, 15.0);
                         var tileText = new StackPanel
@@ -476,6 +499,22 @@ public sealed class FloorPlanBookingMapControl : UserControl
         }
         catch (Exception ex) { _status.Text = "بارگذاری نقشه ناموفق بود: " + ex.Message; }
     }
+    private void ChangeZoom(double factor)
+    {
+        if (_mapScrollViewer == null)
+            return;
+
+        _mapZoom = Math.Clamp(_mapZoom * factor, 0.25, 3.0);
+        _canvas.LayoutTransform = new ScaleTransform(_mapZoom, _mapZoom);
+        _zoomPercent.Text = ToPersianDigits(((int)Math.Round(_mapZoom * 100)).ToString(CultureInfo.InvariantCulture)) + "٪";
+        _mapScrollViewer.UpdateLayout();
+    }
+
+    private static string ToPersianDigits(string value) =>
+        value.Replace("0", "۰").Replace("1", "۱").Replace("2", "۲")
+             .Replace("3", "۳").Replace("4", "۴").Replace("5", "۵")
+             .Replace("6", "۶").Replace("7", "۷").Replace("8", "۸").Replace("9", "۹");
+
     private void MapScrollViewer_PreviewMouseWheel(
     object sender,
     MouseWheelEventArgs e)
@@ -518,6 +557,7 @@ public sealed class FloorPlanBookingMapControl : UserControl
         _canvas.LayoutTransform = new ScaleTransform(
             _mapZoom,
             _mapZoom);
+        _zoomPercent.Text = ToPersianDigits(((int)Math.Round(_mapZoom * 100)).ToString(CultureInfo.InvariantCulture)) + "٪";
 
         _mapScrollViewer.UpdateLayout();
 
