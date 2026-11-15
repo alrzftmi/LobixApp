@@ -4,35 +4,36 @@
              FlowDirection="RightToLeft"
              SnapsToDevicePixels="True"
              UseLayoutRounding="True"
-             Background="#101116"
-             Foreground="#F4F5F8">
+             Background="#0D0E13"
+             Foreground="#F2F3F7"
+             FontFamily="pack://application:,,,/Fonts/#Peyda">
 
     <UserControl.Resources>
         <!-- Palette -->
-        <SolidColorBrush x:Key="PageBackground" Color="#101116"/>
-        <SolidColorBrush x:Key="CardBackground" Color="#191B23"/>
-        <SolidColorBrush x:Key="CardElevated" Color="#20232D"/>
-        <SolidColorBrush x:Key="SoftBackground" Color="#252833"/>
-        <SolidColorBrush x:Key="PrimaryPurple" Color="#E0444D"/>
-        <SolidColorBrush x:Key="PrimaryPurpleDark" Color="#C93640"/>
-        <SolidColorBrush x:Key="PurpleSoft" Color="#382329"/>
-        <SolidColorBrush x:Key="DarkText" Color="#F4F5F8"/>
-        <SolidColorBrush x:Key="SecondaryText" Color="#A7AAB8"/>
-        <SolidColorBrush x:Key="MutedText" Color="#777C8C"/>
-        <SolidColorBrush x:Key="BorderColor" Color="#343744"/>
-        <SolidColorBrush x:Key="BorderLight" Color="#292C36"/>
-        <SolidColorBrush x:Key="SuccessBackground" Color="#18352C"/>
-        <SolidColorBrush x:Key="SuccessText" Color="#50D6A0"/>
+        <SolidColorBrush x:Key="PageBackground" Color="#0D0E13"/>
+        <SolidColorBrush x:Key="CardBackground" Color="#151720"/>
+        <SolidColorBrush x:Key="CardElevated" Color="#1B1E29"/>
+        <SolidColorBrush x:Key="SoftBackground" Color="#1B1E29"/>
+        <SolidColorBrush x:Key="PrimaryPurple" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="PrimaryPurpleDark" Color="#C22E39"/>
+        <SolidColorBrush x:Key="PurpleSoft" Color="#302027"/>
+        <SolidColorBrush x:Key="DarkText" Color="#F2F3F7"/>
+        <SolidColorBrush x:Key="SecondaryText" Color="#9298AA"/>
+        <SolidColorBrush x:Key="MutedText" Color="#747B8D"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#292D3A"/>
+        <SolidColorBrush x:Key="BorderLight" Color="#292D3A"/>
+        <SolidColorBrush x:Key="SuccessBackground" Color="#18372E"/>
+        <SolidColorBrush x:Key="SuccessText" Color="#42C98A"/>
         <SolidColorBrush x:Key="WarningBackground" Color="#3A2D1D"/>
-        <SolidColorBrush x:Key="WarningText" Color="#F2BD59"/>
-        <SolidColorBrush x:Key="DangerBackground" Color="#3B2228"/>
-        <SolidColorBrush x:Key="DangerText" Color="#F17D86"/>
-        <SolidColorBrush x:Key="OnlineReservationColor" Color="#E0444D"/>
-        <SolidColorBrush x:Key="OnlineReservationBackground" Color="#3B2228"/>
-        <SolidColorBrush x:Key="ManualReservationColor" Color="#E9A844"/>
+        <SolidColorBrush x:Key="WarningText" Color="#E5A93D"/>
+        <SolidColorBrush x:Key="DangerBackground" Color="#302027"/>
+        <SolidColorBrush x:Key="DangerText" Color="#FF8992"/>
+        <SolidColorBrush x:Key="OnlineReservationColor" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="OnlineReservationBackground" Color="#302027"/>
+        <SolidColorBrush x:Key="ManualReservationColor" Color="#E5A93D"/>
         <SolidColorBrush x:Key="ManualReservationBackground" Color="#3A2D1D"/>
         <SolidColorBrush x:Key="LoadingOverlayBackground" Color="#D9101116"/>
-        <FontFamily x:Key="Peyda">pack://application:,,,/LobixApp;component/Fonts/#Peyda</FontFamily>
+        <FontFamily x:Key="Peyda">pack://application:,,,/Fonts/#Peyda</FontFamily>
 
         <!-- Buttons -->
         <Style x:Key="BaseButtonStyle" TargetType="{x:Type Button}">
@@ -61,11 +62,11 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#303440"/>
-                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#555B6A"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1B1E29"/>
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#4B5060"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#3A3E4B"/>
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#292D3A"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.42"/>
@@ -169,16 +170,16 @@
         </Style>
         <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource DarkComboBoxStyle}"/>
         <Style TargetType="{x:Type ComboBoxItem}">
-            <Setter Property="Foreground" Value="#F4F5F8"/>
-            <Setter Property="Background" Value="#20232D"/>
+            <Setter Property="Foreground" Value="#F2F3F7"/>
+            <Setter Property="Background" Value="#1B1E29"/>
             <Setter Property="FontFamily" Value="{StaticResource Peyda}"/>
             <Setter Property="Padding" Value="9,7"/>
             <Style.Triggers>
                 <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" Value="#3B2228"/>
+                    <Setter Property="Background" Value="#302027"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#C93640"/>
+                    <Setter Property="Background" Value="#C22E39"/>
                     <Setter Property="Foreground" Value="White"/>
                 </Trigger>
             </Style.Triggers>
@@ -186,28 +187,28 @@
 
         <!-- Custom scrollbar retained for the timeline and fullscreen view -->
         <Style x:Key="DarkScrollBarStyle" TargetType="{x:Type ScrollBar}">
-            <Setter Property="Background" Value="#15171E"/>
-            <Setter Property="Foreground" Value="#E0444D"/>
+            <Setter Property="Background" Value="#151720"/>
+            <Setter Property="Foreground" Value="#DB3C45"/>
             <Setter Property="Width" Value="11"/>
             <Setter Property="MinWidth" Value="11"/>
             <Setter Property="MinHeight" Value="11"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollBar}">
-                        <Grid Background="#15171E">
+                        <Grid Background="#151720">
                             <Track x:Name="PART_Track"
                                    Orientation="{TemplateBinding Orientation}"
                                    IsDirectionReversed="True">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton x:Name="DecreaseButton"
                                                   Command="ScrollBar.PageUpCommand"
-                                                  Background="#15171E"
+                                                  Background="#151720"
                                                   BorderThickness="0"
                                                   Focusable="False"
                                                   Opacity="0"/>
                                 </Track.DecreaseRepeatButton>
                                 <Track.Thumb>
-                                    <Thumb Background="#E0444D" MinHeight="28" MinWidth="28">
+                                    <Thumb Background="#DB3C45" MinHeight="28" MinWidth="28">
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="{x:Type Thumb}">
                                                 <Border x:Name="ThumbBorder"
@@ -216,10 +217,10 @@
                                                         Margin="2"/>
                                                 <ControlTemplate.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#F05A62"/>
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#E64B55"/>
                                                     </Trigger>
                                                     <Trigger Property="IsDragging" Value="True">
-                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#C93640"/>
+                                                        <Setter TargetName="ThumbBorder" Property="Background" Value="#C22E39"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -229,7 +230,7 @@
                                 <Track.IncreaseRepeatButton>
                                     <RepeatButton x:Name="IncreaseButton"
                                                   Command="ScrollBar.PageDownCommand"
-                                                  Background="#15171E"
+                                                  Background="#151720"
                                                   BorderThickness="0"
                                                   Focusable="False"
                                                   Opacity="0"/>
@@ -580,7 +581,7 @@
                                 </WrapPanel>
                             </Grid>
                             <Border Grid.Row="1"
-                                    Background="#11131A"
+                                    Background="#10121A"
                                     BorderBrush="{StaticResource BorderLight}"
                                     BorderThickness="1"
                                     CornerRadius="10"
@@ -590,13 +591,13 @@
                                               VerticalScrollBarVisibility="Auto"
                                               CanContentScroll="False"
                                               PanningMode="Both"
-                                              Background="#11131A"
+                                              Background="#10121A"
                                               PreviewMouseWheel="LiveMapScrollViewer_PreviewMouseWheel"
                                               SizeChanged="LiveMapScrollViewer_SizeChanged">
                                     <Canvas x:Name="LiveFloorMapCanvas"
                                             Width="1600"
                                             Height="1000"
-                                            Background="#11131A"/>
+                                            Background="#10121A"/>
                                 </ScrollViewer>
                             </Border>
                         </Grid>
@@ -636,7 +637,7 @@
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                             <Border Width="10" Height="10" CornerRadius="5"
-                                                    Background="#E0444D" Margin="0,0,8,0"/>
+                                                    Background="#DB3C45" Margin="0,0,8,0"/>
                                             <TextBlock Text="دارای رزرو" Style="{StaticResource LegendTextStyle}"/>
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
@@ -671,7 +672,7 @@
                                 </Border>
 
                                 <Border Background="{StaticResource PurpleSoft}"
-                                        BorderBrush="#55343B"
+                                        BorderBrush="#4B252D"
                                         BorderThickness="1"
                                         CornerRadius="11"
                                         Padding="12"
@@ -745,7 +746,7 @@
                                        Style="{StaticResource MutedLabelStyle}"/>
                         </Grid>
                         <Border Grid.Row="1"
-                                Background="#11131A"
+                                Background="#10121A"
                                 BorderBrush="{StaticResource BorderLight}"
                                 BorderThickness="1"
                                 CornerRadius="10"
@@ -761,11 +762,11 @@
                                               VerticalScrollBarVisibility="Disabled"
                                               CanContentScroll="False"
                                               IsHitTestVisible="False"
-                                              Background="#1B1B24">
+                                              Background="#151720">
                                     <Canvas x:Name="TimelineStickyHeaderCanvas"
                                             Height="42"
                                             Width="1900"
-                                            Background="#1B1B24"/>
+                                            Background="#151720"/>
                                 </ScrollViewer>
                                 <ScrollViewer x:Name="TimelineScrollViewer"
                                               Grid.Row="1"
@@ -775,7 +776,7 @@
                                               ScrollChanged="TimelineScrollViewer_ScrollChanged"
                                               CanContentScroll="False"
                                               PanningMode="Both"
-                                              Background="#11131A">
+                                              Background="#10121A">
                                     <ScrollViewer.Resources>
                                         <Style TargetType="{x:Type ScrollBar}"
                                                BasedOn="{StaticResource DarkScrollBarStyle}"/>
@@ -783,7 +784,7 @@
                                     <Canvas x:Name="TimelineCanvas"
                                             Width="1900"
                                             Height="500"
-                                            Background="#11131A"/>
+                                            Background="#10121A"/>
                                 </ScrollViewer>
                             </Grid>
                         </Border>
@@ -808,7 +809,7 @@
                     VerticalAlignment="Center">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid Width="56" Height="56" HorizontalAlignment="Center" Margin="0,0,0,18">
-                        <Ellipse Width="50" Height="50" Stroke="#343744" StrokeThickness="5"/>
+                        <Ellipse Width="50" Height="50" Stroke="#292D3A" StrokeThickness="5"/>
                         <Ellipse Width="50" Height="50"
                                  Stroke="{StaticResource PrimaryPurple}"
                                  StrokeThickness="5"
