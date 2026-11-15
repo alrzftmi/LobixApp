@@ -3094,7 +3094,7 @@ namespace LobixApp.Views
                 var button = new Button
                 {
                     Width = item.Width,
-                    Height = Math.Max(72, item.Height),
+                    Height = Math.Max(84, item.Height),
                     Background = new SolidColorBrush(fillColor),
                     Foreground = Brushes.White,
                     BorderBrush = new SolidColorBrush(borderColor),
@@ -3222,7 +3222,7 @@ namespace LobixApp.Views
                         TextAlignment = TextAlignment.Center,
                         TextWrapping = TextWrapping.Wrap,
                         TextTrimming = TextTrimming.CharacterEllipsis,
-                        MaxHeight = Math.Max(28, Math.Min(40, Math.Max(72, item.Height) * 0.42)),
+                        MaxHeight = Math.Max(30, Math.Min(42, Math.Max(84, item.Height) * 0.42)),
                         Margin = new Thickness(1, 2, 1, 0),
                         Padding = new Thickness(2, 1, 2, 1),
                         MaxWidth = Math.Max(30, item.Width - 8)
@@ -3583,6 +3583,26 @@ namespace LobixApp.Views
             return !string.IsNullOrWhiteSpace(item.Id) ? item.Id : $"object:{item.X:0.##}:{item.Y:0.##}:{item.Label}";
         }
 
+
+        private void CancelGuidedBookingButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!_guidedBookingMode) return;
+
+            _guidedBookingMode = false;
+            _liveMapMultiSelectMode = false;
+            _selectedLiveMapSystems.Clear();
+            _selectedLiveMapObjects.Clear();
+
+            if (LiveMapMultiSelectButton != null)
+                LiveMapMultiSelectButton.Content = "انتخاب چند سیستم";
+            if (CancelGuidedBookingButton != null)
+                CancelGuidedBookingButton.Visibility = Visibility.Collapsed;
+
+            UpdateDateQuickFilterButtons();
+            RenderLiveFloorMap();
+            if (FloorMapSummaryText != null)
+                FloorMapSummaryText.Text = $"{_selectedMapFloor} • انتخاب رزرو لغو شد";
+        }
 
         private async void LiveMapMultiSelectButton_Click(
             object sender,
@@ -4152,6 +4172,8 @@ namespace LobixApp.Views
 
                 if (LiveMapMultiSelectButton != null)
                     LiveMapMultiSelectButton.Content = "ثبت رزرو برای سیستم‌های انتخاب‌شده";
+                if (CancelGuidedBookingButton != null)
+                    CancelGuidedBookingButton.Visibility = Visibility.Visible;
                 if (FloorMapSummaryText != null)
                     FloorMapSummaryText.Text = $"انتخاب سیستم‌های آزاد • {JalaliDateHelper.FormatDate(chosenDate)} • {startHour:00}:00 تا {endHour:00}:00";
                 RenderLiveFloorMap();
@@ -5752,6 +5774,8 @@ namespace LobixApp.Views
                         _liveMapMultiSelectMode = false;
                         _guidedBookingMode = false;
                         UpdateDateQuickFilterButtons();
+                        if (CancelGuidedBookingButton != null)
+                            CancelGuidedBookingButton.Visibility = Visibility.Collapsed;
 
                         if (LiveMapMultiSelectButton != null)
                         {
