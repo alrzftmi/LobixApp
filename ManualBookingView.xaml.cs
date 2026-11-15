@@ -1,4 +1,3 @@
-
 using LobixApp.Models;
 using LobixApp.Services;
 using System;
@@ -73,8 +72,13 @@ namespace LobixApp.Views
 
         private readonly Dictionary<int, List<string>> _variationSystemNumbers = new();
         // Maps physical display numbers to stable server-side system IDs (API v2.3).
-        private readonly Dictionary<string, string> _physicalSystemIdsByNumber = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, int> _physicalSystemVariationByNumber = new(StringComparer.OrdinalIgnoreCase);
+        // نگاشت شناسه دستگاه با کلید ترکیبی نوع سرویس و شماره دستگاه
+        private readonly Dictionary<string, string> _physicalSystemIdsByVariationAndNumber =
+            new(StringComparer.OrdinalIgnoreCase);
+
+        // شماره دستگاه‌های واقعی هر نوع سرویس
+        private readonly Dictionary<int, HashSet<string>> _physicalSystemNumbersByVariation =
+            new();
         private readonly Dictionary<int, List<(int Id, string Name)>> _variationGames = new();
         private readonly Dictionary<int, HashSet<string>> _selectedSystemNumbers = new();
         private readonly Dictionary<int, WrapPanel> _systemTilePanels = new();
@@ -306,48 +310,96 @@ namespace LobixApp.Views
 
         private FloorPlanBookingMapControl? _inlineFloorMap;
 
+
         private async Task EnsureInlineMapReadyAsync()
         {
-            if (_inlineFloorMap == null)
+            // بررسی آماده بودن کنترل‌های صفحه
+            if (InlineMapHost == null)
+                return;
+
+            try
             {
-                _inlineFloorMap = new FloorPlanBookingMapControl(
-                    _gamenet,
-                    _session.Token,
+                // ساخت نقشه فقط یک‌بار
+                if (_inlineFloorMap == null)
+                {
+                    _inlineFloorMap = new FloorPlanBookingMapControl(
+                        _gamenet,
+                        _session.Token,
 
-                    // انتخاب یا لغو انتخاب سیستم
-                    (variationId, systemNumber) =>
-                    {
-                        TogglePhysicalSystem(variationId, systemNumber);
-                        UpdateTotal();
-                        BuildBookingReviewSummary();
-                    },
+                        // انتخاب یا لغو انتخاب سیستم
+                        (variationId, systemNumber) =>
+                        {
+                            TogglePhysicalSystem(variationId, systemNumber);
 
-                    // بررسی انتخاب جدید
-                    (variationId, systemNumber) =>
-                        _selectedSystemNumbers.TryGetValue(variationId, out var selected)
-                        && selected.Contains(systemNumber),
+                            UpdateTotal();
 
-                    // بررسی رزروهای قبلی
-                    (variationId, systemNumber) =>
-    !string.IsNullOrWhiteSpace(_selectedStartHour)
-    && TryGetHourNumber(_selectedStartHour, out int startHour)
-    && IsPhysicalSystemBooked(
-        variationId,
-        systemNumber,
-        startHour,
-        _selectedBookingHours)
-                );
+                            BuildBookingReviewSummary();
 
-                InlineMapHost.Child = _inlineFloorMap;
+                            // به‌روزرسانی وضعیت ظاهری نقشه
+                            _inlineFloorMap?.RefreshBookedStates();
+                        },
+
+                        // بررسی انتخاب فعلی سیستم
+                        (variationId, systemNumber) =>
+                        {
+                            return _selectedSystemNumbers.TryGetValue(
+                                       variationId,
+                                       out var selected)
+                                   && selected.Contains(systemNumber);
+                        },
+
+                        // بررسی رزرو بودن سیستم در بازه انتخاب‌شده
+                        (variationId, systemNumber) =>
+                        {
+                            if (string.IsNullOrWhiteSpace(_selectedStartHour))
+                                return false;
+
+                            if (!TryGetHourNumber(
+                                    _selectedStartHour,
+                                    out int startHour))
+                                return false;
+
+                            return IsPhysicalSystemBooked(
+                                variationId,
+                                systemNumber,
+                                startHour,
+                                _selectedBookingHours);
+                        }
+                    );
+
+                    // اتصال نقشه به رابط کاربری
+                    InlineMapHost.Child = _inlineFloorMap;
+                }
+
+                // نمایش نقشه
+                InlineMapHost.Visibility = Visibility.Visible;
+
+                // جلوگیری از محدود شدن ارتفاع نقشه به ۴۸۰ پیکسل
+                InlineMapHost.ClearValue(HeightProperty);
+
+                InlineMapHost.MinHeight = 560;
+                InlineMapHost.MaxHeight = 760;
+
+                // آماده‌سازی نقشه و دریافت اطلاعات
+                await _inlineFloorMap.EnsureLoadedAsync();
+
+                // به‌روزرسانی وضعیت رزرو سیستم‌ها
+                _inlineFloorMap.RefreshBookedStates();
             }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[Lobix] Inline floor map error: {ex}");
 
-          InlineMapHost.Visibility = Visibility.Visible;
-InlineMapHost.Height = 480;
+                BookingFormStatusTextBlock.Text =
+                    "بارگذاری نقشه با مشکل مواجه شد. اتصال اینترنت را بررسی کنید.";
 
-await _inlineFloorMap.EnsureLoadedAsync();
-
-_inlineFloorMap.RefreshBookedStates();
+                BookingFormStatusTextBlock.Foreground =
+                    new System.Windows.Media.SolidColorBrush(
+                        System.Windows.Media.Color.FromRgb(235, 100, 100));
+            }
         }
+
 
         private async void OpenFloorPlanMapButton_Click(object sender, RoutedEventArgs e)
         {
@@ -1477,25 +1529,60 @@ _inlineFloorMap.RefreshBookedStates();
                     _gamenetLogoUrl = ReadString(logoElement);
                 }
 
-                // API v2.3 returns stable physical system IDs alongside variations.
-                _physicalSystemIdsByNumber.Clear();
-                _physicalSystemVariationByNumber.Clear();
-                if (gamenetElement.TryGetProperty("physical_systems", out JsonElement physicalSystemsElement) &&
+
+                _physicalSystemIdsByVariationAndNumber.Clear();
+                _physicalSystemNumbersByVariation.Clear();
+
+                if (gamenetElement.TryGetProperty(
+                        "physical_systems",
+                        out JsonElement physicalSystemsElement) &&
                     physicalSystemsElement.ValueKind == JsonValueKind.Array)
                 {
                     foreach (JsonElement physicalSystem in physicalSystemsElement.EnumerateArray())
                     {
-                        string systemId = physicalSystem.TryGetProperty("system_id", out JsonElement systemIdElement) ? ReadString(systemIdElement) : string.Empty;
-                        string number = physicalSystem.TryGetProperty("number", out JsonElement numberElement) ? ReadString(numberElement) : string.Empty;
-                        bool active = !physicalSystem.TryGetProperty("active", out JsonElement activeElement) || activeElement.ValueKind != JsonValueKind.False;
-                        if (active && !string.IsNullOrWhiteSpace(systemId) && !string.IsNullOrWhiteSpace(number))
+                        string systemId =
+                            physicalSystem.TryGetProperty("system_id", out JsonElement systemIdElement)
+                                ? ReadString(systemIdElement).Trim()
+                                : string.Empty;
+
+                        string number =
+                            physicalSystem.TryGetProperty("number", out JsonElement numberElement)
+                                ? ReadString(numberElement).Trim()
+                                : string.Empty;
+
+                        int variationId =
+                            physicalSystem.TryGetProperty("variation_id", out JsonElement variationElement)
+                                ? ReadInt(variationElement, 0)
+                                : 0;
+
+                        bool active =
+                            !physicalSystem.TryGetProperty("active", out JsonElement activeElement) ||
+                            activeElement.ValueKind != JsonValueKind.False;
+
+                        if (!active ||
+                            string.IsNullOrWhiteSpace(systemId) ||
+                            string.IsNullOrWhiteSpace(number) ||
+                            variationId <= 0)
                         {
-                            _physicalSystemIdsByNumber[number.Trim()] = systemId.Trim();
-                            int variationId = physicalSystem.TryGetProperty("variation_id", out JsonElement physicalVariationElement) ? ReadInt(physicalVariationElement, 0) : 0;
-                            if (variationId > 0) _physicalSystemVariationByNumber[number.Trim()] = variationId;
+                            continue;
                         }
+
+                        string key = GetPhysicalSystemLookupKey(variationId, number);
+
+                        _physicalSystemIdsByVariationAndNumber[key] = systemId;
+
+                        if (!_physicalSystemNumbersByVariation.TryGetValue(
+                                variationId,
+                                out HashSet<string>? numbers))
+                        {
+                            numbers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                            _physicalSystemNumbersByVariation[variationId] = numbers;
+                        }
+
+                        numbers.Add(number);
                     }
                 }
+
             }
 
             // اعتبارسنجی ساعات کاری
@@ -1602,11 +1689,26 @@ _inlineFloorMap.RefreshBookedStates();
 
             // Devices created in the v2.3 floor-plan manager become selectable in this form
             // when their registry record is assigned to a WooCommerce variation.
-            foreach (var physicalEntry in _physicalSystemVariationByNumber)
+            foreach (var physicalEntry in _physicalSystemNumbersByVariation)
             {
-                if (_variationSystemNumbers.TryGetValue(physicalEntry.Value, out List<string>? registeredNumbers) &&
-                    !registeredNumbers.Contains(physicalEntry.Key, StringComparer.OrdinalIgnoreCase))
-                    registeredNumbers.Add(physicalEntry.Key);
+                if (!_variationSystemNumbers.TryGetValue(
+                        physicalEntry.Key,
+                        out List<string>? registeredNumbers))
+                {
+                    continue;
+                }
+
+                foreach (string number in physicalEntry.Value)
+                {
+                    bool alreadyExists = registeredNumbers.Any(
+                        existing => string.Equals(
+                            NormalizePhysicalSystemNumber(existing),
+                            NormalizePhysicalSystemNumber(number),
+                            StringComparison.OrdinalIgnoreCase));
+
+                    if (!alreadyExists)
+                        registeredNumbers.Add(number);
+                }
             }
 
             BuildSystemCards();
@@ -3245,7 +3347,12 @@ _inlineFloorMap.RefreshBookedStates();
 
             return digits;
         }
-
+        private static string GetPhysicalSystemLookupKey(
+    int variationId,
+    string? systemNumber)
+        {
+            return $"{variationId}:{NormalizePhysicalSystemNumber(systemNumber)}";
+        }
         private bool IsPhysicalSystemBooked(
             int variationId,
             string systemNumber,
@@ -4937,7 +5044,11 @@ _inlineFloorMap.RefreshBookedStates();
                                 VariationId = variationId,
                                 Quantity = 1,
                                 SystemNumber = systemNumber,
-                                SystemId = _physicalSystemIdsByNumber.TryGetValue(systemNumber, out string? physicalSystemId) ? physicalSystemId : null,
+                                SystemId = _physicalSystemIdsByVariationAndNumber.TryGetValue(
+    GetPhysicalSystemLookupKey(variationId, systemNumber),
+    out string? physicalSystemId)
+        ? physicalSystemId
+        : null,
                                 GameId = selectedGameId
                             });
                         }
