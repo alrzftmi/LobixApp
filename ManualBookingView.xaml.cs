@@ -560,18 +560,25 @@ namespace LobixApp.Views
         private void ShowBookingWizardStep(int step)
         {
             _wizardStep = Math.Max(0, Math.Min(5, step));
-            // Single-screen operator workflow: every section remains visible.
-            // _wizardStep is retained only for backward-compatible event handlers.
-            BookingDateStepPanel.Visibility = Visibility.Visible;
-            BookingHourStepPanel.Visibility = Visibility.Visible;
-            BookingDurationStepPanel.Visibility = Visibility.Visible;
-            BookingSystemsStepPanel.Visibility = Visibility.Visible;
-            BookingCustomerStepPanel.Visibility = Visibility.Visible;
+            bool showReview = _wizardStep >= 5;
+
+            // مراحل انتخاب اطلاعات در صفحه اصلی دیده می‌شوند؛
+            // پس از تکمیل اطلاعات، صفحه مرور نهایی به‌صورت مستقل نمایش داده می‌شود.
+            Visibility formVisibility = showReview ? Visibility.Collapsed : Visibility.Visible;
+            BookingDateStepPanel.Visibility = formVisibility;
+            BookingHourStepPanel.Visibility = formVisibility;
+            BookingDurationStepPanel.Visibility = formVisibility;
+            BookingSystemsStepPanel.Visibility = formVisibility;
+            BookingCustomerStepPanel.Visibility = formVisibility;
             BookingWizardNavigationPanel.Visibility = Visibility.Collapsed;
-            BookingReviewPanel.Visibility = Visibility.Collapsed;
+            BookingReviewPanel.Visibility = showReview ? Visibility.Visible : Visibility.Collapsed;
+
             BookingBackButton.IsEnabled = _wizardStep > 0;
             BookingNextButton.Content = _wizardStep == 4 ? "مرور و تأیید ←" : "ادامه ←";
-            BookingWizardMessageTextBlock.Text = "همه اطلاعات رزرو را همین‌جا وارد کنید؛ ظرفیت هنگام ثبت دوباره بررسی می‌شود.";
+            BookingWizardMessageTextBlock.Text = showReview
+                ? "خلاصه رزرو را بررسی کنید و سپس ثبت نهایی را انجام دهید."
+                : "همه اطلاعات رزرو را همین‌جا وارد کنید؛ ظرفیت هنگام ثبت دوباره بررسی می‌شود.";
+
             BuildBookingReviewSummary();
         }
 
