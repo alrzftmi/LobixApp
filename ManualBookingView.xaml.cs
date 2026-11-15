@@ -83,7 +83,6 @@ namespace LobixApp.Views
         private readonly Dictionary<int, HashSet<string>> _selectedSystemNumbers = new();
         private readonly Dictionary<int, WrapPanel> _systemTilePanels = new();
         private readonly Dictionary<int, Dictionary<string, Button>> _systemTileButtons = new();
-        private readonly Dictionary<int, ComboBox> _systemGameCombos = new();
         private List<ManualBooking> _selectedDateManualBookings = new();
         private List<OnlineBooking> _selectedDateOnlineBookings = new();
 
@@ -712,7 +711,7 @@ namespace LobixApp.Views
             if (TryGetHourNumber(_selectedStartHour ?? string.Empty, out int startHour))
             {
                 hours = string.Join("، ", Enumerable.Range(0, Math.Max(1, _selectedBookingHours))
-                    .Select(offset => ToPersianNumber((startHour + offset).ToString("00", CultureInfo.InvariantCulture))));
+                    .Select(offset => ToPersianNumber((startHour + offset).ToString("00", CultureInfo.InvariantCulture)) + ":۰۰"));
             }
 
             string customer = BookingCustomerTextBox.Text.Trim();
@@ -724,7 +723,7 @@ namespace LobixApp.Views
             BookingReviewSummaryTextBlock.Text =
                 $"تاریخ: {PersianDateTextBlock.Text}\n" +
                 $"سیستم‌های انتخاب‌شده: {(string.IsNullOrWhiteSpace(systems) ? "انتخاب نشده" : systems)}\n" +
-                $"ساعت‌های رزرو: {hours}\n" +
+                $"ساعت‌های انتخاب‌شده: {hours}\n" +
                 $"مدت رزرو: {ToPersianNumber(_selectedBookingHours)} ساعت\n" +
                 $"نام / شناسه مشتری: {(string.IsNullOrWhiteSpace(customer) ? "—" : customer)}\n" +
                 $"موبایل: {(string.IsNullOrWhiteSpace(phone) ? "—" : ToPersianNumber(phone))}\n" +
@@ -3666,7 +3665,6 @@ namespace LobixApp.Views
             _systemCardLiveStatusTextBlocks.Clear();
             _systemTilePanels.Clear();
             _systemTileButtons.Clear();
-            _systemGameCombos.Clear();
 
             foreach (KeyValuePair<int, string> variation in _variationNames)
             {
@@ -3901,51 +3899,6 @@ namespace LobixApp.Views
                     tilePanel.Children.Add(tile);
                 }
 
-                var gameCombo = new ComboBox
-                {
-                    Height = 40,
-                    MinWidth = 190,
-                    Margin = new Thickness(0, 9, 0, 0),
-                    Padding = new Thickness(10, 5, 10, 5),
-                    FontFamily = new FontFamily("Peyda"),
-                    FontSize = 12,
-                    Foreground = new SolidColorBrush(Color.FromRgb(247, 247, 252)),
-                    Background = new SolidColorBrush(Color.FromRgb(35, 35, 47)),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(82, 67, 105)),
-                    BorderThickness = new Thickness(1),
-                    IsEnabled = false,
-                    ToolTip = "بازی اختیاری برای این نوع سیستم"
-                };
-                gameCombo.Resources[SystemColors.WindowBrushKey] = new SolidColorBrush(Color.FromRgb(35, 35, 47));
-                gameCombo.Resources[SystemColors.ControlBrushKey] = new SolidColorBrush(Color.FromRgb(35, 35, 47));
-                gameCombo.ItemContainerStyle = new Style(typeof(ComboBoxItem))
-                {
-                    Setters =
-                    {
-                        new Setter(Control.ForegroundProperty, new SolidColorBrush(Color.FromRgb(247, 247, 252))),
-                        new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(35, 35, 47))),
-                        new Setter(Control.PaddingProperty, new Thickness(10, 8, 10, 8)),
-                        new Setter(Control.FontFamilyProperty, new FontFamily("Peyda"))
-                    }
-                };
-                gameCombo.ItemContainerStyle.Triggers.Add(new Trigger
-                {
-                    Property = ComboBoxItem.IsHighlightedProperty,
-                    Value = true,
-                    Setters = { new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(76, 52, 102))) }
-                });
-                gameCombo.Items.Add(new KeyValuePair<int, string>(0, "بدون انتخاب بازی"));
-                if (_variationGames.TryGetValue(variationId, out var variationGames))
-                {
-                    foreach (var game in variationGames)
-                        gameCombo.Items.Add(new KeyValuePair<int, string>(game.Id, game.Name));
-                }
-                gameCombo.DisplayMemberPath = "Value";
-                gameCombo.SelectedValuePath = "Key";
-                gameCombo.SelectedIndex = 0;
-                gameCombo.IsEnabled = variationGames != null && variationGames.Count > 0;
-                _systemGameCombos[variationId] = gameCombo;
-
                 // =================================================
                 // محتوای کارت
                 // =================================================
@@ -4004,19 +3957,6 @@ namespace LobixApp.Views
                         TextWrapping = TextWrapping.Wrap
                     });
                 }
-                if (variationGames != null && variationGames.Count > 0)
-                {
-                    content.Children.Add(new TextBlock
-                    {
-                        Text = "بازی (اختیاری)",
-                        FontFamily = new FontFamily("Peyda"),
-                        FontSize = 11,
-                        Foreground = new SolidColorBrush(Color.FromRgb(190, 192, 207)),
-                        Margin = new Thickness(0, 7, 0, 2)
-                    });
-                    content.Children.Add(gameCombo);
-                }
-
                 // =================================================
                 // کارت سیستم
                 // =================================================
@@ -5025,11 +4965,6 @@ namespace LobixApp.Views
 
                     if (_selectedSystemNumbers.TryGetValue(variationId, out HashSet<string>? selectedNumbers) && selectedNumbers.Count > 0)
                     {
-                        int? selectedGameId = null;
-                        if (_systemGameCombos.TryGetValue(variationId, out ComboBox? gameCombo) &&
-                            gameCombo.SelectedValue is int gameId && gameId > 0)
-                            selectedGameId = gameId;
-
                         foreach (string systemNumber in selectedNumbers.OrderBy(value => value, StringComparer.OrdinalIgnoreCase))
                         {
                             systems.Add(new BookingSystemRequest
@@ -5042,7 +4977,7 @@ namespace LobixApp.Views
     out string? physicalSystemId)
         ? physicalSystemId
         : null,
-                                GameId = selectedGameId
+                                GameId = null
                             });
                         }
                         quantity = selectedNumbers.Count;
@@ -5050,16 +4985,11 @@ namespace LobixApp.Views
                     else
                     {
                         // Variations without physical-number metadata retain the legacy quantity flow.
-                        int? selectedGameId = null;
-                        if (_systemGameCombos.TryGetValue(variationId, out ComboBox? gameCombo) &&
-                            gameCombo.SelectedValue is int gameId && gameId > 0)
-                            selectedGameId = gameId;
-
                         systems.Add(new BookingSystemRequest
                         {
                             VariationId = variationId,
                             Quantity = quantity,
-                            GameId = selectedGameId
+                            GameId = null
                         });
                     }
 
