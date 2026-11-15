@@ -172,14 +172,36 @@
         <!-- ================= COMBOBOX STYLE ================= -->
 
         <Style TargetType="{x:Type ComboBox}">
-            <Setter Property="Background" Value="{StaticResource Input}"/>
-            <Setter Property="Foreground" Value="{StaticResource Text}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="Background" Value="#1B1E29"/>
+            <Setter Property="Foreground" Value="#F2F3F7"/>
+            <Setter Property="TextElement.Foreground" Value="#F2F3F7"/>
+            <Setter Property="BorderBrush" Value="#343744"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="7,5"/>
             <Setter Property="Margin" Value="0,3,0,7"/>
             <Setter Property="MinHeight" Value="32"/>
             <Setter Property="FontSize" Value="11"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="Background" Value="#1B1E29"/>
+                        <Setter Property="Foreground" Value="#F2F3F7"/>
+                        <Setter Property="TextElement.Foreground" Value="#F2F3F7"/>
+                        <Setter Property="Padding" Value="9,7"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="#34303A"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#45252D"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style TargetType="{x:Type ComboBoxItem}">
