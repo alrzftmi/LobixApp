@@ -33,7 +33,8 @@ public sealed class FloorPlanBookingMapControl : UserControl
         ClipToBounds = false
     };
     private ScrollViewer? _mapScrollViewer;
-    private double _mapZoom = 1.0;\n    private readonly TextBlock _zoomPercent = new();
+    private double _mapZoom = 1.0;
+    private readonly TextBlock _zoomPercent = new() { Text = "۱۰۰٪", MinWidth = 48, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White, FontSize = 11, Margin = new Thickness(0, 0, 9, 0) };
     private readonly TextBlock _status = new() { Margin = new Thickness(8), Foreground = Brushes.Gainsboro };
     private readonly Dictionary<string, (string Number, int VariationId, string Category, bool Active)> _systems = new(StringComparer.OrdinalIgnoreCase);
     private readonly HashSet<string> _selectedNumbers = new(StringComparer.OrdinalIgnoreCase);
@@ -78,7 +79,7 @@ public sealed class FloorPlanBookingMapControl : UserControl
 
         var actions = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
         var zoomOut = new Button { Content = "−", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
-        _zoomPercent = new TextBlock { Text = "۱۰۰٪", MinWidth = 48, TextAlignment = TextAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Foreground = Brushes.White, FontSize = 11, Margin = new Thickness(0, 0, 9, 0) };
+        _zoomPercent.Text = "۱۰۰٪";
         var zoomIn = new Button { Content = "+", Width = 30, Height = 28, Padding = new Thickness(0), Margin = new Thickness(0, 0, 9, 0), Background = new SolidColorBrush(Color.FromRgb(43, 45, 56)), Foreground = Brushes.White, FontSize = 16 };
         zoomOut.Click += (_, _) => ChangeZoom(1.0 / 1.15);
         zoomIn.Click += (_, _) => ChangeZoom(1.15);
