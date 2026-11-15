@@ -357,7 +357,7 @@
                                         Style="{StaticResource SmallActionButtonStyle}"/>
                             </StackPanel>
                         </Grid>
-status filter row                    </StackPanel>
+                    </StackPanel>
                 </Border>
 
                 <!-- Search -->
