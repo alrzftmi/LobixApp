@@ -5,26 +5,26 @@
              FlowDirection="RightToLeft"
              SnapsToDevicePixels="True"
              UseLayoutRounding="True"
-             Background="#101116"
+             Background="#0D0E13"
              FontFamily="pack://application:,,,/Fonts/#Peyda">
 
     <UserControl.Resources>
 
         <!-- COLORS -->
-        <SolidColorBrush x:Key="PageBg" Color="#101116"/>
-        <SolidColorBrush x:Key="PanelBg" Color="#191B23"/>
-        <SolidColorBrush x:Key="PanelAlt" Color="#20232D"/>
-        <SolidColorBrush x:Key="InputBg" Color="#101219"/>
-        <SolidColorBrush x:Key="LineBrush" Color="#343744"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="#E0444D"/>
-        <SolidColorBrush x:Key="AccentHoverBrush" Color="#C93640"/>
-        <SolidColorBrush x:Key="AccentSoftBrush" Color="#382329"/>
-        <SolidColorBrush x:Key="TextBrush" Color="#F4F4F7"/>
-        <SolidColorBrush x:Key="SubTextBrush" Color="#A7AAB8"/>
-        <SolidColorBrush x:Key="MutedBrush" Color="#777C8C"/>
-        <SolidColorBrush x:Key="GreenBrush" Color="#50D6A0"/>
-        <SolidColorBrush x:Key="GreenBgBrush" Color="#18352C"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="#E8B96A"/>
+        <SolidColorBrush x:Key="PageBg" Color="#0D0E13"/>
+        <SolidColorBrush x:Key="PanelBg" Color="#151720"/>
+        <SolidColorBrush x:Key="PanelAlt" Color="#1B1E29"/>
+        <SolidColorBrush x:Key="InputBg" Color="#10121A"/>
+        <SolidColorBrush x:Key="LineBrush" Color="#292D3A"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#C22E39"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#302027"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#F2F3F7"/>
+        <SolidColorBrush x:Key="SubTextBrush" Color="#9298AA"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#747B8D"/>
+        <SolidColorBrush x:Key="GreenBrush" Color="#42C98A"/>
+        <SolidColorBrush x:Key="GreenBgBrush" Color="#18372E"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#E5A93D"/>
 
         <FontFamily x:Key="PeydaFont">pack://application:,,,/Fonts/#Peyda</FontFamily>
 
@@ -81,7 +81,7 @@
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="8"
+                                CornerRadius="6"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter
                                 HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -134,8 +134,8 @@
         <Style x:Key="SecondaryButton"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Background" Value="#20232D"/>
-            <Setter Property="BorderBrush" Value="#343744"/>
+            <Setter Property="Background" Value="#1B1E29"/>
+            <Setter Property="BorderBrush" Value="#292D3A"/>
         </Style>
 
         <!-- TEXTBOX -->
@@ -393,7 +393,7 @@
                                     <Border Width="290"
                                             Margin="0,7,0,0"
                                             Background="#191B24"
-                                            BorderBrush="#393C49"
+                                            BorderBrush="#292D3A"
                                             BorderThickness="1"
                                             CornerRadius="12"
                                             Padding="12">
@@ -702,7 +702,7 @@
                                 Visibility="Visible"
                                 MinHeight="0"
                                 Background="#0C0E14"
-                                BorderBrush="#343744"
+                                BorderBrush="#292D3A"
                                 BorderThickness="1"
                                 CornerRadius="10"
                                 Padding="6"
@@ -832,7 +832,7 @@
                         </StackPanel>
 
                         <Border Grid.Row="2"
-                                Background="#101219"
+                                Background="#10121A"
                                 BorderBrush="{StaticResource LineBrush}"
                                 BorderThickness="1"
                                 CornerRadius="8"
@@ -910,7 +910,7 @@
                     Padding="24"
                     CornerRadius="15"
                     Background="#191B24"
-                    BorderBrush="#393C49"
+                    BorderBrush="#292D3A"
                     BorderThickness="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
