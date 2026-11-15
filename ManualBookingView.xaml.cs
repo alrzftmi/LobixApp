@@ -657,6 +657,64 @@ namespace LobixApp.Views
             }
         }
 
+        private async void OpenBookingReview_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CreateRealBookingButton.IsEnabled = false;
+                CreateRealBookingButton.Content = "در حال بررسی...";
+
+                if (_selectedBookingDate.Date < DateTime.Today)
+                    throw new Exception("امکان رزرو برای تاریخ گذشته وجود ندارد.");
+
+                if (!_availabilityLoadSucceeded)
+                {
+                    SetBookingInfo("در حال دریافت ظرفیت تاریخ انتخاب‌شده...");
+                    await LoadAvailabilityAsync(_selectedBookingDate);
+                }
+
+                if (!_availabilityLoadSucceeded)
+                    throw new Exception("ظرفیت تاریخ انتخاب‌شده دریافت نشده است. اتصال را بررسی کنید.");
+
+                if (string.IsNullOrWhiteSpace(_selectedStartHour) ||
+                    !TryGetHourNumber(_selectedStartHour, out int selectedStartHour))
+                    throw new Exception("ساعت شروع رزرو را انتخاب کنید.");
+
+                if (!_durationExplicitlySelected)
+                    throw new Exception("مدت رزرو را انتخاب کنید.");
+
+                string? durationError = GetDurationValidationError(_selectedBookingHours);
+                if (!string.IsNullOrWhiteSpace(durationError))
+                    throw new Exception(durationError);
+
+                if (GetSelectedSystemCount() < 1)
+                    throw new Exception("حداقل یک سیستم آزاد را از روی نقشه انتخاب کنید.");
+
+                string? capacityError = GetSelectedSystemsCapacityError(
+                    selectedStartHour,
+                    _selectedBookingHours);
+                if (!string.IsNullOrWhiteSpace(capacityError))
+                    throw new Exception(capacityError);
+
+                ValidateCustomerFieldsForReview();
+                UpdateTotal();
+                BuildBookingReviewSummary();
+                SetBookingInfo("اطلاعات را بررسی کنید و در صورت تأیید، ثبت رزرو را بزنید.");
+                ShowBookingWizardStep(5);
+            }
+            catch (Exception ex)
+            {
+                SetBookingError(UserFacingErrors.GetMessage(
+                    ex,
+                    "اطلاعات رزرو کامل نیست. موارد مشخص‌شده را بررسی کنید."));
+            }
+            finally
+            {
+                CreateRealBookingButton.IsEnabled = true;
+                CreateRealBookingButton.Content = "بررسی نهایی";
+            }
+        }
+
         private void BookingBackButton_Click(object sender, RoutedEventArgs e)
         {
             if (_wizardStep > 0 && _wizardStep < 5)
@@ -5174,7 +5232,7 @@ namespace LobixApp.Views
             finally
             {
                 SetManualLoading(false);
-                CreateRealBookingButton.Content = "ثبت رزرو";
+                CreateRealBookingButton.Content = "بررسی نهایی";
                 CreateRealBookingButton.IsEnabled = true;
                 if (submitButton != null) { submitButton.Content = "ثبت رزرو"; submitButton.IsEnabled = true; }
             }
