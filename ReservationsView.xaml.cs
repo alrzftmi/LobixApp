@@ -42,7 +42,13 @@ namespace LobixApp.Views
         private List<ReservationItem> _reservations = new();
         private List<GamenetVariation> _variations = new();
 
-        private DateTime? _selectedDate;
+        private DateTime? _selectedDate = DateTime.Today;
+        private bool _guidedBookingMode;
+        private DateTime _guidedBookingDate = DateTime.Today;
+        private int _guidedStartHour = StartHour;
+        private int _guidedEndHour = StartHour + 1;
+        private double _liveMapZoom = 1.0;
+        private double _liveMapFitScale = 1.0;
         private string _selectedStatus = "all";
         private string _searchText = string.Empty;
 
@@ -102,6 +108,8 @@ namespace LobixApp.Views
         // =========================================================
 
         private ScrollViewer? _activeTimelineScrollViewer;
+        private ScrollViewer? _activeTimelineHeaderScrollViewer;
+        private Canvas? _activeTimelineHeaderCanvas;
         private Window? _timelineFullscreenWindow;
         private const double HeaderHeight = 42;
 
@@ -129,6 +137,9 @@ namespace LobixApp.Views
             _session = session;
 
             _apiService.SetAuthentication(_session.Token);
+            _activeTimelineHeaderScrollViewer = TimelineHeaderScrollViewer;
+            _activeTimelineHeaderCanvas = TimelineStickyHeaderCanvas;
+            UpdateDateQuickFilterButtons();
 
             // -----------------------------------------------------
             // Clock Timer
@@ -354,6 +365,7 @@ namespace LobixApp.Views
                         "HH:mm",
                         CultureInfo.InvariantCulture));
 
+                UpdateDateQuickFilterButtons();
                 ApplyFilters();
             }
             catch (Exception ex)
@@ -2076,9 +2088,8 @@ namespace LobixApp.Views
             object sender,
             RoutedEventArgs e)
         {
-            _selectedDate =
-                DateTime.Today;
-
+            _selectedDate = DateTime.Today;
+            UpdateDateQuickFilterButtons();
             await LoadReservationsAsync();
         }
 
@@ -2086,9 +2097,8 @@ namespace LobixApp.Views
             object sender,
             RoutedEventArgs e)
         {
-            _selectedDate =
-                DateTime.Today.AddDays(1);
-
+            _selectedDate = DateTime.Today.AddDays(1);
+            UpdateDateQuickFilterButtons();
             await LoadReservationsAsync();
         }
 
@@ -2096,19 +2106,30 @@ namespace LobixApp.Views
             object sender,
             RoutedEventArgs e)
         {
-            _selectedDate =
-                DateTime.Today.AddDays(2);
-
+            _selectedDate = DateTime.Today.AddDays(2);
+            UpdateDateQuickFilterButtons();
             await LoadReservationsAsync();
         }
 
-        private async void AllDatesButton_Click(
-            object sender,
-            RoutedEventArgs e)
+        private void UpdateDateQuickFilterButtons()
         {
-            _selectedDate = null;
+            void SetActive(Button? button, bool active)
+            {
+                if (button == null) return;
+                button.Background = new SolidColorBrush(active
+                    ? Color.FromRgb(220, 55, 66)
+                    : Color.FromRgb(35, 37, 47));
+                button.BorderBrush = new SolidColorBrush(active
+                    ? Color.FromRgb(245, 95, 104)
+                    : Color.FromRgb(68, 71, 84));
+                button.Foreground = Brushes.White;
+                button.FontWeight = active ? FontWeights.Bold : FontWeights.Medium;
+            }
 
-            await LoadReservationsAsync();
+            DateTime? selected = _selectedDate?.Date;
+            SetActive(TodayDateButton, selected == DateTime.Today);
+            SetActive(TomorrowDateButton, selected == DateTime.Today.AddDays(1));
+            SetActive(DayAfterTomorrowDateButton, selected == DateTime.Today.AddDays(2));
         }
 
         // =========================================================
@@ -2136,9 +2157,8 @@ namespace LobixApp.Views
                     DateTime.Today;
             }
 
-            _selectedDate =
-                previous;
-
+            _selectedDate = previous;
+            UpdateDateQuickFilterButtons();
             await LoadReservationsAsync();
         }
 
@@ -2150,9 +2170,8 @@ namespace LobixApp.Views
                 _selectedDate
                 ?? DateTime.Today;
 
-            _selectedDate =
-                date.AddDays(1);
-
+            _selectedDate = date.AddDays(1);
+            UpdateDateQuickFilterButtons();
             await LoadReservationsAsync();
         }
 
@@ -2175,6 +2194,7 @@ namespace LobixApp.Views
             if (result == true && picker.SelectedDate.HasValue)
             {
                 _selectedDate = picker.SelectedDate.Value.Date;
+                UpdateDateQuickFilterButtons();
                 _ = LoadReservationsAsync();
             }
         }
@@ -3736,15 +3756,191 @@ namespace LobixApp.Views
 
         public async Task StartManualBookingAsync()
         {
-            // The view starts its Local-First snapshot load in the constructor.
-            // Wait briefly for that work to finish so system variations are available in the editor.
             while (_isLoading)
                 await Task.Delay(80);
 
             if (_variations.Count == 0)
                 await LoadReservationsAsync();
 
-            await ShowBookingEditorAsync(null, null);
+            if (!_floorMapLoaded)
+                await LoadFloorMapAsync();
+
+            await ShowGuidedBookingSetupAsync();
+        }
+
+        private async Task ShowGuidedBookingSetupAsync()
+        {
+            DateTime chosenDate = _selectedDate ?? DateTime.Today;
+            int chosenStart = Math.Clamp(DateTime.Now.Hour + (DateTime.Now.Minute > 0 ? 1 : 0), StartHour, EndHour - 1);
+            int chosenEnd = Math.Min(EndHour, chosenStart + 1);
+
+            var window = new Window
+            {
+                Title = "ثبت رزرو جدید",
+                Width = 520,
+                SizeToContent = SizeToContent.Height,
+                MinWidth = 480,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Window.GetWindow(this),
+                FlowDirection = FlowDirection.RightToLeft,
+                ResizeMode = ResizeMode.NoResize,
+                Background = new SolidColorBrush(Color.FromRgb(19, 20, 28)),
+                FontFamily = FindResource("Peyda") as FontFamily
+            };
+
+            var root = new StackPanel { Margin = new Thickness(24) };
+            root.Children.Add(new TextBlock
+            {
+                Text = "زمان رزرو را مشخص کنید",
+                FontSize = 21,
+                FontWeight = FontWeights.Bold,
+                Foreground = Brushes.White,
+                Margin = new Thickness(0, 0, 0, 5)
+            });
+            root.Children.Add(new TextBlock
+            {
+                Text = "پس از تأیید، نقشه اصلی سالن برای انتخاب سیستم‌های آزاد فعال می‌شود.",
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Color.FromRgb(166, 171, 188)),
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 18)
+            });
+
+            Button dateButton = new Button
+            {
+                Content = JalaliDateHelper.FormatDate(chosenDate),
+                Height = 44,
+                HorizontalContentAlignment = HorizontalAlignment.Right,
+                Padding = new Thickness(14, 0, 14, 0),
+                Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(75, 79, 96)),
+                BorderThickness = new Thickness(1),
+                FontFamily = FindResource("Peyda") as FontFamily,
+                FontSize = 14
+            };
+            dateButton.Click += (_, _) =>
+            {
+                var picker = new JalaliDatePickerWindow(chosenDate, DateTime.Today) { Owner = window };
+                if (picker.ShowDialog() == true && picker.SelectedDate.HasValue)
+                {
+                    chosenDate = picker.SelectedDate.Value.Date;
+                    dateButton.Content = JalaliDateHelper.FormatDate(chosenDate);
+                }
+            };
+            root.Children.Add(CreateCompactField("روز رزرو", dateButton));
+
+            var itemStyle = new Style(typeof(ComboBoxItem));
+            itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(35, 37, 49))));
+            itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            itemStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(10, 7, 10, 7)));
+
+            ComboBox MakeHourCombo(int first, int last, int selected)
+            {
+                var combo = new ComboBox
+                {
+                    Height = 44,
+                    MinWidth = 150,
+                    FontFamily = FindResource("Peyda") as FontFamily,
+                    FontSize = 14,
+                    Foreground = Brushes.White,
+                    Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(75, 79, 96)),
+                    ItemContainerStyle = itemStyle,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center
+                };
+                for (int h = first; h <= last; h++)
+                    combo.Items.Add(h.ToString("00", CultureInfo.InvariantCulture) + ":00");
+                combo.SelectedIndex = Math.Clamp(selected - first, 0, combo.Items.Count - 1);
+                return combo;
+            }
+
+            var startCombo = MakeHourCombo(StartHour, EndHour - 1, chosenStart);
+            var endCombo = MakeHourCombo(StartHour + 1, EndHour, chosenEnd);
+            void RefreshEndHours()
+            {
+                int startHour = StartHour + Math.Max(0, startCombo.SelectedIndex);
+                int oldEnd = int.TryParse(endCombo.SelectedItem?.ToString()?.Substring(0, 2), out int parsed) ? parsed : startHour + 1;
+                endCombo.Items.Clear();
+                for (int h = startHour + 1; h <= EndHour; h++)
+                    endCombo.Items.Add(h.ToString("00", CultureInfo.InvariantCulture) + ":00");
+                int target = Math.Clamp(oldEnd, startHour + 1, EndHour);
+                endCombo.SelectedIndex = target - (startHour + 1);
+            }
+            startCombo.SelectionChanged += (_, _) => RefreshEndHours();
+
+            root.Children.Add(CreateCompactField("ساعت شروع", startCombo));
+            root.Children.Add(CreateCompactField("ساعت پایان", endCombo));
+
+            var validation = new TextBlock
+            {
+                Foreground = new SolidColorBrush(Color.FromRgb(255, 112, 112)),
+                FontSize = 12,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 10, 0, 0)
+            };
+            root.Children.Add(validation);
+
+            var actions = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 18, 0, 0)
+            };
+            var cancel = CreateDialogButton("انصراف", false);
+            cancel.Click += (_, _) => window.Close();
+            var confirm = CreateDialogButton("ادامه و انتخاب سیستم", true);
+            confirm.Click += async (_, _) =>
+            {
+                int startHour = StartHour + startCombo.SelectedIndex;
+                int endHour = int.TryParse(endCombo.SelectedItem?.ToString()?.Substring(0, 2), out int parsedEnd) ? parsedEnd : 0;
+                if (endHour <= startHour)
+                {
+                    validation.Text = "ساعت پایان باید بعد از ساعت شروع باشد.";
+                    return;
+                }
+                if (chosenDate.Date < DateTime.Today)
+                {
+                    validation.Text = "انتخاب روز گذشته امکان‌پذیر نیست.";
+                    return;
+                }
+
+                _guidedBookingDate = chosenDate.Date;
+                _guidedStartHour = startHour;
+                _guidedEndHour = endHour;
+                _guidedBookingMode = true;
+                _selectedDate = chosenDate.Date;
+                _selectedLiveMapSystems.Clear();
+                _selectedLiveMapObjects.Clear();
+                _liveMapMultiSelectMode = true;
+
+                window.Close();
+                UpdateDateQuickFilterButtons();
+                await LoadReservationsAsync();
+
+                if (LiveMapMultiSelectButton != null)
+                    LiveMapMultiSelectButton.Content = "ثبت رزرو برای سیستم‌های انتخاب‌شده";
+                if (FloorMapSummaryText != null)
+                    FloorMapSummaryText.Text = $"انتخاب سیستم‌های آزاد • {JalaliDateHelper.FormatDate(chosenDate)} • {startHour:00}:00 تا {endHour:00}:00";
+                RenderLiveFloorMap();
+                LiveMapScrollViewer?.BringIntoView();
+            };
+            actions.Children.Add(cancel);
+            actions.Children.Add(confirm);
+            root.Children.Add(actions);
+
+            window.Content = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(24, 25, 35)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(67, 70, 88)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(18),
+                Padding = new Thickness(2),
+                Child = root
+            };
+            LobixDialog.AnimateWindowIn(window);
+            window.ShowDialog();
         }
 
         private async void NewReservationButton_Click(
@@ -4072,15 +4268,19 @@ namespace LobixApp.Views
             DateTime initialDate =
                 isEdit
                     ? ParseDate(reservation!.Date)
-                    : (_selectedDate ?? DateTime.Today);
+                    : (_guidedBookingMode ? _guidedBookingDate : (_selectedDate ?? DateTime.Today));
 
             int initialStartMinutes = isEdit
                 ? ParseTimeMinutes(reservation!.StartTime)
-                : Math.Clamp((DateTime.Now.Hour * 60) + (DateTime.Now.Minute / 5 * 5), StartHour * 60, EndHour * 60 - 5);
+                : _guidedBookingMode
+                    ? _guidedStartHour * 60
+                    : Math.Clamp((DateTime.Now.Hour * 60) + (DateTime.Now.Minute / 5 * 5), StartHour * 60, EndHour * 60 - 5);
 
             int initialDurationMinutes = isEdit
                 ? GetReservationDurationMinutes(reservation!)
-                : 60;
+                : _guidedBookingMode
+                    ? (_guidedEndHour - _guidedStartHour) * 60
+                    : 60;
 
             string initialCustomer =
                 isEdit ? reservation!.Customer : string.Empty;
@@ -4239,6 +4439,7 @@ namespace LobixApp.Views
                 }
             };
 
+            datePickerButton.IsEnabled = !_guidedBookingMode;
             fieldsPanel.Children.Add(
                 CreateCompactField("تاریخ شمسی", datePickerButton)
             );
@@ -4555,6 +4756,10 @@ namespace LobixApp.Views
 
             startMinuteCombo.SelectedItem =
                 (safeInitialStart % 60).ToString("00", CultureInfo.InvariantCulture);
+            startMinuteCombo.IsEnabled = !_guidedBookingMode;
+            endMinuteCombo.IsEnabled = !_guidedBookingMode;
+            startHourCombo.IsEnabled = !_guidedBookingMode;
+            endHourCombo.IsEnabled = !_guidedBookingMode;
 
             // دریافت زمان شروع به دقیقه
             int GetStartMinutes()
@@ -4690,6 +4895,7 @@ namespace LobixApp.Views
                 FontSize = 16
             });
 
+            startMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
             startTimePanel.Children.Add(startMinuteCombo);
 
             // کنترل‌های ساعت و دقیقه پایان
@@ -4709,14 +4915,15 @@ namespace LobixApp.Views
                 FontSize = 16
             });
 
+            endMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
             endTimePanel.Children.Add(endMinuteCombo);
 
             // افزودن به فرم
             fieldsPanel.Children.Add(
-                CreateCompactField("ساعت شروع (ساعت : دقیقه)", startTimePanel));
+                CreateCompactField(_guidedBookingMode ? "ساعت شروع" : "ساعت شروع (ساعت : دقیقه)", startTimePanel));
 
             fieldsPanel.Children.Add(
-                CreateCompactField("ساعت پایان (ساعت : دقیقه)", endTimePanel));
+                CreateCompactField(_guidedBookingMode ? "ساعت پایان" : "ساعت پایان (ساعت : دقیقه)", endTimePanel));
 
             // نمایش مدت رزرو
             TextBlock durationSummary = new TextBlock
@@ -4893,17 +5100,17 @@ namespace LobixApp.Views
                     // -------------------------------------------------
 
                     if (startHourCombo.SelectedItem == null ||
-                        startMinuteCombo.SelectedItem == null ||
+                        (!_guidedBookingMode && startMinuteCombo.SelectedItem == null) ||
                         endHourCombo.SelectedItem == null ||
-                        endMinuteCombo.SelectedItem == null)
+                        (!_guidedBookingMode && endMinuteCombo.SelectedItem == null))
                     {
                         validationText.Text =
                             "ساعت و دقیقه شروع و پایان را انتخاب کنید.";
                         return;
                     }
 
-                    int startMinute = GetStartMinutes();
-                    int endMinute = GetEndMinutes();
+                    int startMinute = _guidedBookingMode ? _guidedStartHour * 60 : GetStartMinutes();
+                    int endMinute = _guidedBookingMode ? _guidedEndHour * 60 : GetEndMinutes();
 
                     int durationMinutes = endMinute - startMinute;
 
@@ -4918,9 +5125,12 @@ namespace LobixApp.Views
                     }
 
 
-                    startMinute = GetStartMinutes();
-                    endMinute = GetEndMinutes();
-                    durationMinutes = endMinute - startMinute;
+                    if (!_guidedBookingMode)
+                    {
+                        startMinute = GetStartMinutes();
+                        endMinute = GetEndMinutes();
+                        durationMinutes = endMinute - startMinute;
+                    }
 
                     if (durationMinutes < 5 || durationMinutes % 5 != 0 ||
                         startMinute < StartHour * 60 || endMinute > EndHour * 60)
