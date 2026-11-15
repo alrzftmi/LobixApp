@@ -2500,86 +2500,151 @@ namespace LobixApp.Views
                     return;
                 }
 
+
                 _liveMapObjects.Clear();
+
                 if (objects.ValueKind == JsonValueKind.Array)
                 {
                     foreach (JsonElement item in objects.EnumerateArray())
                     {
                         string type = ReadJsonString(item, "type", "Type");
                         string label = ReadJsonString(item, "label", "name", "Name");
-                        string systemId = ReadJsonString(item, "system_id", "systemId", "SystemId").Trim();
-                        bool physicalFlag = ReadJsonBool(item, "is_physical_system", "IsPhysicalSystem");
-                        string number = NormalizeMapSystemNumber(ReadJsonString(item, "system_number", "number", "SystemNumber"));
-                        int variation = ReadJsonInt(item, "variation_id", "VariationId", "variationId");
+
+                        string systemId = ReadJsonString(
+                            item, "system_id", "systemId", "SystemId").Trim();
+
+                        string number = NormalizeMapSystemNumber(
+                            ReadJsonString(item, "system_number", "number", "SystemNumber"));
+
+                        int variation = ReadJsonInt(
+                            item, "variation_id", "VariationId", "variationId");
+
                         string category = ReadJsonString(item, "category", "Category");
-                        bool declaredSystemType = type.Equals("system", StringComparison.OrdinalIgnoreCase) ||
+
+                        bool physicalFlag = ReadJsonBool(
+                            item, "is_physical_system", "IsPhysicalSystem");
+
+                        bool declaredSystemType =
+                            type.Equals("system", StringComparison.OrdinalIgnoreCase) ||
                             type.Equals("کامپیوتر", StringComparison.OrdinalIgnoreCase) ||
                             type.Equals("کنسول", StringComparison.OrdinalIgnoreCase);
-                        // A room/area/decoration is never promoted by digits in its label.
-                        // A generic legacy object is promoted only when its stable ID exists
-                        // in the API registry, or it has a complete unique variation+number pair.
-                        bool isSystem = physicalFlag || declaredSystemType || systemId.Length > 0;
-                        bool disabled = ReadJsonString(item, "status", "Status").Equals("خاموش", StringComparison.OrdinalIgnoreCase);
+
+                        // تشخیص سیستم فیزیکی
+                        bool isSystem =
+                            physicalFlag ||
+                            declaredSystemType ||
+                            systemId.Length > 0;
+
+                        bool disabled = ReadJsonString(item, "status", "Status")
+                            .Equals("خاموش", StringComparison.OrdinalIgnoreCase);
+
+                        // اگر آیتم سیستم است، باید حتماً در فهرست فعلی سایت وجود داشته باشد.
                         if (isSystem)
                         {
                             bool hasPhysical = false;
+
                             (string Number, int VariationId, string Category, bool Active) sys = default;
-                            if (systemId.Length > 0 && physicalById.TryGetValue(systemId, out sys))
+
+                            // اولویت اول: تطبیق با شناسه واقعی سیستم
+                            if (!string.IsNullOrWhiteSpace(systemId) &&
+                                physicalById.TryGetValue(systemId, out sys))
                             {
                                 hasPhysical = true;
                             }
-                            else if (variation > 0 && number.Length > 0 &&
+                            // اولویت دوم: تطبیق با شناسه تنوع و شماره سیستم
+                            else if (variation > 0 &&
+                                     !string.IsNullOrWhiteSpace(number) &&
                                      !ambiguousPhysicalPairs.Contains((variation, number)) &&
-                                     physicalByVariationNumber.TryGetValue((variation, number), out var composite))
+                                     physicalByVariationNumber.TryGetValue(
+                                         (variation, number), out var composite))
                             {
                                 hasPhysical = true;
+
                                 systemId = composite.SystemId;
-                                sys = (composite.Number, composite.VariationId, composite.Category, composite.Active);
+
+                                sys = (
+                                    composite.Number,
+                                    composite.VariationId,
+                                    composite.Category,
+                                    composite.Active
+                                );
                             }
 
-                            // A map tile is selectable only when it resolves to one real API device.
+                            // سیستم در فهرست فعلی سایت نیست؛ نمایش داده نشود.
                             if (!hasPhysical)
+                                continue;
+
+                            // اطلاعات معتبر از فهرست فعلی سایت
+                            number = sys.Number;
+                            variation = sys.VariationId;
+
+                            if (string.IsNullOrWhiteSpace(category))
+                                category = sys.Category;
+
+                            disabled |= !sys.Active;
+                        }
+
+                        // شناسه آیتم نقشه
+                        string objectId = ReadJsonString(item, "id", "Id");
+
+                        if (string.IsNullOrWhiteSpace(objectId))
+                        {
+                            if (isSystem)
                             {
-                                isSystem = false;
+                                objectId = "physical:" + systemId;
                             }
                             else
                             {
-                                number = sys.Number;
-                                variation = sys.VariationId;
-                                if (string.IsNullOrWhiteSpace(category)) category = sys.Category;
-                                disabled |= !sys.Active;
-                                // Keep the actual display name supplied by the saved floor plan
-                                // (e.g. Cas-6 / VIP-16); never synthesize a PC-01 label here.
+                                objectId =
+                                    "object:" +
+                                    ReadJsonDouble(item, "x", "X").ToString(
+                                        "0.##", CultureInfo.InvariantCulture) +
+                                    ":" +
+                                    ReadJsonDouble(item, "y", "Y").ToString(
+                                        "0.##", CultureInfo.InvariantCulture) +
+                                    ":" + label;
                             }
                         }
-                        string objectId = ReadJsonString(item, "id", "Id");
-                        if (string.IsNullOrWhiteSpace(objectId))
-                        {
-                            objectId = isSystem
-                                ? (!string.IsNullOrWhiteSpace(systemId)
-                                    ? "physical:" + systemId
-                                    : "physical:" + variation.ToString(CultureInfo.InvariantCulture) + ":" + NormalizeMapSystemNumber(number))
-                                : "object:" + ReadJsonDouble(item, "x", "X").ToString("0.##", CultureInfo.InvariantCulture) + ":" + ReadJsonDouble(item, "y", "Y").ToString("0.##", CultureInfo.InvariantCulture) + ":" + label;
-                        }
+
+                        // افزودن آیتم معتبر به نقشه
                         _liveMapObjects.Add(new LiveMapObject
                         {
                             Id = objectId,
+
                             Type = isSystem ? "system" : type,
-                            Label = string.IsNullOrWhiteSpace(label) ? type : label,
+
+                            Label = string.IsNullOrWhiteSpace(label)
+                                ? type
+                                : label,
+
                             SystemId = systemId,
                             SystemNumber = number,
                             VariationId = variation,
                             Category = category,
-                            Floor = ReadJsonString(item, "floor", "Floor") is string floor && floor.Length > 0 ? floor : "طبقه اصلی",
+
+                            Floor = string.IsNullOrWhiteSpace(
+                                ReadJsonString(item, "floor", "Floor"))
+                                ? "طبقه اصلی"
+                                : ReadJsonString(item, "floor", "Floor"),
+
                             Disabled = disabled,
+
                             X = ReadJsonDouble(item, "x", "X"),
                             Y = ReadJsonDouble(item, "y", "Y"),
-                            Width = Math.Clamp(ReadJsonDouble(item, "width", "w", "W", fallback: 90), 24, 1600),
-                            Height = Math.Clamp(ReadJsonDouble(item, "height", "h", "H", fallback: 58), 18, 1000),
+
+                            Width = Math.Clamp(
+                                ReadJsonDouble(item, "width", "w", "W", fallback: 90),
+                                24, 1600),
+
+                            Height = Math.Clamp(
+                                ReadJsonDouble(item, "height", "h", "H", fallback: 58),
+                                18, 1000),
+
                             Rotation = ReadJsonDouble(item, "rotation", "Rotation")
                         });
                     }
                 }
+
 
                 _floorMapLoaded = _liveMapObjects.Count > 0;
                 PopulateMapFloors();
@@ -2697,12 +2762,79 @@ namespace LobixApp.Views
             finally { _suppressMapFloorChange = false; }
         }
 
+
         private void FullscreenFloorMapButton_Click(object sender, RoutedEventArgs e)
         {
-            if (LiveFloorMapCanvas == null || LiveFloorMapCanvas.Parent is not Viewbox originalViewbox) return;
-            var placeholder = new Canvas { Width = 1600, Height = 1000, Background = new SolidColorBrush(Color.FromRgb(16, 17, 23)) };
+            if (LiveFloorMapCanvas == null ||
+                LiveFloorMapCanvas.Parent is not Viewbox originalViewbox)
+                return;
+
+            var placeholder = new Canvas
+            {
+                Width = 1600,
+                Height = 1000,
+                Background = new SolidColorBrush(Color.FromRgb(16, 17, 23))
+            };
+
             originalViewbox.Child = placeholder;
-            var fullscreenViewbox = new Viewbox { Stretch = Stretch.Uniform, Child = LiveFloorMapCanvas, Margin = new Thickness(18) };
+
+            double zoom = 1.0;
+
+            var mapScrollViewer = new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                CanContentScroll = false,
+                PanningMode = PanningMode.Both,
+                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Content = LiveFloorMapCanvas
+            };
+
+            LiveFloorMapCanvas.LayoutTransform = new ScaleTransform(zoom, zoom);
+
+            mapScrollViewer.PreviewMouseWheel += (_, args) =>
+            {
+                bool ctrlPressed =
+                    Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                    Keyboard.IsKeyDown(Key.RightCtrl);
+
+                if (!ctrlPressed)
+                    return;
+
+                args.Handled = true;
+
+                double oldZoom = zoom;
+                double factor = args.Delta > 0 ? 1.1 : 1.0 / 1.1;
+
+                double newZoom = Math.Clamp(oldZoom * factor, 0.25, 3.0);
+
+                if (Math.Abs(newZoom - oldZoom) < 0.001)
+                    return;
+
+                Point mousePosition = args.GetPosition(mapScrollViewer);
+
+                double contentX =
+                    (mapScrollViewer.HorizontalOffset + mousePosition.X) / oldZoom;
+
+                double contentY =
+                    (mapScrollViewer.VerticalOffset + mousePosition.Y) / oldZoom;
+
+                zoom = newZoom;
+
+                LiveFloorMapCanvas.LayoutTransform =
+                    new ScaleTransform(zoom, zoom);
+
+                mapScrollViewer.UpdateLayout();
+
+                mapScrollViewer.ScrollToHorizontalOffset(
+                    contentX * zoom - mousePosition.X);
+
+                mapScrollViewer.ScrollToVerticalOffset(
+                    contentY * zoom - mousePosition.Y);
+            };
+
             var window = new Window
             {
                 Title = "نقشه زنده سالن — لابیکس",
@@ -2714,16 +2846,23 @@ namespace LobixApp.Views
                 Owner = Window.GetWindow(this),
                 FlowDirection = FlowDirection.RightToLeft,
                 Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
-                Content = fullscreenViewbox
+                Content = mapScrollViewer
             };
+
             window.Closed += (_, _) =>
             {
-                fullscreenViewbox.Child = null;
+                mapScrollViewer.Content = null;
+
+                LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
+
                 originalViewbox.Child = LiveFloorMapCanvas;
+
                 RenderLiveFloorMap();
             };
+
             window.ShowDialog();
         }
+
 
         private void FloorMapFloorCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
