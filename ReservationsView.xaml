@@ -566,6 +566,12 @@ status filter row                    </StackPanel>
                                     <Button Content="−" Width="30" Height="30" ToolTip="کوچک‌نمایی نقشه" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomOutButton_Click"/>
                                     <Button Content="۱۰۰٪" Width="48" Height="30" ToolTip="بازنشانی بزرگ‌نمایی" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomResetButton_Click"/>
                                     <Button Content="+" Width="30" Height="30" ToolTip="بزرگ‌نمایی نقشه" Style="{StaticResource SmallActionButtonStyle}" Click="MapZoomInButton_Click"/>
+                                    <Button x:Name="CancelGuidedBookingButton"
+                                            Content="لغو ثبت رزرو"
+                                            Height="30"
+                                            Visibility="Collapsed"
+                                            Style="{StaticResource SmallActionButtonStyle}"
+                                            Click="CancelGuidedBookingButton_Click"/>
                                     <Button x:Name="LiveMapMultiSelectButton"
                                             Content="انتخاب چند سیستم"
                                             Height="30"
