@@ -5358,7 +5358,7 @@ namespace LobixApp.Views
                         return;
                     }
 
-                   
+
 
                     // -------------------------------------------------
                     // START / DURATION
