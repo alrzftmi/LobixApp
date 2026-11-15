@@ -199,9 +199,6 @@ namespace LobixApp.Views
             RoutedEventArgs e)
         {
             DrawTimeline();
-            Dispatcher.BeginInvoke(new Action(() =>
-                TimelineScrollViewer?.ScrollToVerticalOffset(HeaderHeight)),
-                DispatcherPriority.Loaded);
             if (!_floorMapLoaded)
                 await LoadFloorMapAsync();
             else
@@ -690,7 +687,8 @@ namespace LobixApp.Views
             double totalHeight = HeaderHeight + (systemRows.Count * RowHeight);
 
             TimelineCanvas.Width = Math.Max(totalWidth, Math.Max(900, viewportWidth));
-            TimelineCanvas.Height = Math.Max(totalHeight, Math.Max(300, viewportHeight));
+            TimelineCanvas.Height = Math.Max(totalHeight - HeaderHeight, Math.Max(300, viewportHeight));
+            TimelineCanvas.RenderTransform = new TranslateTransform(0, -HeaderHeight);
 
             DrawBackground(
                 totalWidth,
@@ -3121,7 +3119,7 @@ namespace LobixApp.Views
             border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Control.BackgroundProperty));
             border.SetValue(Border.BorderBrushProperty, new TemplateBindingExtension(Control.BorderBrushProperty));
             border.SetValue(Border.BorderThicknessProperty, new TemplateBindingExtension(Control.BorderThicknessProperty));
-            border.SetValue(Border.SnapsToDevicePixelsProperty, true);
+            border.SetValue(UIElement.SnapsToDevicePixelsProperty, true);
 
             var presenter = new FrameworkElementFactory(typeof(ContentPresenter));
             presenter.SetValue(ContentPresenter.ContentProperty, new TemplateBindingExtension(ContentControl.ContentProperty));
@@ -6266,7 +6264,6 @@ namespace LobixApp.Views
             fullscreenWindow.Loaded += (_, _) =>
             {
                 DrawTimeline();
-                fullscreenScrollViewer.ScrollToVerticalOffset(HeaderHeight);
             };
 
             // هنگام بسته شدن، Canvas را به صفحه اصلی برگردان.
