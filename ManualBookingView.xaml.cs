@@ -5237,9 +5237,9 @@ namespace LobixApp.Views
             finally
             {
                 SetManualLoading(false);
-                CreateRealBookingButton.Content = "تأیید و ثبت رزرو";
+                CreateRealBookingButton.Content = "ثبت رزرو";
                 CreateRealBookingButton.IsEnabled = true;
-                if (submitButton != null) { submitButton.Content = "تأیید و ثبت رزرو"; submitButton.IsEnabled = true; }
+                if (submitButton != null) { submitButton.Content = "ثبت رزرو"; submitButton.IsEnabled = true; }
             }
         }
 
