@@ -4098,6 +4098,11 @@ namespace LobixApp.Views
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     VerticalContentAlignment = VerticalAlignment.Center
                 };
+                combo.Resources[SystemColors.WindowBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
+                combo.Resources[SystemColors.ControlBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
+                combo.Resources[SystemColors.HighlightBrushKey] = new SolidColorBrush(Color.FromRgb(220, 55, 66));
+                combo.Resources[SystemColors.HighlightTextBrushKey] = Brushes.White;
+
                 for (int h = first; h <= last; h++)
                     combo.Items.Add(h.ToString("00", CultureInfo.InvariantCulture) + ":00");
                 combo.SelectedIndex = Math.Clamp(selected - first, 0, combo.Items.Count - 1);
