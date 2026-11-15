@@ -4578,7 +4578,7 @@ namespace LobixApp.Views
                 Title = isEdit
                     ? "ویرایش رزرو"
                     : isMultiSystemBooking
-                        ? "ثبت رزرو چندسیستمی"
+                        ? (multiSystems.Count > 1 ? "ثبت رزرو چندسیستمی" : "ثبت رزرو از روی نقشه")
                         : "ثبت رزرو دستی",
 
                 Width = 780,
@@ -4614,7 +4614,7 @@ namespace LobixApp.Views
                 isEdit
                     ? "ویرایش رزرو دستی"
                     : isMultiSystemBooking
-                        ? "ثبت رزرو چندسیستمی"
+                        ? (multiSystems.Count > 1 ? "ثبت رزرو چندسیستمی" : "ثبت رزرو از روی نقشه")
                         : "ثبت رزرو دستی"
             );
 
