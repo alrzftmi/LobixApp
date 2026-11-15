@@ -530,9 +530,6 @@
                                     <RowDefinition Height="7"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="7"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="7"/>
-                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
@@ -548,12 +545,12 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Text="نام مشتری"
+                                        <TextBlock Text="نام یا شناسه مشتری"
                                                    Style="{StaticResource HintText}"
                                                    Margin="0,0,0,4"/>
                                         <TextBox x:Name="BookingCustomerTextBox"
                                                  MaxLength="100"
-                                                 ToolTip="نام مشتری"/>
+                                                 ToolTip="نام یا شناسه مشتری"/>
                                     </StackPanel>
 
                                     <StackPanel Grid.Column="2">
@@ -569,33 +566,7 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <Grid Grid.Row="4">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="8"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="شناسه مشتری"
-                                                   Style="{StaticResource HintText}"
-                                                   Margin="0,0,0,4"/>
-                                        <TextBox x:Name="BookingCustomerIdTextBox"
-                                                 MaxLength="100"
-                                                 ToolTip="اختیاری"/>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Column="2">
-                                        <TextBlock Text="بازی موردنظر"
-                                                   Style="{StaticResource HintText}"
-                                                   Margin="0,0,0,4"/>
-                                        <TextBox x:Name="BookingGameTextBox"
-                                                 MaxLength="120"
-                                                 ToolTip="اختیاری"/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <StackPanel Grid.Row="6">
+                                <StackPanel Grid.Row="4">
                                     <TextBlock Text="یادداشت"
                                                Style="{StaticResource HintText}"
                                                Margin="0,0,0,4"/>
@@ -741,8 +712,8 @@
 
                         <!-- LIVE CAPACITY -->
                         <Border Grid.Row="4"
-        Background="#171923"
-        BorderBrush="#34303F"
+        Background="#17151B"
+        BorderBrush="#4B252D"
         BorderThickness="1"
         CornerRadius="9"
         Padding="9,7">
@@ -761,30 +732,30 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Border Background="#202B28"
+                                    <Border Background="#321D24"
                     CornerRadius="6"
                     Padding="7,4"
                     VerticalAlignment="Center">
                                         <TextBlock Text="ظرفیت زنده"
                            FontSize="10"
                            FontWeight="Bold"
-                           Foreground="#65DDA5"/>
+                           Foreground="#FF8992"/>
                                     </Border>
 
                                     <TextBlock x:Name="LiveCapacityTotalsTextBlock"
                        Grid.Column="2"
                        Text="در انتظار دریافت اطلاعات ظرفیت..."
                        FontSize="10"
-                       Foreground="#D8C8F5"
+                       Foreground="#E8D8DA"
                        TextWrapping="Wrap"
                        VerticalAlignment="Center"/>
                                 </Grid>
 
                                 <!-- DYNAMIC SUMMARY -->
-                                <StackPanel x:Name="LiveCapacitySummaryPanel"
+                                <WrapPanel x:Name="LiveCapacitySummaryPanel"
                     Grid.Row="1"
                     Visibility="Collapsed"
-                    Orientation="Vertical"
+                    Orientation="Horizontal"
                     FlowDirection="RightToLeft"/>
                             </Grid>
                         </Border>
