@@ -386,8 +386,8 @@
                                    PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                    AllowsTransparency="True"
                                    Focusable="False"
-                                   StaysOpen="False"
-                                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                   StaysOpen="True"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
                                    PopupAnimation="Fade">
                                 <Border Background="#191B24"
                                         BorderBrush="#393C49"
