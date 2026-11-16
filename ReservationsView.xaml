@@ -92,16 +92,16 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="ButtonBorder"
                                         Property="Background"
-                                        Value="#252936"/>
+                                        Value="#30213F"/>
                                 <Setter TargetName="ButtonBorder"
                                         Property="BorderBrush"
-                                        Value="#444958"/>
+                                        Value="#A855F7"/>
                             </Trigger>
 
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="ButtonBorder"
                                         Property="Background"
-                                        Value="#303441"/>
+                                        Value="#3B2850"/>
                             </Trigger>
 
                             <Trigger Property="IsKeyboardFocused" Value="True">
@@ -273,7 +273,7 @@
                             <Trigger Property="IsHighlighted" Value="True">
                                 <Setter TargetName="ItemBorder"
                                         Property="Background"
-                                        Value="#302027"/>
+                                        Value="#3B2855"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
 
