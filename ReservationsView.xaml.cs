@@ -4347,116 +4347,267 @@ namespace LobixApp.Views
         private async Task ShowGuidedBookingSetupAsync()
         {
             DateTime chosenDate = _selectedDate ?? DateTime.Today;
-            int chosenStart = Math.Clamp(DateTime.Now.Hour + (DateTime.Now.Minute > 0 ? 1 : 0), StartHour, EndHour - 1);
+            int chosenStart = Math.Clamp(
+                DateTime.Now.Hour + (DateTime.Now.Minute > 0 ? 1 : 0),
+                StartHour, EndHour - 1);
+
             int chosenEnd = Math.Min(EndHour, chosenStart + 1);
+
+            var bg = new SolidColorBrush(Color.FromRgb(18, 19, 28));
+            var surface = new SolidColorBrush(Color.FromRgb(29, 31, 43));
+            var borderColor = new SolidColorBrush(Color.FromRgb(57, 59, 77));
+            var purple = new SolidColorBrush(Color.FromRgb(168, 85, 247));
+            var muted = new SolidColorBrush(Color.FromRgb(157, 160, 179));
 
             var window = new Window
             {
                 Title = "ثبت رزرو جدید",
-                Width = 520,
+                Width = 540,
                 SizeToContent = SizeToContent.Height,
-                MinWidth = 480,
+                MinWidth = 500,
+                MaxHeight = 850,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Window.GetWindow(this),
                 FlowDirection = FlowDirection.RightToLeft,
                 ResizeMode = ResizeMode.NoResize,
-                Background = new SolidColorBrush(Color.FromRgb(21, 23, 32)),
+                Background = bg,
+                Foreground = Brushes.White,
                 FontFamily = FindResource("Peyda") as FontFamily
             };
 
-            var root = new StackPanel { Margin = new Thickness(24) };
+            Button MakeButton(string text, bool primary)
+            {
+                var button = new Button
+                {
+                    Content = text,
+                    Height = 44,
+                    MinWidth = primary ? 190 : 110,
+                    Padding = new Thickness(18, 0, 18, 0),
+                    Margin = new Thickness(0, 0, 10, 0),
+                    FontFamily = FindResource("Peyda") as FontFamily,
+                    FontSize = 13,
+                    FontWeight = FontWeights.SemiBold,
+                    Cursor = System.Windows.Input.Cursors.Hand,
+                    Foreground = Brushes.White,
+                    Background = primary ? purple : surface,
+                    BorderBrush = primary ? purple : borderColor,
+                    BorderThickness = new Thickness(1)
+                };
+
+                var style = new Style(typeof(Button));
+                style.Setters.Add(new Setter(Control.TemplateProperty,
+                    new ControlTemplate(typeof(Button))
+                    {
+                        VisualTree = new FrameworkElementFactory(typeof(Border))
+                    }));
+
+                button.Style = style;
+                return button;
+            }
+
+            var root = new StackPanel { Margin = new Thickness(26) };
+
             root.Children.Add(new TextBlock
             {
                 Text = "زمان رزرو را مشخص کنید",
-                FontSize = 21,
+                FontSize = 22,
                 FontWeight = FontWeights.Bold,
                 Foreground = Brushes.White,
-                Margin = new Thickness(0, 0, 0, 5)
-            });
-            root.Children.Add(new TextBlock
-            {
-                Text = "پس از تأیید، نقشه اصلی سالن برای انتخاب سیستم‌های آزاد فعال می‌شود.",
-                FontSize = 12,
-                Foreground = new SolidColorBrush(Color.FromRgb(146, 152, 170)),
-                TextWrapping = TextWrapping.Wrap,
-                Margin = new Thickness(0, 0, 0, 18)
+                Margin = new Thickness(0, 0, 0, 6)
             });
 
-            Button dateButton = new Button
+            root.Children.Add(new TextBlock
+            {
+                Text = "روز و بازه زمانی موردنظر را انتخاب کنید؛ سپس سیستم‌های آزاد سالن را مشخص کنید.",
+                FontSize = 12,
+                Foreground = muted,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 22)
+            });
+
+            var dateButton = new Button
             {
                 Content = JalaliDateHelper.FormatDate(chosenDate),
-                Height = 44,
+                Height = 46,
                 HorizontalContentAlignment = HorizontalAlignment.Right,
                 Padding = new Thickness(14, 0, 14, 0),
-                Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
+                Background = surface,
                 Foreground = Brushes.White,
-                BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
+                BorderBrush = borderColor,
                 BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
-                FontSize = 14
+                FontSize = 14,
+                Cursor = System.Windows.Input.Cursors.Hand
             };
+
+            var dateButtonStyle = new Style(typeof(Button));
+            dateButtonStyle.Setters.Add(new Setter(Control.BackgroundProperty, surface));
+            dateButtonStyle.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            dateButtonStyle.Setters.Add(new Setter(Control.BorderBrushProperty, borderColor));
+            dateButtonStyle.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(1)));
+            dateButtonStyle.Setters.Add(new Setter(Control.TemplateProperty,
+                new ControlTemplate(typeof(Button))
+                {
+                    VisualTree = new FrameworkElementFactory(typeof(Border))
+                    {
+                        Name = "buttonBorder"
+                    }
+                }));
+
+            var dateTemplate = new ControlTemplate(typeof(Button));
+            var dateBorder = new FrameworkElementFactory(typeof(Border));
+            dateBorder.SetValue(Border.BackgroundProperty, surface);
+            dateBorder.SetValue(Border.BorderBrushProperty, borderColor);
+            dateBorder.SetValue(Border.BorderThicknessProperty, new Thickness(1));
+            dateBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(10));
+            var dateContent = new FrameworkElementFactory(typeof(ContentPresenter));
+            dateContent.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            dateContent.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            dateContent.SetValue(ContentPresenter.MarginProperty, new Thickness(12, 0, 12, 0));
+            dateBorder.AppendChild(dateContent);
+            dateTemplate.VisualTree = dateBorder;
+
+            var hover = new Trigger
+            {
+                Property = Button.IsMouseOverProperty,
+                Value = true
+            };
+            hover.Setters.Add(new Setter(Border.BorderBrushProperty, purple, "buttonBorder"));
+            hover.Setters.Add(new Setter(Border.BackgroundProperty,
+                new SolidColorBrush(Color.FromRgb(42, 32, 58)), "buttonBorder"));
+            dateTemplate.Triggers.Add(hover);
+
+            dateButton.Template = dateTemplate;
+
             dateButton.Click += (_, _) =>
             {
-                var picker = new JalaliDatePickerWindow(chosenDate, DateTime.Today) { Owner = window };
+                var picker = new JalaliDatePickerWindow(chosenDate, DateTime.Today)
+                {
+                    Owner = window
+                };
+
                 if (picker.ShowDialog() == true && picker.SelectedDate.HasValue)
                 {
                     chosenDate = picker.SelectedDate.Value.Date;
                     dateButton.Content = JalaliDateHelper.FormatDate(chosenDate);
                 }
             };
+
             root.Children.Add(CreateCompactField("روز رزرو", dateButton));
 
             var itemStyle = new Style(typeof(ComboBoxItem));
-            itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, new SolidColorBrush(Color.FromRgb(35, 37, 49))));
+            itemStyle.Setters.Add(new Setter(Control.BackgroundProperty, surface));
             itemStyle.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
-            itemStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(10, 7, 10, 7)));
+            itemStyle.Setters.Add(new Setter(Control.PaddingProperty, new Thickness(12, 9, 12, 9)));
+            itemStyle.Setters.Add(new Setter(Control.HorizontalContentAlignmentProperty, HorizontalAlignment.Center));
+
+            var itemHover = new Trigger
+            {
+                Property = ComboBoxItem.IsHighlightedProperty,
+                Value = true
+            };
+            itemHover.Setters.Add(new Setter(Control.BackgroundProperty, purple));
+            itemHover.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
+            itemStyle.Triggers.Add(itemHover);
 
             ComboBox MakeHourCombo(int first, int last, int selected)
             {
                 var combo = new ComboBox
                 {
-                    Height = 44,
-                    MinWidth = 150,
+                    Height = 46,
+                    MinWidth = 180,
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 14,
                     Foreground = Brushes.White,
-                    Background = new SolidColorBrush(Color.FromRgb(35, 37, 49)),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(41, 45, 58)),
+                    Background = surface,
+                    BorderBrush = borderColor,
+                    BorderThickness = new Thickness(1),
                     ItemContainerStyle = itemStyle,
                     HorizontalContentAlignment = HorizontalAlignment.Center,
-                    VerticalContentAlignment = VerticalAlignment.Center
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    Padding = new Thickness(8),
+                    IsEditable = false
                 };
-                combo.Resources[SystemColors.WindowBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
-                combo.Resources[SystemColors.ControlBrushKey] = new SolidColorBrush(Color.FromRgb(35, 37, 49));
-                combo.Resources[SystemColors.HighlightBrushKey] = new SolidColorBrush(Color.FromRgb(219, 60, 69));
+
+                combo.Resources[SystemColors.WindowBrushKey] = surface;
+                combo.Resources[SystemColors.ControlBrushKey] = surface;
+                combo.Resources[SystemColors.HighlightBrushKey] = purple;
                 combo.Resources[SystemColors.HighlightTextBrushKey] = Brushes.White;
+                combo.Resources[SystemColors.WindowTextBrushKey] = Brushes.White;
 
                 for (int h = first; h <= last; h++)
                     combo.Items.Add(h.ToString("00", CultureInfo.InvariantCulture) + ":00");
+
                 combo.SelectedIndex = Math.Clamp(selected - first, 0, combo.Items.Count - 1);
                 return combo;
             }
 
             var startCombo = MakeHourCombo(StartHour, EndHour - 1, chosenStart);
             var endCombo = MakeHourCombo(StartHour + 1, EndHour, chosenEnd);
+
             void RefreshEndHours()
             {
                 int startHour = StartHour + Math.Max(0, startCombo.SelectedIndex);
-                int oldEnd = int.TryParse(endCombo.SelectedItem?.ToString()?.Substring(0, 2), out int parsed) ? parsed : startHour + 1;
+                int oldEnd = int.TryParse(
+                    endCombo.SelectedItem?.ToString()?.Substring(0, 2),
+                    out int parsed) ? parsed : startHour + 1;
+
                 endCombo.Items.Clear();
+
                 for (int h = startHour + 1; h <= EndHour; h++)
                     endCombo.Items.Add(h.ToString("00", CultureInfo.InvariantCulture) + ":00");
+
                 int target = Math.Clamp(oldEnd, startHour + 1, EndHour);
                 endCombo.SelectedIndex = target - (startHour + 1);
             }
+
             startCombo.SelectionChanged += (_, _) => RefreshEndHours();
 
-            root.Children.Add(CreateCompactField("ساعت شروع", startCombo));
-            root.Children.Add(CreateCompactField("ساعت پایان", endCombo));
+            var timePanel = new Grid { Margin = new Thickness(0, 0, 0, 4) };
+            timePanel.ColumnDefinitions.Add(new ColumnDefinition());
+            timePanel.ColumnDefinitions.Add(new ColumnDefinition());
+            timePanel.Children.Add(startCombo);
+            Grid.SetColumn(startCombo, 0);
+            timePanel.Children.Add(endCombo);
+            Grid.SetColumn(endCombo, 1);
+
+            var timeLabels = new Grid { Margin = new Thickness(0, 0, 0, 7) };
+            timeLabels.ColumnDefinitions.Add(new ColumnDefinition());
+            timeLabels.ColumnDefinitions.Add(new ColumnDefinition());
+            var startLabel = new TextBlock
+            {
+                Text = "ساعت شروع",
+                Foreground = muted,
+                FontSize = 12
+            };
+            var endLabel = new TextBlock
+            {
+                Text = "ساعت پایان",
+                Foreground = muted,
+                FontSize = 12
+            };
+            timeLabels.Children.Add(startLabel);
+            timeLabels.Children.Add(endLabel);
+            Grid.SetColumn(endLabel, 1);
+
+            var timeBox = new Border
+            {
+                Background = surface,
+                BorderBrush = borderColor,
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(12),
+                Padding = new Thickness(14),
+                Margin = new Thickness(0, 0, 0, 8),
+                Child = new StackPanel()
+            };
+            ((StackPanel)timeBox.Child).Children.Add(timeLabels);
+            ((StackPanel)timeBox.Child).Children.Add(timePanel);
+
+            root.Children.Add(CreateCompactField("بازه زمانی رزرو", timeBox));
 
             var validation = new TextBlock
             {
-                Foreground = new SolidColorBrush(Color.FromRgb(255, 112, 112)),
+                Foreground = new SolidColorBrush(Color.FromRgb(255, 115, 125)),
                 FontSize = 12,
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 10, 0, 0)
@@ -4467,25 +4618,59 @@ namespace LobixApp.Views
             {
                 Orientation = Orientation.Horizontal,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(0, 18, 0, 0)
+                Margin = new Thickness(0, 20, 0, 0)
             };
-            var cancel = CreateDialogButton("انصراف", false);
+
+            var cancel = new Button
+            {
+                Content = "انصراف",
+                Width = 110,
+                Height = 44,
+                Margin = new Thickness(0, 0, 10, 0),
+                Background = surface,
+                Foreground = Brushes.White,
+                BorderBrush = borderColor,
+                BorderThickness = new Thickness(1),
+                FontFamily = FindResource("Peyda") as FontFamily,
+                FontSize = 13,
+                Cursor = System.Windows.Input.Cursors.Hand
+            };
             cancel.Click += (_, _) => window.Close();
-            var confirm = CreateDialogButton("ادامه و انتخاب سیستم", true);
+
+            var confirm = new Button
+            {
+                Content = "ادامه و انتخاب سیستم",
+                Width = 195,
+                Height = 44,
+                Background = purple,
+                Foreground = Brushes.White,
+                BorderBrush = purple,
+                BorderThickness = new Thickness(1),
+                FontFamily = FindResource("Peyda") as FontFamily,
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                Cursor = System.Windows.Input.Cursors.Hand
+            };
+
             confirm.Click += async (_, _) =>
             {
                 int startHour = StartHour + startCombo.SelectedIndex;
-                int endHour = int.TryParse(endCombo.SelectedItem?.ToString()?.Substring(0, 2), out int parsedEnd) ? parsedEnd : 0;
+                int endHour = int.TryParse(
+                    endCombo.SelectedItem?.ToString()?.Substring(0, 2),
+                    out int parsedEnd) ? parsedEnd : 0;
+
                 if (endHour <= startHour)
                 {
                     validation.Text = "ساعت پایان باید بعد از ساعت شروع باشد.";
                     return;
                 }
+
                 if (chosenDate.Date < DateTime.Today)
                 {
                     validation.Text = "انتخاب روز گذشته امکان‌پذیر نیست.";
                     return;
                 }
+
                 if (chosenDate.Date == DateTime.Today &&
                     DateTime.Now >= chosenDate.Date.AddHours(startHour))
                 {
@@ -4508,30 +4693,35 @@ namespace LobixApp.Views
 
                 if (LiveMapMultiSelectButton != null)
                     LiveMapMultiSelectButton.Content = "ثبت رزرو برای سیستم‌های انتخاب‌شده";
+
                 if (CancelGuidedBookingButton != null)
                     CancelGuidedBookingButton.Visibility = Visibility.Visible;
+
                 if (FloorMapSummaryText != null)
-                    FloorMapSummaryText.Text = $"انتخاب سیستم‌های آزاد • {JalaliDateHelper.FormatDate(chosenDate)} • {startHour:00}:00 تا {endHour:00}:00";
+                    FloorMapSummaryText.Text =
+                        $"انتخاب سیستم‌های آزاد • {JalaliDateHelper.FormatDate(chosenDate)} • {startHour:00}:00 تا {endHour:00}:00";
+
                 RenderLiveFloorMap();
                 LiveMapScrollViewer?.BringIntoView();
             };
+
             actions.Children.Add(cancel);
             actions.Children.Add(confirm);
             root.Children.Add(actions);
 
             window.Content = new Border
             {
-                Background = new SolidColorBrush(Color.FromRgb(24, 25, 35)),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(67, 70, 88)),
+                Background = new SolidColorBrush(Color.FromRgb(23, 24, 34)),
+                BorderBrush = borderColor,
                 BorderThickness = new Thickness(1),
                 CornerRadius = new CornerRadius(18),
                 Padding = new Thickness(2),
                 Child = root
             };
+
             LobixDialog.AnimateWindowIn(window);
             window.ShowDialog();
         }
-
         private async void NewReservationButton_Click(
             object? sender,
             RoutedEventArgs e)
@@ -4900,31 +5090,28 @@ namespace LobixApp.Views
             // -----------------------------------------------------
             // WINDOW
             // -----------------------------------------------------
-
             var window = new Window
             {
                 Title = isEdit
                     ? "ویرایش رزرو"
                     : isMultiSystemBooking
-                        ? (multiSystems.Count > 1 ? "ثبت رزرو چندسیستمی" : "ثبت رزرو از روی نقشه")
+                        ? "ثبت رزرو چندسیستمی"
                         : "ثبت رزرو دستی",
 
-                Width = 780,
-                Height = 760,
+                Width = 790,
+                Height = 820,
                 MinWidth = 740,
-                MinHeight = 700,
+                MinHeight = 650,
                 MaxHeight = 900,
 
-                WindowStartupLocation =
-                    WindowStartupLocation.CenterOwner,
-
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 FlowDirection = FlowDirection.RightToLeft,
 
-                Background = new SolidColorBrush(
-                    Color.FromRgb(21, 23, 32)
-                ),
+                Background = new SolidColorBrush(Color.FromRgb(18, 19, 28)),
+                Foreground = new SolidColorBrush(Color.FromRgb(242, 243, 247)),
+                FontFamily = FindResource("Peyda") as FontFamily,
 
-                ResizeMode = ResizeMode.NoResize
+                ResizeMode = ResizeMode.CanResize
             };
 
             Window? owner = Window.GetWindow(this);
@@ -5034,18 +5221,17 @@ namespace LobixApp.Views
             );
 
             // -----------------------------------------------------
-            // SYSTEM TYPE
+            // SYSTEM TYPE / NUMBER / QUANTITY
+            // فقط در رزرو دستی تکی نمایش داده می‌شوند.
             // -----------------------------------------------------
 
             ComboBox systemCombo = new ComboBox
             {
-                Height = 38,
-                Background = new SolidColorBrush(
-                    Color.FromRgb(27, 30, 41)
-                ),
-                Foreground = new SolidColorBrush(
-                    Color.FromRgb(242, 243, 247)
-                ),
+                Height = 42,
+                Background = new SolidColorBrush(Color.FromRgb(29, 31, 43)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
                 ItemsSource = _variations,
@@ -5056,125 +5242,41 @@ namespace LobixApp.Views
             if (_variations.Count > 0)
             {
                 GamenetVariation? selected =
-                    _variations.FirstOrDefault(
-                        item => item.Id == initialVariation
-                    );
+                    _variations.FirstOrDefault(item => item.Id == initialVariation);
 
-                systemCombo.SelectedItem =
-                    selected ?? _variations.FirstOrDefault();
+                systemCombo.SelectedItem = selected ?? _variations.FirstOrDefault();
             }
-
-            fieldsPanel.Children.Add(
-                CreateCompactField("سیستم", systemCombo)
-            );
-
-            // -----------------------------------------------------
-            // SYSTEM NUMBER
-            // -----------------------------------------------------
 
             ComboBox systemNumberCombo = new ComboBox
             {
-                Height = 38,
-
-                Background = new SolidColorBrush(
-                    Color.FromRgb(27, 30, 41)
-                ),
-
-                Foreground = new SolidColorBrush(
-                    Color.FromRgb(242, 243, 247)
-                ),
-
+                Height = 42,
+                Background = new SolidColorBrush(Color.FromRgb(29, 31, 43)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
-
                 IsEnabled = false,
-
-                HorizontalContentAlignment =
-                    HorizontalAlignment.Right
+                HorizontalContentAlignment = HorizontalAlignment.Right
             };
-
-            fieldsPanel.Children.Add(
-                CreateCompactField("شماره دستگاه", systemNumberCombo)
-            );
 
             TextBlock systemNumberHint = new TextBlock
             {
                 Text = "ابتدا نوع سیستم را انتخاب کنید.",
-
-                Foreground = new SolidColorBrush(
-                    Color.FromRgb(146, 152, 170)
-                ),
-
+                Foreground = new SolidColorBrush(Color.FromRgb(157, 160, 179)),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 11,
                 TextWrapping = TextWrapping.Wrap,
                 Margin = new Thickness(0, 0, 0, 8)
             };
 
-            fieldsPanel.Children.Add(systemNumberHint);
-
-            // -----------------------------------------------------
-            // MULTI SYSTEM DISPLAY
-            // -----------------------------------------------------
-
-            if (isMultiSystemBooking)
-            {
-                systemCombo.IsEnabled = false;
-                systemNumberCombo.IsEnabled = false;
-
-                systemNumberHint.Text =
-                    $"حالت رزرو گروهی فعال است؛ {multiSystems.Count} دستگاه انتخاب شده.";
-
-                systemNumberHint.Foreground =
-                    new SolidColorBrush(Color.FromRgb(219, 60, 69));
-
-                TextBlock selectedSystemsText = new TextBlock
-                {
-                    Text = string.Join(
-                        "، ",
-                        multiSystems.Select(item =>
-                        {
-                            string name =
-                                !string.IsNullOrWhiteSpace(item.Label)
-                                    ? item.Label
-                                    : !string.IsNullOrWhiteSpace(item.SystemNumber)
-                                        ? item.SystemNumber
-                                        : item.Id;
-
-                            GamenetVariation? v =
-                                _variations.FirstOrDefault(
-                                    x => x.Id == item.VariationId
-                                );
-
-                            return $"{v?.Title ?? v?.Name ?? "سیستم"} - {name}";
-                        })
-                    ),
-
-                    Foreground = new SolidColorBrush(
-                        Color.FromRgb(242, 243, 247)
-                    ),
-
-                    FontFamily = FindResource("Peyda") as FontFamily,
-                    FontSize = 12,
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(0, 4, 0, 10)
-                };
-
-                fieldsPanel.Children.Add(
-                    CreateCompactField(
-                        "دستگاه‌های انتخاب‌شده",
-                        selectedSystemsText
-                    )
-                );
-            }
-
-            // -----------------------------------------------------
-            // QUANTITY
-            // -----------------------------------------------------
-
             ComboBox quantityCombo = new ComboBox
             {
-                Height = 38,
+                Height = 42,
+                Background = new SolidColorBrush(Color.FromRgb(29, 31, 43)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
                 IsEnabled = !isMultiSystemBooking
@@ -5183,16 +5285,18 @@ namespace LobixApp.Views
             for (int quantity = 1; quantity <= 20; quantity++)
                 quantityCombo.Items.Add(quantity);
 
-            quantityCombo.SelectedItem =
-                Math.Clamp(
-                    isMultiSystemBooking ? multiSystems.Count : initialQuantity,
-                    1,
-                    20
-                );
+            quantityCombo.SelectedItem = Math.Clamp(
+                isMultiSystemBooking ? multiSystems.Count : initialQuantity,
+                1,
+                20);
 
-            fieldsPanel.Children.Add(
-                CreateCompactField("تعداد", quantityCombo)
-            );
+            if (!isMultiSystemBooking)
+            {
+                fieldsPanel.Children.Add(CreateCompactField("نوع سیستم", systemCombo));
+                fieldsPanel.Children.Add(CreateCompactField("شماره دستگاه", systemNumberCombo));
+                fieldsPanel.Children.Add(systemNumberHint);
+                fieldsPanel.Children.Add(CreateCompactField("تعداد", quantityCombo));
+            }
 
             // -----------------------------------------------------
             // UPDATE SYSTEM NUMBERS
