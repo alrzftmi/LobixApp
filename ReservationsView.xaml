@@ -18,9 +18,9 @@
         <SolidColorBrush x:Key="SoftBackground" Color="#1C1F29"/>
         <SolidColorBrush x:Key="InputBackground" Color="#101219"/>
 
-        <SolidColorBrush x:Key="AccentBrush" Color="#DB3C45"/>
-        <SolidColorBrush x:Key="AccentHoverBrush" Color="#C92F39"/>
-        <SolidColorBrush x:Key="AccentSoftBrush" Color="#321D24"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="#A855F7"/>
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#9333EA"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#2B1D3D"/>
 
         <SolidColorBrush x:Key="DarkText" Color="#F4F4F7"/>
         <SolidColorBrush x:Key="SecondaryText" Color="#A5A7B5"/>
@@ -280,7 +280,7 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter TargetName="ItemBorder"
                                         Property="Background"
-                                        Value="#C92F39"/>
+                                        Value="#7C3AED"/>
                                 <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
 
@@ -452,7 +452,7 @@
         <Style x:Key="DarkScrollBarStyle"
                TargetType="{x:Type ScrollBar}">
             <Setter Property="Background" Value="#151720"/>
-            <Setter Property="Foreground" Value="#DB3C45"/>
+            <Setter Property="Foreground" Value="#A855F7"/>
             <Setter Property="Width" Value="11"/>
             <Setter Property="MinWidth" Value="11"/>
             <Setter Property="MinHeight" Value="11"/>
@@ -473,7 +473,7 @@
                                 </Track.DecreaseRepeatButton>
 
                                 <Track.Thumb>
-                                    <Thumb Background="#DB3C45"
+                                    <Thumb Background="#A855F7"
                                            MinHeight="28"
                                            MinWidth="28">
                                         <Thumb.Template>
@@ -486,12 +486,12 @@
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ThumbBorder"
                                                                 Property="Background"
-                                                                Value="#E64B55"/>
+                                                                Value="#C084FC"/>
                                                     </Trigger>
                                                     <Trigger Property="IsDragging" Value="True">
                                                         <Setter TargetName="ThumbBorder"
                                                                 Property="Background"
-                                                                Value="#C22E39"/>
+                                                                Value="#9333EA"/>
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
