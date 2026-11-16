@@ -320,15 +320,17 @@
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     CornerRadius="8"/>
 
-                            <Grid Margin="1">
+                            <!-- جدا کردن فضای متن از دکمه فلش؛ فلش همیشه داخل کادر و سمت راست -->
+                            <Grid Margin="1" FlowDirection="LeftToRight">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="30"/>
+                                    <ColumnDefinition Width="36"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ContentPresenter
                                     x:Name="SelectionPresenter"
                                     Grid.Column="0"
+                                    FlowDirection="RightToLeft"
                                     Margin="{TemplateBinding Padding}"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -340,6 +342,7 @@
 
                                 <TextBox x:Name="PART_EditableTextBox"
                                          Grid.Column="0"
+                                         FlowDirection="RightToLeft"
                                          Margin="{TemplateBinding Padding}"
                                          Background="Transparent"
                                          Foreground="{TemplateBinding Foreground}"
@@ -351,19 +354,29 @@
                                          IsReadOnly="{TemplateBinding IsReadOnly}"/>
 
                                 <ToggleButton Grid.Column="1"
+                                              Width="36"
+                                              MinWidth="36"
+                                              HorizontalAlignment="Stretch"
+                                              VerticalAlignment="Stretch"
                                               Focusable="False"
+                                              IsTabStop="False"
                                               ClickMode="Press"
                                               IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                              Background="Transparent"
-                                              BorderThickness="0">
+                                              Background="#252936"
+                                              BorderBrush="#393C49"
+                                              BorderThickness="1,0,0,0"
+                                              Cursor="Hand">
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                            <Border Background="Transparent"
-                                                    CornerRadius="7">
+                                            <Border x:Name="ArrowButtonBorder"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="0,7,7,0">
                                                 <Path x:Name="Arrow"
-                                                      Data="M 0 0 L 4 4 L 8 0"
-                                                      Stroke="#A5A7B5"
-                                                      StrokeThickness="1.7"
+                                                      Data="M 0 0 L 5 5 L 10 0"
+                                                      Stroke="#F4F4F7"
+                                                      StrokeThickness="2"
                                                       StrokeStartLineCap="Round"
                                                       StrokeEndLineCap="Round"
                                                       HorizontalAlignment="Center"
@@ -371,9 +384,22 @@
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ArrowButtonBorder"
+                                                            Property="Background"
+                                                            Value="#DB3C45"/>
                                                     <Setter TargetName="Arrow"
                                                             Property="Stroke"
                                                             Value="#FFFFFF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="ArrowButtonBorder"
+                                                            Property="Background"
+                                                            Value="#C92F39"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter TargetName="ArrowButtonBorder"
+                                                            Property="Opacity"
+                                                            Value="0.45"/>
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
