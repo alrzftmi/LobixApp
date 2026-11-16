@@ -383,9 +383,11 @@
 
                             <Popup x:Name="PART_Popup"
                                    Placement="Bottom"
+                                   PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                    AllowsTransparency="True"
                                    Focusable="False"
-                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   StaysOpen="False"
+                                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                    PopupAnimation="Fade">
                                 <Border Background="#191B24"
                                         BorderBrush="#393C49"
