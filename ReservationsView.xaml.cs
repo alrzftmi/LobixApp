@@ -2795,98 +2795,154 @@ namespace LobixApp.Views
         }
 
 
-        private void FullscreenFloorMapButton_Click(object sender, RoutedEventArgs e)
+
+
+
+
+
+
+        private void FullscreenFloorMapButton_Click(
+            object sender,
+            RoutedEventArgs e)
         {
-            if (LiveFloorMapCanvas == null || LiveMapScrollViewer == null)
+            if (LiveFloorMapCanvas == null ||
+                LiveMapScrollViewer == null)
                 return;
 
-            var placeholder = new Canvas
+            var originalContent = LiveMapScrollViewer.Content;
+
+            var background = new SolidColorBrush(
+                Color.FromRgb(13, 14, 19));
+
+            double zoom = 1.0;
+            bool restoring = false;
+
+            // به‌روزرسانی اندازه واقعی نقشه قبل از نمایش
+            RenderLiveFloorMap();
+
+            LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
+            LiveFloorMapCanvas.FlowDirection = FlowDirection.LeftToRight;
+
+            LiveMapScrollViewer.Content = new Canvas
             {
                 Width = 1600,
                 Height = 1000,
-                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19))
+                Background = background
             };
-
-            LiveMapScrollViewer.Content = placeholder;
-
-            double zoom = 1.0;
 
             var mapScrollViewer = new ScrollViewer
             {
+                FlowDirection = FlowDirection.LeftToRight,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 CanContentScroll = false,
                 PanningMode = PanningMode.Both,
-                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
+                Background = background,
+                ClipToBounds = true,
                 Content = LiveFloorMapCanvas
             };
 
-            LiveFloorMapCanvas.LayoutTransform = new ScaleTransform(zoom, zoom);
-
             mapScrollViewer.PreviewMouseWheel += (_, args) =>
             {
-                bool ctrlPressed =
-                    Keyboard.IsKeyDown(Key.LeftCtrl) ||
-                    Keyboard.IsKeyDown(Key.RightCtrl);
-
-                if (!ctrlPressed)
+                if (!Keyboard.IsKeyDown(Key.LeftCtrl) &&
+                    !Keyboard.IsKeyDown(Key.RightCtrl))
                     return;
 
                 args.Handled = true;
 
                 double oldZoom = zoom;
-                double factor = args.Delta > 0 ? 1.1 : 1.0 / 1.1;
 
-                double newZoom = Math.Clamp(oldZoom * factor, 0.25, 3.0);
+                double factor = args.Delta > 0
+                    ? 1.1
+                    : 1.0 / 1.1;
 
-                if (Math.Abs(newZoom - oldZoom) < 0.001)
+                double newZoom = Math.Clamp(
+                    oldZoom * factor,
+                    0.2,
+                    4.0);
+
+                if (Math.Abs(newZoom - oldZoom) < 0.0001)
                     return;
 
-                Point mousePosition = args.GetPosition(mapScrollViewer);
+                Point mouse = args.GetPosition(mapScrollViewer);
 
+                // موقعیت نقطه زیر نشانگر قبل از تغییر زوم
                 double contentX =
-                    (mapScrollViewer.HorizontalOffset + mousePosition.X) / oldZoom;
+                    (mapScrollViewer.HorizontalOffset + mouse.X) / oldZoom;
 
                 double contentY =
-                    (mapScrollViewer.VerticalOffset + mousePosition.Y) / oldZoom;
+                    (mapScrollViewer.VerticalOffset + mouse.Y) / oldZoom;
 
                 zoom = newZoom;
 
                 LiveFloorMapCanvas.LayoutTransform =
                     new ScaleTransform(zoom, zoom);
 
+                mapScrollViewer.InvalidateMeasure();
+                mapScrollViewer.InvalidateArrange();
                 mapScrollViewer.UpdateLayout();
 
+                double maxX = Math.Max(
+                    0,
+                    mapScrollViewer.ExtentWidth -
+                    mapScrollViewer.ViewportWidth);
+
+                double maxY = Math.Max(
+                    0,
+                    mapScrollViewer.ExtentHeight -
+                    mapScrollViewer.ViewportHeight);
+
                 mapScrollViewer.ScrollToHorizontalOffset(
-                    contentX * zoom - mousePosition.X);
+                    Math.Clamp(
+                        contentX * zoom - mouse.X,
+                        0,
+                        maxX));
 
                 mapScrollViewer.ScrollToVerticalOffset(
-                    contentY * zoom - mousePosition.Y);
+                    Math.Clamp(
+                        contentY * zoom - mouse.Y,
+                        0,
+                        maxY));
             };
 
             var window = new Window
             {
                 Title = "نقشه زنده سالن — لابیکس",
-                Width = Math.Min(1500, SystemParameters.WorkArea.Width - 40),
-                Height = Math.Min(860, SystemParameters.WorkArea.Height - 40),
+                Width = Math.Min(
+                    1500,
+                    SystemParameters.WorkArea.Width - 40),
+                Height = Math.Min(
+                    860,
+                    SystemParameters.WorkArea.Height - 40),
                 MinWidth = 900,
                 MinHeight = 520,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Owner = Window.GetWindow(this),
                 FlowDirection = FlowDirection.RightToLeft,
-                Background = new SolidColorBrush(Color.FromRgb(13, 14, 19)),
+                Background = background,
                 Content = mapScrollViewer
+            };
+
+            window.Loaded += (_, _) =>
+            {
+                mapScrollViewer.UpdateLayout();
+                mapScrollViewer.ScrollToHorizontalOffset(0);
+                mapScrollViewer.ScrollToVerticalOffset(0);
             };
 
             window.Closed += (_, _) =>
             {
+                if (restoring)
+                    return;
+
+                restoring = true;
+
                 mapScrollViewer.Content = null;
 
                 LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
 
-                LiveMapScrollViewer.Content = LiveFloorMapCanvas;
+                LiveMapScrollViewer.Content = originalContent;
+
                 UpdateLiveMapZoom();
                 RenderLiveFloorMap();
             };
@@ -2895,16 +2951,43 @@ namespace LobixApp.Views
         }
 
 
+
+
+
+
         private void UpdateLiveMapZoom()
         {
-            if (LiveMapScrollViewer == null || LiveFloorMapCanvas == null) return;
+            if (LiveMapScrollViewer == null ||
+                LiveFloorMapCanvas == null)
+                return;
+
             double width = LiveMapScrollViewer.ViewportWidth;
             double height = LiveMapScrollViewer.ViewportHeight;
-            if (width <= 0 || height <= 0) return;
-            _liveMapFitScale = Math.Min(width / 1600.0, height / 1000.0);
-            double scale = Math.Clamp(_liveMapFitScale * _liveMapZoom, 0.2, 4.0);
-            LiveFloorMapCanvas.LayoutTransform = new ScaleTransform(scale, scale);
+
+            if (width <= 0 || height <= 0)
+                return;
+
+            double canvasWidth = Math.Max(
+                1,
+                LiveFloorMapCanvas.Width);
+
+            double canvasHeight = Math.Max(
+                1,
+                LiveFloorMapCanvas.Height);
+
+            _liveMapFitScale = Math.Min(
+                width / canvasWidth,
+                height / canvasHeight);
+
+            double scale = Math.Clamp(
+                _liveMapFitScale * _liveMapZoom,
+                0.2,
+                4.0);
+
+            LiveFloorMapCanvas.LayoutTransform =
+                new ScaleTransform(scale, scale);
         }
+
 
         private void LiveMapScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e) => UpdateLiveMapZoom();
 
@@ -3004,10 +3087,12 @@ namespace LobixApp.Views
             RenderLiveFloorMap();
         }
 
+
         private void RenderLiveFloorMap()
         {
-            if (LiveFloorMapCanvas == null) return;
-            // تایمر نقشه زنده؛ فقط یک بار ساخته و فعال می‌شود.
+            if (LiveFloorMapCanvas == null)
+                return;
+
             if (_liveMapClock == null)
             {
                 _liveMapClock = new System.Windows.Threading.DispatcherTimer
@@ -3024,61 +3109,193 @@ namespace LobixApp.Views
 
             if (!_liveMapClock.IsEnabled)
                 _liveMapClock.Start();
+
+            var objects = _liveMapObjects
+                .Where(x => string.Equals(
+                    x.Floor,
+                    _selectedMapFloor,
+                    StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => string.Equals(
+                    x.Type,
+                    "system",
+                    StringComparison.OrdinalIgnoreCase) ? 1 : 0)
+                .ToList();
+
+            const double padding = 40.0;
+
+            double minX = 0;
+            double minY = 0;
+            double maxX = 1600;
+            double maxY = 1000;
+
+            if (_floorMapLoaded && objects.Count > 0)
+            {
+                foreach (LiveMapObject item in objects)
+                {
+                    double x = double.IsFinite(item.X) ? item.X : 0;
+                    double y = double.IsFinite(item.Y) ? item.Y : 0;
+
+                    double width = Math.Max(1, item.Width);
+                    double height = item.Type == "system"
+                        ? Math.Max(84, item.Height)
+                        : Math.Max(24, item.Height);
+
+                    double radians = item.Rotation * Math.PI / 180.0;
+
+                    // محاسبه محدوده واقعی عنصر با احتساب چرخش
+                    double rotatedWidth =
+                        Math.Abs(width * Math.Cos(radians)) +
+                        Math.Abs(height * Math.Sin(radians));
+
+                    double rotatedHeight =
+                        Math.Abs(width * Math.Sin(radians)) +
+                        Math.Abs(height * Math.Cos(radians));
+
+                    double centerX = x + width / 2.0;
+                    double centerY = y + height / 2.0;
+
+                    double left = centerX - rotatedWidth / 2.0;
+                    double top = centerY - rotatedHeight / 2.0;
+                    double right = centerX + rotatedWidth / 2.0;
+                    double bottom = centerY + rotatedHeight / 2.0;
+
+                    minX = Math.Min(minX, left);
+                    minY = Math.Min(minY, top);
+                    maxX = Math.Max(maxX, right);
+                    maxY = Math.Max(maxY, bottom);
+                }
+            }
+
+            // انتقال مبدأ مختصات برای پشتیبانی از مختصات منفی
+            double offsetX = padding - minX;
+            double offsetY = padding - minY;
+
+            double canvasWidth = Math.Max(
+                1600,
+                maxX - minX + padding * 2);
+
+            double canvasHeight = Math.Max(
+                1000,
+                maxY - minY + padding * 2);
+
+            LiveFloorMapCanvas.Width = canvasWidth;
+            LiveFloorMapCanvas.Height = canvasHeight;
+            LiveFloorMapCanvas.FlowDirection = FlowDirection.LeftToRight;
+            LiveFloorMapCanvas.ClipToBounds = false;
+
             LiveFloorMapCanvas.Children.Clear();
-            // Match the floor-plan editor's native 1600x1000 coordinate space.
-            // Never compress Y coordinates: the editor stores real canvas positions.
-            for (int x = 0; x <= 1600; x += 50)
-                LiveFloorMapCanvas.Children.Add(new Line { X1 = x, X2 = x, Y1 = 0, Y2 = 1000, Stroke = new SolidColorBrush(Color.FromRgb(28, 30, 39)), StrokeThickness = 1, IsHitTestVisible = false });
-            for (int y = 0; y <= 1000; y += 50)
-                LiveFloorMapCanvas.Children.Add(new Line { X1 = 0, X2 = 1600, Y1 = y, Y2 = y, Stroke = new SolidColorBrush(Color.FromRgb(28, 30, 39)), StrokeThickness = 1, IsHitTestVisible = false });
+
+            // رسم شبکه بر اساس اندازه واقعی نقشه
+            var gridBrush = new SolidColorBrush(
+                Color.FromRgb(28, 30, 39));
+
+            for (double x = 0; x <= canvasWidth; x += 50)
+            {
+                LiveFloorMapCanvas.Children.Add(new Line
+                {
+                    X1 = x,
+                    X2 = x,
+                    Y1 = 0,
+                    Y2 = canvasHeight,
+                    Stroke = gridBrush,
+                    StrokeThickness = 1,
+                    IsHitTestVisible = false
+                });
+            }
+
+            for (double y = 0; y <= canvasHeight; y += 50)
+            {
+                LiveFloorMapCanvas.Children.Add(new Line
+                {
+                    X1 = 0,
+                    X2 = canvasWidth,
+                    Y1 = y,
+                    Y2 = y,
+                    Stroke = gridBrush,
+                    StrokeThickness = 1,
+                    IsHitTestVisible = false
+                });
+            }
 
             if (!_floorMapLoaded)
             {
-                if (FloorMapSummaryText != null) FloorMapSummaryText.Text = _floorMapLoadMessage;
-                var hint = new TextBlock { Text = _floorMapLoadMessage, Foreground = Brushes.LightGray, FontSize = 24, FontFamily = FindResource("Peyda") as FontFamily, TextAlignment = TextAlignment.Center, Width = 1300, TextWrapping = TextWrapping.Wrap };
-                Canvas.SetLeft(hint, 150); Canvas.SetTop(hint, 430); LiveFloorMapCanvas.Children.Add(hint);
+                if (FloorMapSummaryText != null)
+                    FloorMapSummaryText.Text = _floorMapLoadMessage;
+
+                var hint = new TextBlock
+                {
+                    Text = _floorMapLoadMessage,
+                    Foreground = Brushes.LightGray,
+                    FontSize = 24,
+                    FontFamily = FindResource("Peyda") as FontFamily,
+                    TextAlignment = TextAlignment.Center,
+                    Width = Math.Max(500, canvasWidth - 100),
+                    TextWrapping = TextWrapping.Wrap
+                };
+
+                Canvas.SetLeft(hint, 50);
+                Canvas.SetTop(hint, canvasHeight / 2.0);
+
+                LiveFloorMapCanvas.Children.Add(hint);
                 return;
             }
 
-            int free = 0, reserved = 0, disabled = 0;
-            foreach (LiveMapObject item in _liveMapObjects
-    .Where(x => string.Equals(
-        x.Floor,
-        _selectedMapFloor,
-        StringComparison.OrdinalIgnoreCase))
-    .OrderBy(x => string.Equals(
-        x.Type,
-        "system",
-        StringComparison.OrdinalIgnoreCase) ? 1 : 0))
+            int free = 0;
+            int reserved = 0;
+            int disabled = 0;
+
+            foreach (LiveMapObject item in objects)
             {
                 if (item.Type != "system")
                 {
-                    DrawFloorDecoration(item);
+                    DrawFloorDecoration(item, offsetX, offsetY);
                     continue;
                 }
+
                 ReservationItem? booking = _guidedBookingMode
                     ? FindGuidedIntervalConflict(item)
                     : FindMapReservation(item);
+
                 string serverState = GetServerAvailabilityState(item);
-                bool hasLocalSchedule = HasMapReservationForSystemOnDate(item);
-                // The API availability endpoint may return a day-level/next-slot state.
-                // Once we have local reservations for this system/date, those exact
-                // intervals are authoritative; never turn one booking into all-day occupancy.
-                bool serverSaysOccupied = !_guidedBookingMode && !hasLocalSchedule &&
-                    (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) ||
-                     serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase));
-                bool isDisabled = item.Disabled || serverState.Equals("off", StringComparison.OrdinalIgnoreCase);
+
+                bool hasLocalSchedule =
+                    HasMapReservationForSystemOnDate(item);
+
+                bool serverSaysOccupied =
+                    !_guidedBookingMode &&
+                    !hasLocalSchedule &&
+                    (serverState.Equals(
+                        "reserved",
+                        StringComparison.OrdinalIgnoreCase) ||
+                     serverState.Equals(
+                        "in_use",
+                        StringComparison.OrdinalIgnoreCase));
+
+                bool isDisabled =
+                    item.Disabled ||
+                    serverState.Equals(
+                        "off",
+                        StringComparison.OrdinalIgnoreCase);
+
                 bool isReserved = booking != null || serverSaysOccupied;
-                bool isMapSelected = _selectedLiveMapSystems.Contains(GetLiveMapSelectionKey(item));
-                if (isDisabled) disabled++;
-                else if (isReserved) reserved++;
-                else free++;
+
+                bool isMapSelected =
+                    _selectedLiveMapSystems.Contains(
+                        GetLiveMapSelectionKey(item));
+
+                if (isDisabled)
+                    disabled++;
+                else if (isReserved)
+                    reserved++;
+                else
+                    free++;
 
                 Color fillColor = isDisabled
                     ? Color.FromRgb(41, 45, 58)
                     : isReserved
                         ? Color.FromRgb(116, 35, 43)
                         : Color.FromRgb(22, 112, 75);
+
                 Color borderColor = isDisabled
                     ? Color.FromRgb(130, 135, 150)
                     : isMapSelected
@@ -3086,7 +3303,9 @@ namespace LobixApp.Views
                         : isReserved
                             ? Color.FromRgb(245, 91, 100)
                             : Color.FromRgb(61, 205, 139);
-                if (isMapSelected && !isDisabled) fillColor = Color.FromRgb(39, 68, 112);
+
+                if (isMapSelected && !isDisabled)
+                    fillColor = Color.FromRgb(39, 68, 112);
 
                 var button = new Button
                 {
@@ -3095,26 +3314,48 @@ namespace LobixApp.Views
                     Background = new SolidColorBrush(fillColor),
                     Foreground = Brushes.White,
                     BorderBrush = new SolidColorBrush(borderColor),
-                    BorderThickness = new Thickness(isMapSelected ? 3 : 1.5),
+                    BorderThickness = new Thickness(
+                        isMapSelected ? 3 : 1.5),
                     Padding = new Thickness(4),
                     Template = GetLiveMapTileTemplate(),
                     Cursor = Cursors.Hand,
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 16,
                     FontWeight = FontWeights.SemiBold,
-                    Content = BuildMapSystemContent(item, booking, isDisabled, serverState, isMapSelected),
-                    ToolTip = BuildMapSystemTooltip(item, booking, isDisabled, serverState),
+                    Content = BuildMapSystemContent(
+                        item,
+                        booking,
+                        isDisabled,
+                        serverState,
+                        isMapSelected),
+                    ToolTip = BuildMapSystemTooltip(
+                        item,
+                        booking,
+                        isDisabled,
+                        serverState),
                     Tag = item
                 };
+
                 button.Click += LiveMapSystem_Click;
-                button.RenderTransformOrigin = new Point(.5, .5);
+                button.RenderTransformOrigin = new Point(0.5, 0.5);
                 button.RenderTransform = new RotateTransform(item.Rotation);
-                Canvas.SetLeft(button, item.X); Canvas.SetTop(button, item.Y);
+
+                Canvas.SetLeft(button, item.X + offsetX);
+                Canvas.SetTop(button, item.Y + offsetY);
+
                 LiveFloorMapCanvas.Children.Add(button);
             }
+
             if (FloorMapSummaryText != null)
-                FloorMapSummaryText.Text = $"{_selectedMapFloor}  •  آزاد {free}  •  رزرو {reserved}  •  غیرفعال {disabled}";
+            {
+                FloorMapSummaryText.Text =
+                    $"{_selectedMapFloor}  •  آزاد {free}  •  رزرو {reserved}  •  غیرفعال {disabled}";
+            }
+
+            LiveFloorMapCanvas.InvalidateMeasure();
+            LiveFloorMapCanvas.InvalidateArrange();
         }
+
 
         private ControlTemplate GetLiveMapTileTemplate()
         {
@@ -3138,95 +3379,192 @@ namespace LobixApp.Views
             return _liveMapTileTemplate;
         }
 
-        private UIElement BuildMapSystemContent(LiveMapObject item, ReservationItem? booking, bool disabled, string serverState, bool selected = false)
+
+
+        private UIElement BuildMapSystemContent(
+            LiveMapObject item,
+            ReservationItem? booking,
+            bool disabled,
+            string serverState,
+            bool selected = false)
         {
-            double side = Math.Min(item.Width, item.Height);
+            // محاسبه اندازه متناسب با ابعاد سیستم
+            double width = Math.Max(1, item.Width);
+            double height = Math.Max(1, item.Height);
+            double side = Math.Min(width, height);
+
             bool compact = side < 76;
-            double nameSize = compact ? 14 : Math.Clamp(side * 0.19, 15, 20);
-            double metaSize = compact ? 12 : Math.Clamp(side * 0.14, 13, 16);
-            double timerSize = compact ? 12 : Math.Clamp(side * 0.15, 13, 17);
+            bool veryCompact = side < 55;
+
+            double nameSize = veryCompact
+                ? 11
+                : compact
+                    ? 13
+                    : Math.Clamp(side * 0.19, 15, 20);
+
+            double numberSize = veryCompact
+                ? 11
+                : compact
+                    ? 12
+                    : Math.Clamp(side * 0.14, 13, 16);
+
+            double statusSize = veryCompact
+                ? 10
+                : compact
+                    ? 11
+                    : Math.Clamp(side * 0.14, 13, 16);
+
+            double timerSize = veryCompact
+                ? 10
+                : compact
+                    ? 11
+                    : Math.Clamp(side * 0.15, 13, 17);
+
+            var font = FindResource("Peyda") as FontFamily
+                ?? new FontFamily("Segoe UI");
+
             var panel = new StackPanel
             {
+                FlowDirection = FlowDirection.RightToLeft,
+                Orientation = Orientation.Vertical,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(3, 2, 3, 2)
             };
 
-            string title = !string.IsNullOrWhiteSpace(item.Label)
-                ? item.Label
-                : (!string.IsNullOrWhiteSpace(item.SystemNumber) ? $"PC {item.SystemNumber}" : "سیستم");
-            panel.Children.Add(new TextBlock
-            {
-                Text = title,
-                FontFamily = FindResource("Peyda") as FontFamily,
-                FontWeight = FontWeights.SemiBold,
-                FontSize = nameSize,
-                Foreground = Brushes.White,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                TextAlignment = TextAlignment.Center,
-                TextWrapping = TextWrapping.Wrap,
-                TextTrimming = TextTrimming.CharacterEllipsis,
-                MaxHeight = compact ? 34 : 44,
-                Margin = new Thickness(1, 0, 1, 1)
-            });
+            // نام نوع سیستم، بدون شماره
+            string title = (GetVariationName(item.VariationId) ?? string.Empty).Trim();
 
-            if (!string.IsNullOrWhiteSpace(item.SystemNumber))
+            // استخراج شماره انتهایی دستگاه
+            string rawNumber = (item.SystemNumber ?? string.Empty).Trim();
+
+            string number = new string(
+                rawNumber
+                    .Reverse()
+                    .TakeWhile(char.IsDigit)
+                    .Reverse()
+                    .ToArray());
+
+            // عنوان نوع سیستم
+            if (!string.IsNullOrWhiteSpace(title))
+            {
                 panel.Children.Add(new TextBlock
                 {
-                    Text = item.SystemNumber,
-                    FontFamily = FindResource("Peyda") as FontFamily,
+                    Text = title,
+                    FontFamily = font,
+                    FontWeight = FontWeights.SemiBold,
+                    FontSize = nameSize,
+                    Foreground = Brushes.White,
+                    FlowDirection = FlowDirection.RightToLeft,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    TextAlignment = TextAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    MaxHeight = compact ? 30 : 44,
+                    Margin = new Thickness(1, 0, 1, 1)
+                });
+            }
+
+            // شماره سیستم در خط جداگانه
+            if (!string.IsNullOrWhiteSpace(number))
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Text = number,
+                    FontFamily = font,
                     FontWeight = FontWeights.Medium,
-                    FontSize = metaSize,
-                    Foreground = new SolidColorBrush(Color.FromRgb(235, 239, 248)),
+                    FontSize = numberSize,
+                    Foreground = new SolidColorBrush(
+                        Color.FromRgb(235, 239, 248)),
+                    FlowDirection = FlowDirection.LeftToRight,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     TextAlignment = TextAlignment.Center,
                     TextTrimming = TextTrimming.CharacterEllipsis,
                     Margin = new Thickness(1, 0, 1, 1)
                 });
+            }
 
+            // تعیین وضعیت سیستم
             string statusText;
-            if (disabled) statusText = "غیرفعال";
-            else if (selected) statusText = "انتخاب شده";
-            else if (booking != null) statusText = IsManualReservation(booking) ? "رزرو دستی" : "رزرو آنلاین";
-            else if (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) || serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase)) statusText = "رزرو";
-            else statusText = "آزاد";
 
+            if (disabled)
+            {
+                statusText = "غیرفعال";
+            }
+            else if (selected)
+            {
+                statusText = "انتخاب شده";
+            }
+            else if (booking != null)
+            {
+                statusText = IsManualReservation(booking)
+                    ? "رزرو دستی"
+                    : "رزرو آنلاین";
+            }
+            else if (
+                serverState.Equals(
+                    "reserved",
+                    StringComparison.OrdinalIgnoreCase) ||
+                serverState.Equals(
+                    "in_use",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                statusText = "رزرو";
+            }
+            else
+            {
+                statusText = "آزاد";
+            }
+
+            // نمایش وضعیت
             panel.Children.Add(new TextBlock
             {
                 Text = statusText,
-                FontFamily = FindResource("Peyda") as FontFamily,
+                FontFamily = font,
                 FontWeight = FontWeights.SemiBold,
-                FontSize = metaSize,
-                Foreground = disabled ? new SolidColorBrush(Color.FromRgb(255, 220, 220)) : Brushes.White,
+                FontSize = statusSize,
+                Foreground = disabled
+                    ? new SolidColorBrush(Color.FromRgb(255, 220, 220))
+                    : Brushes.White,
+                FlowDirection = FlowDirection.RightToLeft,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 TextAlignment = TextAlignment.Center,
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 Margin = new Thickness(1, 1, 1, 0)
             });
 
+            // نمایش زمان باقی‌مانده رزرو
             if (!disabled && booking != null)
             {
                 string countdown = GetBookingCountdown(booking);
+
                 if (!string.IsNullOrWhiteSpace(countdown))
+                {
                     panel.Children.Add(new TextBlock
                     {
                         Text = countdown.Replace("\n", "  "),
-                        FontFamily = FindResource("Peyda") as FontFamily,
+                        FontFamily = font,
                         FontSize = timerSize,
                         FontWeight = FontWeights.Bold,
                         Foreground = Brushes.White,
+                        FlowDirection = FlowDirection.RightToLeft,
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         TextAlignment = TextAlignment.Center,
                         TextWrapping = TextWrapping.Wrap,
                         TextTrimming = TextTrimming.CharacterEllipsis,
-                        MaxHeight = Math.Max(30, Math.Min(42, Math.Max(84, item.Height) * 0.42)),
+                        MaxHeight = Math.Max(
+                            30,
+                            Math.Min(42, height * 0.42)),
                         Margin = new Thickness(1, 2, 1, 0),
                         Padding = new Thickness(2, 1, 2, 1),
-                        MaxWidth = Math.Max(30, item.Width - 8)
+                        MaxWidth = Math.Max(30, width - 8)
                     });
+                }
             }
+
             return panel;
         }
+
 
         private string BuildMapSystemTooltip(LiveMapObject item, ReservationItem? booking, bool disabled, string serverState)
         {
@@ -3240,7 +3578,11 @@ namespace LobixApp.Views
             return $"{booking.Customer}\n{booking.Phone}\n{FormatTimeOfDay(ParseTimeMinutes(booking.StartTime))} تا {FormatTimeOfDay(ParseTimeMinutes(booking.StartTime) + duration)} • {durationText}\n{(IsManualReservation(booking) ? "رزرو دستی" : "رزرو آنلاین")} • {GetFriendlyStatus(booking.Status)} • {booking.LocalSyncState}";
         }
 
-        private void DrawFloorDecoration(LiveMapObject item)
+
+        private void DrawFloorDecoration(
+            LiveMapObject item,
+            double offsetX = 0,
+            double offsetY = 0)
         {
             Color color = item.Type.ToLowerInvariant() switch
             {
@@ -3264,47 +3606,33 @@ namespace LobixApp.Views
             {
                 Width = item.Width,
                 Height = Math.Max(24, item.Height),
-
                 Background = new SolidColorBrush(color),
-
                 BorderBrush = new SolidColorBrush(
-                    Color.FromRgb(89, 93, 108)
-                ),
-
+                    Color.FromRgb(89, 93, 108)),
                 BorderThickness = new Thickness(1),
-
                 CornerRadius = new CornerRadius(5),
-
-                // اجازه نده تزئینات کلیک را دریافت کنند.
                 IsHitTestVisible = false,
-
                 Child = new TextBlock
                 {
                     Text = item.Label,
-
                     Foreground = Brushes.Gainsboro,
-
                     FontFamily = FindResource("Peyda") as FontFamily,
-
                     FontSize = 18,
-
                     TextAlignment = TextAlignment.Center,
-
                     VerticalAlignment = VerticalAlignment.Center,
-
                     TextWrapping = TextWrapping.Wrap
                 }
             };
 
             border.RenderTransformOrigin = new Point(0.5, 0.5);
-
             border.RenderTransform = new RotateTransform(item.Rotation);
 
-            Canvas.SetLeft(border, item.X);
-            Canvas.SetTop(border, item.Y);
+            Canvas.SetLeft(border, item.X + offsetX);
+            Canvas.SetTop(border, item.Y + offsetY);
 
             LiveFloorMapCanvas.Children.Add(border);
         }
+
 
         private static string NormalizeMapSystemNumber(string? value)
         {
