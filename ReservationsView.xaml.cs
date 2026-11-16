@@ -4394,14 +4394,8 @@ namespace LobixApp.Views
                     BorderThickness = new Thickness(1)
                 };
 
-                var style = new Style(typeof(Button));
-                style.Setters.Add(new Setter(Control.TemplateProperty,
-                    new ControlTemplate(typeof(Button))
-                    {
-                        VisualTree = new FrameworkElementFactory(typeof(Border))
-                    }));
-
-                button.Style = style;
+                button.Style = (Style)FindResource(
+                    primary ? "PrimaryButtonStyle" : "BaseButtonStyle");
                 return button;
             }
 
@@ -4427,6 +4421,7 @@ namespace LobixApp.Views
 
             var dateButton = new Button
             {
+                Style = (Style)FindResource("BaseButtonStyle"),
                 Content = JalaliDateHelper.FormatDate(chosenDate),
                 Height = 46,
                 HorizontalContentAlignment = HorizontalAlignment.Right,
@@ -4515,6 +4510,7 @@ namespace LobixApp.Views
             {
                 var combo = new ComboBox
                 {
+                    Style = (Style)FindResource("DarkComboBoxStyle"),
                     Height = 46,
                     MinWidth = 180,
                     FontFamily = FindResource("Peyda") as FontFamily,
@@ -4624,6 +4620,7 @@ namespace LobixApp.Views
 
             var cancel = new Button
             {
+                Style = (Style)FindResource("BaseButtonStyle"),
                 Content = "انصراف",
                 Width = 110,
                 Height = 44,
@@ -4640,6 +4637,7 @@ namespace LobixApp.Views
 
             var confirm = new Button
             {
+                Style = (Style)FindResource("PrimaryButtonStyle"),
                 Content = "ادامه و انتخاب سیستم",
                 Width = 195,
                 Height = 44,
@@ -5177,6 +5175,7 @@ namespace LobixApp.Views
 
             Button datePickerButton = new Button
             {
+                Style = (Style)FindResource("BaseButtonStyle"),
                 Content = JalaliDateHelper.FormatDate(selectedBookingDate),
                 Height = 38,
                 HorizontalContentAlignment = HorizontalAlignment.Right,
@@ -5314,7 +5313,11 @@ namespace LobixApp.Views
                     Margin = new Thickness(0, 0, 0, 12)
                 };
 
-                StackPanel systemsPanel = new StackPanel();
+                var systemsPanel = new UniformGrid
+                {
+                    Columns = 3,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
+                };
 
                 TextBlock systemsTitle = new TextBlock
                 {
@@ -5336,14 +5339,17 @@ namespace LobixApp.Views
                     Border itemBorder = new Border
                     {
                         Background = new SolidColorBrush(Color.FromRgb(38, 41, 55)),
-                        CornerRadius = new CornerRadius(7),
-                        Padding = new Thickness(10, 8, 10, 8),
-                        Margin = new Thickness(0, 0, 0, 6)
+                        BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                        BorderThickness = new Thickness(1),
+                        CornerRadius = new CornerRadius(8),
+                        Padding = new Thickness(8, 7, 8, 7),
+                        Margin = new Thickness(0, 0, 6, 6),
+                        MinHeight = 38
                     };
 
                     TextBlock itemText = new TextBlock
                     {
-                        Text = $"●  {item.SystemNumber}     {variation?.Title ?? "سیستم"}",
+                        Text = $"{item.SystemNumber}  ·  {variation?.Title ?? "سیستم"}",
                         Foreground = new SolidColorBrush(Color.FromRgb(235, 235, 245)),
                         FontFamily = FindResource("Peyda") as FontFamily,
                         FontSize = 12,
@@ -5467,6 +5473,7 @@ namespace LobixApp.Views
             {
                 return new ComboBox
                 {
+                    Style = (Style)FindResource("DarkComboBoxStyle"),
                     Width = 76,
                     MinWidth = 76,
                     Height = 38,
@@ -5877,12 +5884,7 @@ namespace LobixApp.Views
 
                     string phone = phoneBox.Text.Trim();
 
-                    if (string.IsNullOrWhiteSpace(phone))
-                    {
-                        validationText.Text =
-                            "شماره موبایل را وارد کنید.";
-                        return;
-                    }
+                    // شماره موبایل اختیاری است؛ مقدار خالی نیز برای API ارسال می‌شود.
 
 
 
@@ -7150,6 +7152,7 @@ namespace LobixApp.Views
         {
             return new Button
             {
+                Style = (Style)FindResource("BaseButtonStyle"),
                 Content = text,
 
                 Width = 125,
@@ -7174,14 +7177,14 @@ namespace LobixApp.Views
 
                 Cursor = System.Windows.Input.Cursors.Hand,
                 Background = new SolidColorBrush(danger
-                    ? Color.FromRgb(74, 32, 38)
-                    : Color.FromRgb(42, 29, 36)),
+                    ? Color.FromRgb(58, 31, 39)
+                    : Color.FromRgb(35, 29, 48)),
                 Foreground = new SolidColorBrush(danger
                     ? Color.FromRgb(255, 185, 190)
                     : Color.FromRgb(248, 248, 252)),
                 BorderBrush = new SolidColorBrush(danger
-                    ? Color.FromRgb(219, 60, 69)
-                    : Color.FromRgb(79, 48, 58)),
+                    ? Color.FromRgb(190, 65, 86)
+                    : Color.FromRgb(126, 82, 170)),
                 BorderThickness = new Thickness(1)
             };
         }
