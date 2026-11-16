@@ -1022,18 +1022,19 @@
                                             Style="{StaticResource SmallActionButtonStyle}"
                                             Click="MapZoomInButton_Click"/>
 
+                                    <Button x:Name="LiveMapMultiSelectButton"
+                                            Content="انتخاب چند سیستم"
+                                            Height="30"
+                                            Margin="6,0,0,0"
+                                            Style="{StaticResource SmallActionButtonStyle}"
+                                            Click="LiveMapMultiSelectButton_Click"/>
+
                                     <Button x:Name="CancelGuidedBookingButton"
                                             Content="لغو ثبت رزرو"
                                             Height="30"
                                             Visibility="Collapsed"
                                             Style="{StaticResource SmallActionButtonStyle}"
                                             Click="CancelGuidedBookingButton_Click"/>
-
-                                    <Button x:Name="LiveMapMultiSelectButton"
-                                            Content="انتخاب چند سیستم"
-                                            Height="30"
-                                            Style="{StaticResource SmallActionButtonStyle}"
-                                            Click="LiveMapMultiSelectButton_Click"/>
                                 </WrapPanel>
                             </Grid>
 
