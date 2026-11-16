@@ -5829,6 +5829,7 @@ namespace LobixApp.Views
                 isEdit ? "ذخیره تغییرات" : "ثبت رزرو",
                 false
             );
+            save.Style = (Style)FindResource("PrimaryButtonStyle");
 
             buttons.Children.Add(save);
             root.Children.Add(buttons);
