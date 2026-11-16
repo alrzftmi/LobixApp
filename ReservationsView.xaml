@@ -452,7 +452,7 @@
         <Style x:Key="DarkScrollBarStyle"
                TargetType="{x:Type ScrollBar}">
             <Setter Property="Background" Value="#151720"/>
-            <Setter Property="Foreground" Value="#444958"/>
+            <Setter Property="Foreground" Value="#DB3C45"/>
             <Setter Property="Width" Value="11"/>
             <Setter Property="MinWidth" Value="11"/>
             <Setter Property="MinHeight" Value="11"/>
