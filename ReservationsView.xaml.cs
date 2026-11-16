@@ -4456,6 +4456,7 @@ namespace LobixApp.Views
 
             var dateTemplate = new ControlTemplate(typeof(Button));
             var dateBorder = new FrameworkElementFactory(typeof(Border));
+            dateBorder.Name = "buttonBorder";
             dateBorder.SetValue(Border.BackgroundProperty, surface);
             dateBorder.SetValue(Border.BorderBrushProperty, borderColor);
             dateBorder.SetValue(Border.BorderThicknessProperty, new Thickness(1));
@@ -5297,7 +5298,65 @@ namespace LobixApp.Views
                 fieldsPanel.Children.Add(systemNumberHint);
                 fieldsPanel.Children.Add(CreateCompactField("تعداد", quantityCombo));
             }
+            // -----------------------------------------------------
+            // MULTI SYSTEM DISPLAY
+            // -----------------------------------------------------
 
+            if (isMultiSystemBooking)
+            {
+                Border systemsContainer = new Border
+                {
+                    Background = new SolidColorBrush(Color.FromRgb(27, 30, 41)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(10),
+                    Padding = new Thickness(14),
+                    Margin = new Thickness(0, 0, 0, 12)
+                };
+
+                StackPanel systemsPanel = new StackPanel();
+
+                TextBlock systemsTitle = new TextBlock
+                {
+                    Text = $"دستگاه‌های انتخاب‌شده ({multiSystems.Count})",
+                    Foreground = Brushes.White,
+                    FontFamily = FindResource("Peyda") as FontFamily,
+                    FontSize = 14,
+                    FontWeight = FontWeights.SemiBold,
+                    Margin = new Thickness(0, 0, 0, 10)
+                };
+
+                systemsPanel.Children.Add(systemsTitle);
+
+                foreach (LiveMapObject item in multiSystems)
+                {
+                    GamenetVariation? variation =
+                        _variations.FirstOrDefault(v => v.Id == item.VariationId);
+
+                    Border itemBorder = new Border
+                    {
+                        Background = new SolidColorBrush(Color.FromRgb(38, 41, 55)),
+                        CornerRadius = new CornerRadius(7),
+                        Padding = new Thickness(10, 8, 10, 8),
+                        Margin = new Thickness(0, 0, 0, 6)
+                    };
+
+                    TextBlock itemText = new TextBlock
+                    {
+                        Text = $"●  {item.SystemNumber}     {variation?.Title ?? "سیستم"}",
+                        Foreground = new SolidColorBrush(Color.FromRgb(235, 235, 245)),
+                        FontFamily = FindResource("Peyda") as FontFamily,
+                        FontSize = 12,
+                        TextAlignment = TextAlignment.Right
+                    };
+
+                    itemBorder.Child = itemText;
+                    systemsPanel.Children.Add(itemBorder);
+                }
+
+                systemsContainer.Child = systemsPanel;
+                fieldsPanel.Children.Add(systemsContainer);
+            }
             // -----------------------------------------------------
             // UPDATE SYSTEM NUMBERS
             // -----------------------------------------------------
@@ -5616,11 +5675,47 @@ namespace LobixApp.Views
             endTimePanel.Children.Add(endMinuteCombo);
 
             // افزودن به فرم
-            fieldsPanel.Children.Add(
-                CreateCompactField(_guidedBookingMode ? "ساعت شروع" : "ساعت شروع (ساعت : دقیقه)", startTimePanel));
+            var timeGrid = new Grid();
+            timeGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            timeGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            var startColumn = new StackPanel();
+            startColumn.Children.Add(new TextBlock
+            {
+                Text = "ساعت شروع",
+                Foreground = new SolidColorBrush(Color.FromRgb(177, 179, 195)),
+                FontSize = 11,
+                Margin = new Thickness(0, 0, 0, 7)
+            });
+            startColumn.Children.Add(startTimePanel);
+
+            var endColumn = new StackPanel();
+            endColumn.Children.Add(new TextBlock
+            {
+                Text = "ساعت پایان",
+                Foreground = new SolidColorBrush(Color.FromRgb(177, 179, 195)),
+                FontSize = 11,
+                Margin = new Thickness(0, 0, 0, 7)
+            });
+            endColumn.Children.Add(endTimePanel);
+
+            timeGrid.Children.Add(startColumn);
+            timeGrid.Children.Add(endColumn);
+            Grid.SetColumn(endColumn, 1);
+
+            var timeContainer = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(29, 31, 43)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(11),
+                Padding = new Thickness(12),
+                Child = timeGrid
+            };
 
             fieldsPanel.Children.Add(
-                CreateCompactField(_guidedBookingMode ? "ساعت پایان" : "ساعت پایان (ساعت : دقیقه)", endTimePanel));
+                CreateCompactField("بازه زمانی رزرو", timeContainer)
+            );
 
             // نمایش مدت رزرو
             TextBlock durationSummary = new TextBlock
@@ -5670,8 +5765,7 @@ namespace LobixApp.Views
             endMinuteCombo.SelectionChanged += (_, _) =>
                 UpdateDurationSummary();
 
-            fieldsPanel.Children.Add(
-                CreateCompactField("مدت واقعی", durationSummary));
+            
 
             UpdateDurationSummary();
 
@@ -6244,7 +6338,14 @@ namespace LobixApp.Views
                 }
             };
 
-            window.Content = root;
+            window.Content = new ScrollViewer
+            {
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+                Background = new SolidColorBrush(Color.FromRgb(18, 19, 28)),
+                Padding = new Thickness(4),
+                Content = root
+            };
 
             LobixDialog.AnimateWindowIn(window);
             window.ShowDialog();
@@ -6957,44 +7058,35 @@ namespace LobixApp.Views
 
         private Border CreateCompactField(string title, UIElement control)
         {
-            Border field = new Border
-            {
-                Width = 345,
-                Margin = new Thickness(0, 0, 12, 5),
-                Padding = new Thickness(12),
-                Background = new SolidColorBrush(
-                    Color.FromRgb(35, 35, 45)
-                ),
-                BorderBrush = new SolidColorBrush(
-                    Color.FromRgb(41, 45, 58)
-                ),
-                BorderThickness = new Thickness(1),
-                CornerRadius = new CornerRadius(8)
-            };
-
-            StackPanel panel = new StackPanel
+            var panel = new StackPanel
             {
                 Orientation = Orientation.Vertical
             };
 
-            TextBlock titleText = new TextBlock
+            panel.Children.Add(new TextBlock
             {
                 Text = title,
+                FontFamily = FindResource("Peyda") as FontFamily,
+                FontSize = 12,
                 FontWeight = FontWeights.SemiBold,
-                Margin = new Thickness(0, 0, 0, 8),
-                TextWrapping = TextWrapping.Wrap
-            };
-
-            panel.Children.Add(titleText);
+                Foreground = new SolidColorBrush(Color.FromRgb(205, 207, 220)),
+                Margin = new Thickness(0, 0, 0, 9)
+            });
 
             if (control is FrameworkElement element)
-            {
                 panel.Children.Add(element);
-            }
 
-            field.Child = panel;
-
-            return field;
+            return new Border
+            {
+                Width = 345,
+                Margin = new Thickness(0, 0, 12, 10),
+                Padding = new Thickness(13),
+                Background = new SolidColorBrush(Color.FromRgb(25, 26, 37)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(53, 55, 72)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(11),
+                Child = panel
+            };
         }
 
         private Border CreateField(
