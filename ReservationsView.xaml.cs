@@ -5485,8 +5485,8 @@ namespace LobixApp.Views
                 return new ComboBox
                 {
                     Style = (Style)FindResource("DarkComboBoxStyle"),
-                    Width = 76,
-                    MinWidth = 76,
+                    Width = 88,
+                    MinWidth = 88,
                     Height = 38,
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 13,
