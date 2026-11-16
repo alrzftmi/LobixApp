@@ -4356,7 +4356,7 @@ namespace LobixApp.Views
             var bg = new SolidColorBrush(Color.FromRgb(18, 19, 28));
             var surface = new SolidColorBrush(Color.FromRgb(29, 31, 43));
             var borderColor = new SolidColorBrush(Color.FromRgb(57, 59, 77));
-            var purple = new SolidColorBrush(Color.FromRgb(168, 85, 247));
+            var accentRed = new SolidColorBrush(Color.FromRgb(219, 60, 69));
             var muted = new SolidColorBrush(Color.FromRgb(157, 160, 179));
 
             var window = new Window
@@ -4389,8 +4389,8 @@ namespace LobixApp.Views
                     FontWeight = FontWeights.SemiBold,
                     Cursor = System.Windows.Input.Cursors.Hand,
                     Foreground = Brushes.White,
-                    Background = primary ? purple : surface,
-                    BorderBrush = primary ? purple : borderColor,
+                    Background = primary ? accentRed : surface,
+                    BorderBrush = primary ? accentRed : borderColor,
                     BorderThickness = new Thickness(1)
                 };
 
@@ -4468,9 +4468,9 @@ namespace LobixApp.Views
                 Property = Button.IsMouseOverProperty,
                 Value = true
             };
-            hover.Setters.Add(new Setter(Border.BorderBrushProperty, purple, "buttonBorder"));
+            hover.Setters.Add(new Setter(Border.BorderBrushProperty, accentRed, "buttonBorder"));
             hover.Setters.Add(new Setter(Border.BackgroundProperty,
-                new SolidColorBrush(Color.FromRgb(42, 32, 58)), "buttonBorder"));
+                new SolidColorBrush(Color.FromRgb(50, 29, 36)), "buttonBorder"));
             dateTemplate.Triggers.Add(hover);
 
             dateButton.Template = dateTemplate;
@@ -4502,7 +4502,7 @@ namespace LobixApp.Views
                 Property = ComboBoxItem.IsHighlightedProperty,
                 Value = true
             };
-            itemHover.Setters.Add(new Setter(Control.BackgroundProperty, purple));
+            itemHover.Setters.Add(new Setter(Control.BackgroundProperty, accentRed));
             itemHover.Setters.Add(new Setter(Control.ForegroundProperty, Brushes.White));
             itemStyle.Triggers.Add(itemHover);
 
@@ -4528,7 +4528,7 @@ namespace LobixApp.Views
 
                 combo.Resources[SystemColors.WindowBrushKey] = surface;
                 combo.Resources[SystemColors.ControlBrushKey] = surface;
-                combo.Resources[SystemColors.HighlightBrushKey] = purple;
+                combo.Resources[SystemColors.HighlightBrushKey] = accentRed;
                 combo.Resources[SystemColors.HighlightTextBrushKey] = Brushes.White;
                 combo.Resources[SystemColors.WindowTextBrushKey] = Brushes.White;
 
@@ -4641,9 +4641,9 @@ namespace LobixApp.Views
                 Content = "ادامه و انتخاب سیستم",
                 Width = 195,
                 Height = 44,
-                Background = purple,
+                Background = accentRed,
                 Foreground = Brushes.White,
-                BorderBrush = purple,
+                BorderBrush = accentRed,
                 BorderThickness = new Thickness(1),
                 FontFamily = FindResource("Peyda") as FontFamily,
                 FontSize = 13,
@@ -5313,10 +5313,9 @@ namespace LobixApp.Views
                     Margin = new Thickness(0, 0, 0, 12)
                 };
 
-                var systemsPanel = new UniformGrid
+                var systemsContent = new StackPanel
                 {
-                    Columns = 3,
-                    HorizontalAlignment = HorizontalAlignment.Stretch
+                    Orientation = Orientation.Vertical
                 };
 
                 TextBlock systemsTitle = new TextBlock
@@ -5326,10 +5325,16 @@ namespace LobixApp.Views
                     FontFamily = FindResource("Peyda") as FontFamily,
                     FontSize = 14,
                     FontWeight = FontWeights.SemiBold,
-                    Margin = new Thickness(0, 0, 0, 10)
+                    Margin = new Thickness(0, 0, 0, 12)
                 };
 
-                systemsPanel.Children.Add(systemsTitle);
+                systemsContent.Children.Add(systemsTitle);
+
+                var systemsPanel = new UniformGrid
+                {
+                    Columns = 3,
+                    HorizontalAlignment = HorizontalAlignment.Stretch
+                };
 
                 foreach (LiveMapObject item in multiSystems)
                 {
@@ -5342,9 +5347,11 @@ namespace LobixApp.Views
                         BorderBrush = new SolidColorBrush(Color.FromRgb(57, 59, 77)),
                         BorderThickness = new Thickness(1),
                         CornerRadius = new CornerRadius(8),
-                        Padding = new Thickness(8, 7, 8, 7),
-                        Margin = new Thickness(0, 0, 6, 6),
-                        MinHeight = 38
+                        Padding = new Thickness(9, 8, 9, 8),
+                        Margin = new Thickness(4),
+                        MinHeight = 44,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch
                     };
 
                     TextBlock itemText = new TextBlock
@@ -5353,14 +5360,18 @@ namespace LobixApp.Views
                         Foreground = new SolidColorBrush(Color.FromRgb(235, 235, 245)),
                         FontFamily = FindResource("Peyda") as FontFamily,
                         FontSize = 12,
-                        TextAlignment = TextAlignment.Right
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Stretch
                     };
 
                     itemBorder.Child = itemText;
                     systemsPanel.Children.Add(itemBorder);
                 }
 
-                systemsContainer.Child = systemsPanel;
+                systemsContent.Children.Add(systemsPanel);
+                systemsContainer.Child = systemsContent;
                 fieldsPanel.Children.Add(systemsContainer);
             }
             // -----------------------------------------------------
@@ -7179,13 +7190,13 @@ namespace LobixApp.Views
                 Cursor = System.Windows.Input.Cursors.Hand,
                 Background = new SolidColorBrush(danger
                     ? Color.FromRgb(58, 31, 39)
-                    : Color.FromRgb(35, 29, 48)),
+                    : Color.FromRgb(35, 38, 50)),
                 Foreground = new SolidColorBrush(danger
                     ? Color.FromRgb(255, 185, 190)
                     : Color.FromRgb(248, 248, 252)),
                 BorderBrush = new SolidColorBrush(danger
                     ? Color.FromRgb(190, 65, 86)
-                    : Color.FromRgb(126, 82, 170)),
+                    : Color.FromRgb(57, 59, 77)),
                 BorderThickness = new Thickness(1)
             };
         }
