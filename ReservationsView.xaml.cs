@@ -5654,12 +5654,9 @@ namespace LobixApp.Views
                 if (selectedBookingDate.Date == DateTime.Today)
                 {
                     DateTime now = DateTime.Now;
-                    int firstWholeFutureHour =
-                        now.Minute > 0 || now.Second > 0 || now.Millisecond > 0
-                            ? now.Hour + 1
-                            : now.Hour;
 
-                    firstStartHour = Math.Max(firstStartHour, firstWholeFutureHour);
+                    // ساعت جاری هم قابل انتخاب نیست؛ فقط ساعت کامل بعدی مجاز است.
+                    firstStartHour = Math.Max(firstStartHour, now.Hour + 1);
                 }
 
                 int lastStartHour = Math.Min(EndHour - 1, multiSystemShiftEnd - 1);
@@ -5677,13 +5674,8 @@ namespace LobixApp.Views
                     return;
                 }
 
-                int preferredStart = initialStartMinutes / 60;
-                string preferred = preferredStart >= firstStartHour &&
-                                   preferredStart <= lastStartHour
-                    ? preferredStart.ToString("00", CultureInfo.InvariantCulture)
-                    : startHourCombo.Items[0].ToString()!;
-
-                startHourCombo.SelectedItem = preferred;
+                // به‌صورت پیش‌فرض اولین ساعت مجاز انتخاب می‌شود.
+                startHourCombo.SelectedItem = startHourCombo.Items[0];
                 RefreshEndHourOptions(GetStartMinutes() + 60);
             }
 
