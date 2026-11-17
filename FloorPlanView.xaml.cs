@@ -72,6 +72,9 @@ namespace LobixApp.Views
         private bool _showGrid = true;
         private bool _isCardsView;
         private bool _isPanning;
+        private bool _isSelecting;
+        private Point _selectionStart;
+        private Rectangle? _selectionRectangle;
         private bool _dragging;
         private bool _systemsLoaded;
         private bool _remoteLayoutLoaded;
@@ -4093,35 +4096,57 @@ namespace LobixApp.Views
             if (Keyboard.IsKeyDown(Key.Space))
             {
                 _isPanning = true;
-
                 _panOrigin = e.GetPosition(MapScroll);
-
                 MapCanvas.CaptureMouse();
-
                 e.Handled = true;
+                return;
             }
+
+            // شروع انتخاب کادری فقط از فضای خالی نقشه؛
+            // کلیک روی خود آیتم‌ها همچنان منطق انتخاب/جابجایی قبلی را اجرا می‌کند.
+            _isSelecting = true;
+            _selectionStart = e.GetPosition(MapCanvas);
+
+            _selectionRectangle = new Rectangle
+            {
+                Stroke = new SolidColorBrush(Color.FromRgb(219, 60, 69)),
+                StrokeThickness = 1.5,
+                Fill = new SolidColorBrush(Color.FromArgb(48, 219, 60, 69)),
+                IsHitTestVisible = false
+            };
+
+            Panel.SetZIndex(_selectionRectangle, int.MaxValue);
+            MapCanvas.Children.Add(_selectionRectangle);
+            Canvas.SetLeft(_selectionRectangle, _selectionStart.X);
+            Canvas.SetTop(_selectionRectangle, _selectionStart.Y);
+            MapCanvas.CaptureMouse();
+            e.Handled = true;
         }
 
         private void MapCanvas_MouseMove(
             object sender,
             MouseEventArgs e)
         {
-            if (!_isPanning ||
-                e.LeftButton != MouseButtonState.Pressed)
+            if (_isSelecting && e.LeftButton == MouseButtonState.Pressed &&
+                _selectionRectangle != null)
             {
+                Point currentSelection = e.GetPosition(MapCanvas);
+                double left = Math.Min(_selectionStart.X, currentSelection.X);
+                double top = Math.Min(_selectionStart.Y, currentSelection.Y);
+                _selectionRectangle.Width = Math.Max(1, Math.Abs(currentSelection.X - _selectionStart.X));
+                _selectionRectangle.Height = Math.Max(1, Math.Abs(currentSelection.Y - _selectionStart.Y));
+                Canvas.SetLeft(_selectionRectangle, left);
+                Canvas.SetTop(_selectionRectangle, top);
                 return;
             }
 
+            if (!_isPanning || e.LeftButton != MouseButtonState.Pressed)
+                return;
+
             Point current = e.GetPosition(MapScroll);
-
             Vector delta = current - _panOrigin;
-
-            MapScroll.ScrollToHorizontalOffset(
-                MapScroll.HorizontalOffset - delta.X);
-
-            MapScroll.ScrollToVerticalOffset(
-                MapScroll.VerticalOffset - delta.Y);
-
+            MapScroll.ScrollToHorizontalOffset(MapScroll.HorizontalOffset - delta.X);
+            MapScroll.ScrollToVerticalOffset(MapScroll.VerticalOffset - delta.Y);
             _panOrigin = current;
         }
 
@@ -4129,10 +4154,50 @@ namespace LobixApp.Views
             object sender,
             MouseButtonEventArgs e)
         {
+            if (_isSelecting)
+            {
+                Point end = e.GetPosition(MapCanvas);
+                Rect selectionBounds = new(
+                    Math.Min(_selectionStart.X, end.X),
+                    Math.Min(_selectionStart.Y, end.Y),
+                    Math.Abs(end.X - _selectionStart.X),
+                    Math.Abs(end.Y - _selectionStart.Y));
+
+                bool dragged = selectionBounds.Width >= 4 || selectionBounds.Height >= 4;
+                if (dragged)
+                {
+                    _selectedIds.Clear();
+
+                    foreach (PlanItem item in _items.Where(IsItemVisible))
+                    {
+                        Rect itemBounds = new(item.X, item.Y, item.W, item.H);
+                        if (selectionBounds.IntersectsWith(itemBounds))
+                            _selectedIds.Add(item.Id);
+                    }
+                }
+                else
+                {
+                    _selectedIds.Clear();
+                }
+
+                _selected = _items.FirstOrDefault(item => _selectedIds.Contains(item.Id));
+                _isSelecting = false;
+
+                if (_selectionRectangle != null)
+                    MapCanvas.Children.Remove(_selectionRectangle);
+                _selectionRectangle = null;
+
+                MapCanvas.ReleaseMouseCapture();
+                RenderCurrentView();
+                UpdateDetails();
+                UpdateSummary();
+                e.Handled = true;
+                return;
+            }
+
             if (_isPanning)
             {
                 _isPanning = false;
-
                 MapCanvas.ReleaseMouseCapture();
             }
         }
