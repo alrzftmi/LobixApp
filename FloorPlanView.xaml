@@ -54,8 +54,8 @@
             <Setter Property="Background" Value="{StaticResource Panel}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="12"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="14"/>
         </Style>
 
         <!-- ================= BUTTON STYLES ================= -->
@@ -65,7 +65,7 @@
             <Setter Property="Background" Value="#20232E"/>
             <Setter Property="BorderBrush" Value="#303442"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Padding" Value="12,8"/>
             <Setter Property="Margin" Value="2"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="FontSize" Value="11"/>
@@ -161,11 +161,11 @@
             <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="9,7"/>
-            <Setter Property="Margin" Value="0,3,0,7"/>
+            <Setter Property="Margin" Value="0,4,0,9"/>
             <Setter Property="CaretBrush" Value="White"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="MinHeight" Value="36"/>
         </Style>
 
         <!-- ================= COMBOBOX STYLE ================= -->
@@ -452,9 +452,9 @@
         <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/>
+                <ColumnDefinition Width="270"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="205"/>
+                <ColumnDefinition Width="220"/>
             </Grid.ColumnDefinitions>
 
             <!-- ================= DETAILS PANEL ================= -->
@@ -472,6 +472,12 @@
                         <TextBlock Text="مشخصات انتخاب"
                                    FontSize="14"
                                    FontWeight="Bold"/>
+
+                        <TextBlock Text="یک آیتم از روی نقشه انتخاب کنید تا جزئیات و تنظیمات آن نمایش داده شود."
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="0,5,0,3"/>
 
                         <TextBlock x:Name="SelectionHint"
                                    Text="برای مشاهده مشخصات، یک آیتم را انتخاب کنید."
@@ -690,7 +696,7 @@
                     Background="#11141C"
                     BorderBrush="{StaticResource Line}"
                     BorderThickness="1"
-                    CornerRadius="10"
+                    CornerRadius="12"
                     ClipToBounds="True">
 
                 <Grid>
@@ -704,7 +710,7 @@
 
                     <Border Grid.Row="0"
                             Background="{StaticResource Panel}"
-                            Padding="8"
+                            Padding="11"
                             BorderBrush="{StaticResource Line}"
                             BorderThickness="0,0,0,1">
 
@@ -726,9 +732,9 @@
                                           Margin="0,0,10,0"
                                           SelectionChanged="Floor_Changed"/>
 
-                                <TextBlock Text="فیلتر"
+                                <TextBlock Text="نوع آیتم"
                                            Style="{StaticResource MutedText}"
-                                           Margin="0,0,5,0"/>
+                                           Margin="0,0,6,0"/>
 
                                 <ComboBox x:Name="TypeFilter"
                                           Width="110"
@@ -748,11 +754,47 @@
 
                                 </ComboBox>
 
-                                <TextBox x:Name="SearchBox"
-                                         Width="125"
-                                         Margin="0"
-                                         ToolTip="جست‌وجوی آیتم‌ها"
-                                         TextChanged="Filter_Changed"/>
+                                <TextBlock Text="جست‌وجو"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,0,6,0"/>
+
+                                <Grid Width="170"
+                                      Height="34"
+                                      VerticalAlignment="Center">
+
+                                    <TextBox x:Name="SearchBox"
+                                             Margin="0"
+                                             Padding="30,7,9,7"
+                                             ToolTip="نام یا شماره سیستم را برای پیدا کردن سریع وارد کنید"
+                                             TextChanged="Filter_Changed"/>
+
+                                    <TextBlock Text="⌕"
+                                               FontSize="19"
+                                               Foreground="{StaticResource Muted}"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Margin="9,0,0,1"
+                                               IsHitTestVisible="False"/>
+
+                                    <TextBlock Text="نام یا شماره سیستم..."
+                                               Foreground="{StaticResource Muted}"
+                                               FontSize="10"
+                                               VerticalAlignment="Center"
+                                               Margin="31,0,5,0"
+                                               IsHitTestVisible="False">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+
+                                </Grid>
 
                             </WrapPanel>
 
@@ -834,6 +876,12 @@
                                    FontSize="14"
                                    FontWeight="Bold"/>
 
+                        <TextBlock Text="برای افزودن یا مرتب‌کردن اجزای سالن، ابزار موردنظر را انتخاب کنید."
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="0,5,0,3"/>
+
                         <!-- DESIGN TOOLS -->
 
                         <TextBlock Text="طراحی سالن"
@@ -895,6 +943,12 @@
                         <TextBlock Text="سیستم‌های قرارنگرفته"
                                    Style="{StaticResource SectionTitle}"
                                    Margin="0,3,0,5"/>
+
+                        <TextBlock Text="برای قرار دادن هر سیستم، روی نام آن بزنید."
+                                   Foreground="{StaticResource Muted}"
+                                   FontSize="10"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,6"/>
 
                         <Border Background="{StaticResource Panel2}"
                                 CornerRadius="6"
