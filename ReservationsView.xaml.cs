@@ -5212,6 +5212,9 @@ namespace LobixApp.Views
 
                     datePickerButton.Content =
                         JalaliDateHelper.FormatDate(selectedBookingDate);
+
+                    if (isMultiSystemBooking)
+                        RefreshMultiSystemStartOptions();
                 }
             };
 
@@ -5501,75 +5504,72 @@ namespace LobixApp.Views
             ComboBox endHourCombo = CreateTimeCombo();
             ComboBox endMinuteCombo = CreateTimeCombo();
 
-            // ساعت شروع
-            for (int hour = StartHour; hour < EndHour; hour++)
+            // -----------------------------------------------------
+            // ساعت‌بندی فرم رزرو
+            // در رزرو چندسیستمی فقط ساعت کامل و ساعات مشترک شیفت سیستم‌ها مجاز است.
+            // -----------------------------------------------------
+
+            int multiSystemShiftStart = StartHour;
+            int multiSystemShiftEnd = EndHour;
+
+            if (isMultiSystemBooking)
             {
-                startHourCombo.Items.Add(
-                    hour.ToString("00", CultureInfo.InvariantCulture));
+                foreach (LiveMapObject selectedSystem in multiSystems)
+                {
+                    GamenetVariation? variation =
+                        _variations.FirstOrDefault(v => v.Id == selectedSystem.VariationId);
+
+                    if (variation == null)
+                        continue;
+
+                    int workStart = ParseWorkHour(variation.WorkStart, StartHour);
+                    int workEnd = ParseWorkHour(variation.WorkEnd, EndHour);
+
+                    if (workEnd <= workStart)
+                    {
+                        workStart = StartHour;
+                        workEnd = EndHour;
+                    }
+
+                    // برای رزرو هم‌زمان، همه سیستم‌ها باید در تمام بازه فعال باشند.
+                    multiSystemShiftStart = Math.Max(multiSystemShiftStart, workStart);
+                    multiSystemShiftEnd = Math.Min(multiSystemShiftEnd, workEnd);
+                }
             }
 
-            // دقیقه شروع با فاصله ۵ دقیقه
-            for (int minute = 0; minute < 60; minute += 5)
-            {
-                startMinuteCombo.Items.Add(
-                    minute.ToString("00", CultureInfo.InvariantCulture));
-            }
-
-            // مقدار اولیه شروع
-            int safeInitialStart = Math.Clamp(
-                initialStartMinutes,
-                StartHour * 60,
-                EndHour * 60 - 5);
-
-            startHourCombo.SelectedItem =
-                (safeInitialStart / 60).ToString("00", CultureInfo.InvariantCulture);
-
-            startMinuteCombo.SelectedItem =
-                (safeInitialStart % 60).ToString("00", CultureInfo.InvariantCulture);
-            startMinuteCombo.IsEnabled = !_guidedBookingMode;
-            endMinuteCombo.IsEnabled = !_guidedBookingMode;
-            startHourCombo.IsEnabled = !_guidedBookingMode;
-            endHourCombo.IsEnabled = !_guidedBookingMode;
-
-            // دریافت زمان شروع به دقیقه
             int GetStartMinutes()
             {
                 int hour = int.TryParse(
                     startHourCombo.SelectedItem?.ToString(), out int h)
                     ? h : StartHour;
 
-                int minute = int.TryParse(
-                    startMinuteCombo.SelectedItem?.ToString(), out int m)
-                    ? m : 0;
+                int minute = isMultiSystemBooking
+                    ? 0
+                    : (int.TryParse(startMinuteCombo.SelectedItem?.ToString(), out int m) ? m : 0);
 
                 return (hour * 60) + minute;
             }
 
-            // دریافت زمان پایان به دقیقه
             int GetEndMinutes()
             {
                 int hour = int.TryParse(
                     endHourCombo.SelectedItem?.ToString(), out int h)
                     ? h : StartHour;
 
-                int minute = int.TryParse(
-                    endMinuteCombo.SelectedItem?.ToString(), out int m)
-                    ? m : 0;
+                int minute = isMultiSystemBooking
+                    ? 0
+                    : (int.TryParse(endMinuteCombo.SelectedItem?.ToString(), out int m) ? m : 0);
 
                 return (hour * 60) + minute;
             }
 
-            // ساخت گزینه‌های دقیقه پایان
             void RefreshEndMinuteOptions(int preferredMinute = -1)
             {
-                if (endHourCombo.SelectedItem == null)
+                if (isMultiSystemBooking || endHourCombo.SelectedItem == null)
                     return;
 
                 int startValue = GetStartMinutes();
-
-                int endHour = int.Parse(
-                    endHourCombo.SelectedItem.ToString()!);
-
+                int endHour = int.Parse(endHourCombo.SelectedItem.ToString()!);
                 int minimumMinute = endHour == startValue / 60
                     ? startValue % 60 + 5
                     : 0;
@@ -5577,12 +5577,9 @@ namespace LobixApp.Views
                 endMinuteCombo.Items.Clear();
 
                 int firstMinute = ((minimumMinute + 4) / 5) * 5;
-
                 int lastMinute = endHour == EndHour ? 0 : 55;
 
-                for (int minute = firstMinute;
-                     minute <= lastMinute;
-                     minute += 5)
+                for (int minute = firstMinute; minute <= lastMinute; minute += 5)
                 {
                     endMinuteCombo.Items.Add(
                         minute.ToString("00", CultureInfo.InvariantCulture));
@@ -5604,49 +5601,134 @@ namespace LobixApp.Views
                         : endMinuteCombo.Items[0];
             }
 
-            // ساخت گزینه‌های ساعت پایان
             void RefreshEndHourOptions(int preferredEnd = -1)
             {
                 int startValue = GetStartMinutes();
 
                 int oldEnd = preferredEnd >= 0
                     ? preferredEnd
-                    : (endHourCombo.SelectedItem != null &&
-                       endMinuteCombo.SelectedItem != null
+                    : (endHourCombo.SelectedItem != null
                         ? GetEndMinutes()
                         : startValue + 60);
 
                 endHourCombo.Items.Clear();
 
-                int firstEndHour = startValue / 60;
+                int firstEndHour = isMultiSystemBooking
+                    ? (startValue / 60) + 1
+                    : (startValue / 60 + (startValue % 60 >= 55 ? 1 : 0));
 
-                if (startValue % 60 >= 55)
-                    firstEndHour++;
+                int lastEndHour = isMultiSystemBooking
+                    ? multiSystemShiftEnd
+                    : EndHour;
 
-                for (int hour = firstEndHour; hour <= EndHour; hour++)
+                for (int hour = firstEndHour; hour <= lastEndHour; hour++)
                 {
                     endHourCombo.Items.Add(
                         hour.ToString("00", CultureInfo.InvariantCulture));
                 }
 
-                int desiredHour = Math.Clamp(
-                    oldEnd / 60,
-                    firstEndHour,
-                    EndHour);
+                if (endHourCombo.Items.Count == 0)
+                {
+                    endHourCombo.SelectedIndex = -1;
+                    if (!isMultiSystemBooking)
+                        endMinuteCombo.Items.Clear();
+                    return;
+                }
 
+                int desiredHour = Math.Clamp(oldEnd / 60, firstEndHour, lastEndHour);
                 endHourCombo.SelectedItem =
                     desiredHour.ToString("00", CultureInfo.InvariantCulture);
 
-                RefreshEndMinuteOptions(oldEnd % 60);
+                if (!isMultiSystemBooking)
+                    RefreshEndMinuteOptions(oldEnd % 60);
             }
 
-            // مقدار اولیه پایان
-            int initialEnd = Math.Clamp(
-                safeInitialStart + Math.Max(5, initialDurationMinutes),
-                safeInitialStart + 5,
-                EndHour * 60);
+            void RefreshMultiSystemStartOptions()
+            {
+                if (!isMultiSystemBooking)
+                    return;
 
-            RefreshEndHourOptions(initialEnd);
+                startHourCombo.Items.Clear();
+
+                int firstStartHour = multiSystemShiftStart;
+                if (selectedBookingDate.Date == DateTime.Today)
+                {
+                    DateTime now = DateTime.Now;
+                    int firstWholeFutureHour =
+                        now.Minute > 0 || now.Second > 0 || now.Millisecond > 0
+                            ? now.Hour + 1
+                            : now.Hour;
+
+                    firstStartHour = Math.Max(firstStartHour, firstWholeFutureHour);
+                }
+
+                int lastStartHour = Math.Min(EndHour - 1, multiSystemShiftEnd - 1);
+
+                for (int hour = firstStartHour; hour <= lastStartHour; hour++)
+                {
+                    startHourCombo.Items.Add(
+                        hour.ToString("00", CultureInfo.InvariantCulture));
+                }
+
+                if (startHourCombo.Items.Count == 0)
+                {
+                    startHourCombo.SelectedIndex = -1;
+                    endHourCombo.Items.Clear();
+                    return;
+                }
+
+                int preferredStart = initialStartMinutes / 60;
+                string preferred = preferredStart >= firstStartHour &&
+                                   preferredStart <= lastStartHour
+                    ? preferredStart.ToString("00", CultureInfo.InvariantCulture)
+                    : startHourCombo.Items[0].ToString()!;
+
+                startHourCombo.SelectedItem = preferred;
+                RefreshEndHourOptions(GetStartMinutes() + 60);
+            }
+
+            // ساعت شروع
+            if (isMultiSystemBooking)
+            {
+                RefreshMultiSystemStartOptions();
+            }
+            else
+            {
+                for (int hour = StartHour; hour < EndHour; hour++)
+                {
+                    startHourCombo.Items.Add(
+                        hour.ToString("00", CultureInfo.InvariantCulture));
+                }
+
+                for (int minute = 0; minute < 60; minute += 5)
+                {
+                    startMinuteCombo.Items.Add(
+                        minute.ToString("00", CultureInfo.InvariantCulture));
+                }
+
+                int safeInitialStart = Math.Clamp(
+                    initialStartMinutes,
+                    StartHour * 60,
+                    EndHour * 60 - 5);
+
+                startHourCombo.SelectedItem =
+                    (safeInitialStart / 60).ToString("00", CultureInfo.InvariantCulture);
+
+                startMinuteCombo.SelectedItem =
+                    (safeInitialStart % 60).ToString("00", CultureInfo.InvariantCulture);
+
+                int initialEnd = Math.Clamp(
+                    safeInitialStart + Math.Max(5, initialDurationMinutes),
+                    safeInitialStart + 5,
+                    EndHour * 60);
+
+                RefreshEndHourOptions(initialEnd);
+            }
+
+            startMinuteCombo.IsEnabled = !isMultiSystemBooking && !_guidedBookingMode;
+            endMinuteCombo.IsEnabled = !isMultiSystemBooking && !_guidedBookingMode;
+            startHourCombo.IsEnabled = isMultiSystemBooking || !_guidedBookingMode;
+            endHourCombo.IsEnabled = isMultiSystemBooking || !_guidedBookingMode;
 
             // کنترل‌های ساعت و دقیقه شروع
             var startTimePanel = new StackPanel
@@ -5665,8 +5747,8 @@ namespace LobixApp.Views
                 FontSize = 16
             });
 
-            startMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
-            if (_guidedBookingMode && startTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock startColon)
+            startMinuteCombo.Visibility = (isMultiSystemBooking || _guidedBookingMode) ? Visibility.Collapsed : Visibility.Visible;
+            if ((isMultiSystemBooking || _guidedBookingMode) && startTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock startColon)
                 startColon.Visibility = Visibility.Collapsed;
             startTimePanel.Children.Add(startMinuteCombo);
 
@@ -5687,8 +5769,8 @@ namespace LobixApp.Views
                 FontSize = 16
             });
 
-            endMinuteCombo.Visibility = _guidedBookingMode ? Visibility.Collapsed : Visibility.Visible;
-            if (_guidedBookingMode && endTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock endColon)
+            endMinuteCombo.Visibility = (isMultiSystemBooking || _guidedBookingMode) ? Visibility.Collapsed : Visibility.Visible;
+            if ((isMultiSystemBooking || _guidedBookingMode) && endTimePanel.Children.OfType<TextBlock>().FirstOrDefault() is TextBlock endColon)
                 endColon.Visibility = Visibility.Collapsed;
             endTimePanel.Children.Add(endMinuteCombo);
 
@@ -5750,15 +5832,16 @@ namespace LobixApp.Views
                 int duration = GetEndMinutes() - GetStartMinutes();
 
                 durationSummary.Text = duration > 0
-                    ? $"مدت رزرو: {duration / 60} ساعت و {duration % 60} دقیقه"
+                    ? (isMultiSystemBooking
+                        ? $"مدت رزرو: {duration / 60} ساعت"
+                        : $"مدت رزرو: {duration / 60} ساعت و {duration % 60} دقیقه")
                     : "ساعت پایان باید بعد از ساعت شروع باشد.";
             }
 
             // تغییر ساعت یا دقیقه شروع
             void StartTimeChanged()
             {
-                int oldEnd = endHourCombo.SelectedItem != null &&
-                             endMinuteCombo.SelectedItem != null
+                int oldEnd = endHourCombo.SelectedItem != null
                     ? GetEndMinutes()
                     : GetStartMinutes() + 60;
 
@@ -5769,19 +5852,26 @@ namespace LobixApp.Views
             startHourCombo.SelectionChanged += (_, _) =>
                 StartTimeChanged();
 
-            startMinuteCombo.SelectionChanged += (_, _) =>
-                StartTimeChanged();
+            if (!isMultiSystemBooking)
+            {
+                startMinuteCombo.SelectionChanged += (_, _) =>
+                    StartTimeChanged();
+            }
 
             // تغییر ساعت پایان
             endHourCombo.SelectionChanged += (_, _) =>
             {
-                RefreshEndMinuteOptions();
+                if (!isMultiSystemBooking)
+                    RefreshEndMinuteOptions();
+
                 UpdateDurationSummary();
             };
 
-            // تغییر دقیقه پایان
-            endMinuteCombo.SelectionChanged += (_, _) =>
-                UpdateDurationSummary();
+            if (!isMultiSystemBooking)
+            {
+                endMinuteCombo.SelectionChanged += (_, _) =>
+                    UpdateDurationSummary();
+            }
 
 
 
@@ -5905,43 +5995,58 @@ namespace LobixApp.Views
                     // -------------------------------------------------
 
                     if (startHourCombo.SelectedItem == null ||
-                        (!_guidedBookingMode && startMinuteCombo.SelectedItem == null) ||
+                        (!isMultiSystemBooking && !_guidedBookingMode && startMinuteCombo.SelectedItem == null) ||
                         endHourCombo.SelectedItem == null ||
-                        (!_guidedBookingMode && endMinuteCombo.SelectedItem == null))
+                        (!isMultiSystemBooking && !_guidedBookingMode && endMinuteCombo.SelectedItem == null))
                     {
-                        validationText.Text =
-                            "ساعت و دقیقه شروع و پایان را انتخاب کنید.";
+                        validationText.Text = isMultiSystemBooking
+                            ? "برای تاریخ انتخاب‌شده ساعت شروع مجاز یا بازه یک‌ساعته معتبری باقی نمانده است."
+                            : "ساعت و دقیقه شروع و پایان را انتخاب کنید.";
                         return;
                     }
 
-                    int startMinute = _guidedBookingMode ? _guidedStartHour * 60 : GetStartMinutes();
-                    int endMinute = _guidedBookingMode ? _guidedEndHour * 60 : GetEndMinutes();
+                    int startMinute = _guidedBookingMode
+                        ? _guidedStartHour * 60
+                        : GetStartMinutes();
+
+                    int endMinute = _guidedBookingMode
+                        ? _guidedEndHour * 60
+                        : GetEndMinutes();
 
                     int durationMinutes = endMinute - startMinute;
 
-                    if (durationMinutes < 5 ||
-                        durationMinutes % 5 != 0 ||
-                        startMinute < StartHour * 60 ||
-                        endMinute > EndHour * 60)
+                    if (isMultiSystemBooking)
                     {
-                        validationText.Text =
-                            "بازه زمانی رزرو معتبر نیست. حداقل مدت رزرو ۵ دقیقه است.";
-                        return;
+                        if (selectedDate.Date == DateTime.Today &&
+                            DateTime.Now >= selectedDate.Date.AddMinutes(startMinute))
+                        {
+                            validationText.Text =
+                                "ساعت شروع انتخاب‌شده گذشته است؛ ساعت شروع جدیدی انتخاب کنید.";
+                            RefreshMultiSystemStartOptions();
+                            return;
+                        }
+
+                        if (durationMinutes < 60 ||
+                            durationMinutes % 60 != 0 ||
+                            startMinute < multiSystemShiftStart * 60 ||
+                            endMinute > multiSystemShiftEnd * 60)
+                        {
+                            validationText.Text =
+                                "بازه رزرو باید حداقل یک ساعت باشد و در ساعات کاری مشترک همه سیستم‌ها قرار بگیرد.";
+                            return;
+                        }
                     }
-
-
-                    if (!_guidedBookingMode)
+                    else
                     {
-                        startMinute = GetStartMinutes();
-                        endMinute = GetEndMinutes();
-                        durationMinutes = endMinute - startMinute;
-                    }
-
-                    if (durationMinutes < 5 || durationMinutes % 5 != 0 ||
-                        startMinute < StartHour * 60 || endMinute > EndHour * 60)
-                    {
-                        validationText.Text = "بازه زمانی رزرو معتبر نیست. حداقل مدت رزرو ۵ دقیقه است.";
-                        return;
+                        if (durationMinutes < 5 ||
+                            durationMinutes % 5 != 0 ||
+                            startMinute < StartHour * 60 ||
+                            endMinute > EndHour * 60)
+                        {
+                            validationText.Text =
+                                "بازه زمانی رزرو معتبر نیست. حداقل مدت رزرو ۵ دقیقه است.";
+                            return;
+                        }
                     }
 
                     // -------------------------------------------------
