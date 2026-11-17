@@ -620,59 +620,49 @@ public sealed class OperationsHubView : UserControl
         };
 
         // DARK SCROLLBAR STYLE
-        var scrollStyle = new Style(typeof(ScrollBar));
+        // =====================================================
+        // PREMIUM DARK SCROLLBAR
+        // =====================================================
 
-        scrollStyle.Setters.Add(new Setter(
-            FrameworkElement.WidthProperty, 10d));
+        var scrollBarStyle = new Style(typeof(ScrollBar));
 
-        scrollStyle.Setters.Add(new Setter(
-            Control.BackgroundProperty, Brushes.Transparent));
+        scrollBarStyle.Setters.Add(new Setter(
+            FrameworkElement.WidthProperty,
+            10d));
 
-        scrollStyle.Setters.Add(new Setter(
-            Control.BorderThicknessProperty, new Thickness(0)));
+        scrollBarStyle.Setters.Add(new Setter(
+            Control.BackgroundProperty,
+            Brushes.Transparent));
 
-        var scrollTemplate = new ControlTemplate(typeof(ScrollBar));
+        scrollBarStyle.Setters.Add(new Setter(
+            Control.BorderThicknessProperty,
+            new Thickness(0)));
 
-        var track = new FrameworkElementFactory(typeof(Track));
-        track.Name = "PART_Track";
 
-        track.SetValue(
-            Track.OrientationProperty,
-            Orientation.Vertical);
+        // THUMB STYLE
+        var thumbStyle = new Style(typeof(Thumb));
 
-        track.SetValue(
-            Track.IsDirectionReversedProperty,
-            true);
-
-        track.SetValue(
-            Track.MinimumProperty,
-            new TemplateBindingExtension(RangeBase.MinimumProperty));
-
-        track.SetValue(
-            Track.MaximumProperty,
-            new TemplateBindingExtension(RangeBase.MaximumProperty));
-
-        track.SetValue(
-            Track.ValueProperty,
-            new TemplateBindingExtension(RangeBase.ValueProperty));
-
-        track.SetValue(
-            Track.ViewportSizeProperty,
-            new TemplateBindingExtension(ScrollBar.ViewportSizeProperty));
-
-        var thumb = new FrameworkElementFactory(typeof(Thumb));
-
-        thumb.SetValue(
+        thumbStyle.Setters.Add(new Setter(
             FrameworkElement.MinHeightProperty,
-            35d);
+            36d));
 
+        thumbStyle.Setters.Add(new Setter(
+            Control.BackgroundProperty,
+            Brush(Color.FromRgb(70, 74, 91))));
+
+        thumbStyle.Setters.Add(new Setter(
+            Control.BorderThicknessProperty,
+            new Thickness(0)));
+
+
+        // THUMB TEMPLATE
         var thumbTemplate = new ControlTemplate(typeof(Thumb));
 
         var thumbBorder = new FrameworkElementFactory(typeof(Border));
 
         thumbBorder.SetValue(
             Border.BackgroundProperty,
-            Brush(Color.FromRgb(75, 79, 96)));
+            new TemplateBindingExtension(Control.BackgroundProperty));
 
         thumbBorder.SetValue(
             Border.CornerRadiusProperty,
@@ -680,54 +670,37 @@ public sealed class OperationsHubView : UserControl
 
         thumbBorder.SetValue(
             Border.MarginProperty,
-            new Thickness(2, 2, 2, 2));
+            new Thickness(2));
 
         thumbTemplate.VisualTree = thumbBorder;
 
-        thumb.SetValue(
+        thumbStyle.Setters.Add(new Setter(
             Control.TemplateProperty,
-            thumbTemplate);
+            thumbTemplate));
 
-        track.SetValue(
-            Track.ThumbProperty,
-            thumb);
 
-        scrollTemplate.VisualTree = track;
-
-        scrollStyle.Setters.Add(new Setter(
-            Control.TemplateProperty,
-            scrollTemplate));
-
-        // HOVER EFFECT
-        var hover = new Trigger
+        // THUMB HOVER
+        var thumbHover = new Trigger
         {
-            Property = ScrollBar.IsMouseOverProperty,
+            Property = UIElement.IsMouseOverProperty,
             Value = true
         };
 
-        var hoverThumbTemplate = new ControlTemplate(typeof(Thumb));
+        thumbHover.Setters.Add(new Setter(
+            Control.BackgroundProperty,
+            Brush(Accent)));
 
-        var hoverThumbBorder = new FrameworkElementFactory(typeof(Border));
+        thumbStyle.Triggers.Add(thumbHover);
 
-        hoverThumbBorder.SetValue(
-            Border.BackgroundProperty,
-            Brush(Accent));
 
-        hoverThumbBorder.SetValue(
-            Border.CornerRadiusProperty,
-            new CornerRadius(5));
-
-        hoverThumbBorder.SetValue(
-            Border.MarginProperty,
-            new Thickness(2, 2, 2, 2));
-
-        hoverThumbTemplate.VisualTree = hoverThumbBorder;
-
-        // Keep the scrollbar compact and dark.
+        // SCROLLBAR RESOURCES
         detailScroll.Resources.Add(
             typeof(ScrollBar),
-            scrollStyle);
+            scrollBarStyle);
 
+        detailScroll.Resources.Add(
+            typeof(Thumb),
+            thumbStyle);
         var detailStack = new StackPanel();
 
         var profileBadge = new Border
