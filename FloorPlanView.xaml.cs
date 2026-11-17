@@ -1070,22 +1070,27 @@ namespace LobixApp.Views
         }
 
 
+
         private void UpdateUnplacedSystems()
         {
+            // ابتدا ابعاد واقعی نقشه را به‌روز می‌کنیم.
+            UpdateCanvasSize();
+
             _unplacedSystems.Clear();
 
             foreach (PlanItem item in _items.Where(x =>
                 x.IsPhysicalSystem))
             {
-                bool invalidPosition =
+                // فقط مختصات نامعتبر یا مختصات منفی
+                // به معنی قرار نگرفتن سیستم هستند.
+                // فاصله از حاشیه نقشه معیار قرارنگرفتن نیست.
+                bool notPlaced =
+                    !double.IsFinite(item.X) ||
+                    !double.IsFinite(item.Y) ||
                     item.X < 0 ||
-                    item.Y < 0 ||
-                    item.X < LayoutMargin ||
-                    item.Y < LayoutMargin ||
-                    item.X + item.W > CanvasWidth - LayoutMargin ||
-                    item.Y + item.H > CanvasHeight - LayoutMargin;
+                    item.Y < 0;
 
-                if (!invalidPosition)
+                if (!notPlaced)
                     continue;
 
                 _unplacedSystems.Add(new UnplacedSystem
@@ -1098,6 +1103,7 @@ namespace LobixApp.Views
             UnplacedCountText.Text =
                 $"{_unplacedSystems.Count} سیستم";
         }
+
 
 
         // =====================================================
