@@ -1,0 +1,535 @@
+<Window x:Class="LobixApp.MainWindow"
+        Icon="pack://application:,,,/Assets/LobixIcon.ico"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+        Title="لابیکس"
+        PreviewMouseDown="Window_PreviewMouseDown"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Width="1440"
+        Height="900"
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow"
+        ResizeMode="CanResize"
+        MinWidth="1000"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen"
+        FlowDirection="RightToLeft"
+        Background="#0D0E13"
+        Foreground="#F4F4F7"
+        FontFamily="pack://application:,,,/Fonts/#Peyda"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+    <Window.Resources>
+
+        <!-- COLORS -->
+        <SolidColorBrush x:Key="ShellBackground" Color="#0D0E13"/>
+        <SolidColorBrush x:Key="ShellSidebarBackground" Color="#111219"/>
+        <SolidColorBrush x:Key="ShellBorderBrush" Color="#292B36"/>
+        <SolidColorBrush x:Key="ShellTextBrush" Color="#F4F4F7"/>
+        <SolidColorBrush x:Key="ShellSecondaryBrush" Color="#A5A7B5"/>
+        <SolidColorBrush x:Key="ShellMutedBrush" Color="#777B8B"/>
+        <SolidColorBrush x:Key="ShellAccentBrush" Color="#DB3C45"/>
+        <SolidColorBrush x:Key="ShellActiveBrush" Color="#2B1B22"/>
+
+        <!-- NAVIGATION BUTTON -->
+        <Style x:Key="ShellNavigationButton"
+               TargetType="{x:Type Button}">
+
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground"
+                    Value="{StaticResource ShellSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily"
+                    Value="pack://application:,,,/Fonts/#Peyda"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+
+                        <Border x:Name="NavBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True"/>
+
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder"
+                                        Property="Background"
+                                        Value="#20212B"/>
+                                <Setter TargetName="NavBorder"
+                                        Property="BorderBrush"
+                                        Value="#343642"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="NavBorder"
+                                        Property="Opacity"
+                                        Value="0.82"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="NavBorder"
+                                        Property="Opacity"
+                                        Value="0.5"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- GLASS LOGO FRAME -->
+        <Style x:Key="LobixLogoFrameStyle"
+               TargetType="{x:Type Border}">
+
+            <Setter Property="Width" Value="42"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#20FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#DB3C45"
+                                      BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Opacity="0.16"/>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <!-- SIDEBAR ICON FRAME -->
+        <Style x:Key="SidebarIconFrameStyle"
+               TargetType="{x:Type Border}">
+
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+
+        </Style>
+
+    </Window.Resources>
+
+    <!-- APPLICATION SHELL -->
+    <Grid x:Name="ShellRoot"
+          Background="{StaticResource ShellBackground}"
+          ClipToBounds="True">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SidebarColumn" Width="0"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- SIDEBAR -->
+        <Border x:Name="SidebarPanel"
+                Grid.Column="0"
+                Visibility="Collapsed"
+                Background="{StaticResource ShellSidebarBackground}"
+                BorderBrush="{StaticResource ShellBorderBrush}"
+                BorderThickness="0,0,1,0"
+                ClipToBounds="True">
+
+            <Grid Margin="12,18,12,14">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="22"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="12"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- BRAND -->
+                <Grid Grid.Row="0"
+                      VerticalAlignment="Center">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Style="{StaticResource LobixLogoFrameStyle}"
+                            VerticalAlignment="Center">
+
+                        <Image Source="/Assets/LobixIcon.png"
+                               Width="26"
+                               Height="26"
+                               Stretch="Uniform"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               SnapsToDevicePixels="True"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                    </Border>
+
+                    <StackPanel x:Name="BrandTextPanel"
+                                Grid.Column="1"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                ClipToBounds="True">
+
+                        <TextBlock Text="Lobix"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource ShellTextBrush}"
+                                   TextTrimming="CharacterEllipsis"/>
+
+                        <TextBlock Text="OPERATOR PANEL"
+                                   FontSize="9"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource ShellMutedBrush}"
+                                   FlowDirection="LeftToRight"/>
+
+                    </StackPanel>
+                </Grid>
+
+                <!-- SIDEBAR TOGGLE -->
+                <Button x:Name="SidebarToggleButton"
+                        Grid.Row="2"
+                        Height="40"
+                        Padding="10,6"
+                        Style="{StaticResource ShellNavigationButton}"
+                        ToolTip="جمع کردن منو"
+                        Click="SidebarToggleButton_Click">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock x:Name="SidebarToggleIcon"
+                                   Grid.Column="0"
+                                   Text="⇥"
+                                   FontSize="20"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <TextBlock x:Name="SidebarToggleText"
+                                   Grid.Column="1"
+                                   Text="جمع کردن منو"
+                                   Margin="8,0,0,0"
+                                   VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"/>
+                    </Grid>
+                </Button>
+
+                <!-- SECTION LABEL -->
+                <TextBlock x:Name="WorkspaceLabel"
+                           Grid.Row="4"
+                           Text="فضای کاری"
+                           FontSize="11"
+                           Foreground="{StaticResource ShellMutedBrush}"
+                           Margin="5,0,0,0"/>
+
+                <!-- NAVIGATION -->
+                <StackPanel Grid.Row="5"
+                            VerticalAlignment="Top"
+                            Margin="0,8,0,0">
+
+                    <!-- DASHBOARD -->
+                    <Button x:Name="DashboardNavigationButton"
+                            Style="{StaticResource ShellNavigationButton}"
+                            Background="{StaticResource ShellActiveBrush}"
+                            BorderBrush="#543039"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            ToolTip="داشبورد"
+                            Click="DashboardNavigationButton_Click">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource SidebarIconFrameStyle}">
+
+                                <svgc:SvgViewbox
+                                    Source="/Assets/dashboard.svg"
+                                    Width="21"
+                                    Height="21"
+                                    Stretch="Uniform"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+
+                            </Border>
+
+                            <TextBlock x:Name="DashboardNavigationText"
+                                       Grid.Column="1"
+                                       Text="داشبورد"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Button>
+
+                    <!-- MANUAL BOOKING -->
+                    <Button x:Name="ManualBookingNavigationButton"
+                            Visibility="Visible"
+                            Style="{StaticResource ShellNavigationButton}"
+                            ToolTip="ثبت سریع رزرو دستی"
+                            Click="ManualBookingNavigationButton_Click">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource SidebarIconFrameStyle}">
+
+                                <TextBlock Text="＋"
+                                           FontSize="21"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+
+                            </Border>
+
+                            <TextBlock x:Name="ManualBookingNavigationText"
+                                       Grid.Column="1"
+                                       Text="رزرو از روی نقشه"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Button>
+
+                    <!-- RESERVATIONS -->
+                    <Button x:Name="ReservationsNavigationButton"
+                            Style="{StaticResource ShellNavigationButton}"
+                            ToolTip="مدیریت رزروها"
+                            Click="ReservationsNavigationButton_Click">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0"
+                                    Style="{StaticResource SidebarIconFrameStyle}">
+
+                                <svgc:SvgViewbox
+                                    Source="/Assets/time.svg"
+                                    Width="21"
+                                    Height="21"
+                                    Stretch="Uniform"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+
+                            </Border>
+
+                            <TextBlock x:Name="ReservationsNavigationText"
+                                       Grid.Column="1"
+                                       Text="مدیریت رزرو و نقشه"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Button>
+
+                    <!-- FLOOR PLAN -->
+                    <Button x:Name="FloorPlanNavigationButton"
+                            Style="{StaticResource ShellNavigationButton}"
+                            ToolTip="نقشه سالن"
+                            Click="FloorPlanNavigationButton_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Style="{StaticResource SidebarIconFrameStyle}">
+                                <TextBlock Text="▦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock x:Name="FloorPlanNavigationText" Grid.Column="1" Text="نقشه سالن" Margin="8,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Button>
+
+                    <!-- OPERATIONS HUB -->
+                    <Button x:Name="OperationsNavigationButton"
+                            Style="{StaticResource ShellNavigationButton}"
+                            ToolTip="جست‌وجوی مشتریان و گزارش‌ها"
+                            Click="OperationsNavigationButton_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Style="{StaticResource SidebarIconFrameStyle}">
+                                <TextBlock Text="◈" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock x:Name="OperationsNavigationText" Grid.Column="1" Text="مشتری و گزارش‌ها" Margin="8,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        </Grid>
+                    </Button>
+
+                </StackPanel>
+
+                <!-- SIDEBAR FOOTER: API STATUS -->
+                <Border x:Name="SidebarFooter"
+                        Grid.Row="6"
+                        Background="#171820"
+                        BorderBrush="#30323E"
+                        BorderThickness="1"
+                        CornerRadius="13"
+                        Padding="10"
+                        ClipToBounds="True"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom">
+
+                    <Grid>
+
+                        <!-- EXPANDED SIDEBAR: FULL API STATUS -->
+                        <StackPanel x:Name="SidebarStatusPanel"
+                                    HorizontalAlignment="Stretch">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Width="30"
+                                        Height="30"
+                                        CornerRadius="9"
+                                        Background="#302719"
+                                        VerticalAlignment="Center">
+
+                                    <TextBlock Text="↻"
+                                               FontSize="18"
+                                               Foreground="#E8B96A"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <StackPanel x:Name="SidebarApiStatusDetails"
+                                            Grid.Column="1"
+                                            Margin="9,0,0,0"
+                                            VerticalAlignment="Center">
+
+                                    <TextBlock Text="وضعیت اتصال API"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource ShellTextBrush}"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                Margin="0,4,0,0">
+
+                                        <Ellipse x:Name="SidebarApiStatusIndicator"
+                                                 Width="8"
+                                                 Height="8"
+                                                 Fill="#E8B96A"
+                                                 VerticalAlignment="Center"
+                                                 Margin="0,0,6,0"/>
+
+                                        <TextBlock x:Name="SidebarApiStatusText"
+                                                   Text="در حال بررسی..."
+                                                   FontSize="10"
+                                                   FontWeight="Bold"
+                                                   Foreground="#E8B96A"
+                                                   TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- LAST SYNC -->
+                            <TextBlock x:Name="SidebarLastSyncText"
+                                       Text="آخرین همگام‌سازی: —"
+                                       FontSize="9"
+                                       Foreground="{StaticResource ShellMutedBrush}"
+                                       Margin="0,10,0,0"
+                                       TextWrapping="Wrap"/>
+
+                            <!-- RETRY -->
+                            <Button x:Name="SidebarRetrySyncButton"
+                                    Content="تلاش مجدد برای اتصال"
+                                    Height="36"
+                                    Padding="7,5"
+                                    Margin="0,10,0,0"
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Background="#29212A"
+                                    BorderBrush="#543039"
+                                    BorderThickness="1"
+                                    Foreground="#FFB1B5"
+                                    HorizontalAlignment="Stretch"
+                                    Click="SidebarRetrySyncButton_Click"
+                                    ToolTip="بررسی دوباره اتصال و همگام‌سازی اطلاعات"/>
+
+                            <Button x:Name="LogoutButton"
+                                    Content="خروج از حساب"
+                                    Height="34"
+                                    Padding="7,4"
+                                    Margin="0,7,0,0"
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Background="#20202A"
+                                    BorderBrush="#343442"
+                                    BorderThickness="1"
+                                    Foreground="#D8D8E2"
+                                    HorizontalAlignment="Stretch"
+                                    Click="LogoutButton_Click"
+                                    ToolTip="خروج امن از حساب اپراتور"/>
+
+                            <TextBlock Text="نسخه 1.0.0"
+                                       FontSize="9"
+                                       Foreground="{StaticResource ShellMutedBrush}"
+                                       Margin="0,7,0,0"
+                                       HorizontalAlignment="Center"/>
+
+                        </StackPanel>
+
+                        <!-- COLLAPSED SIDEBAR: STATUS DOT ONLY -->
+                        <Ellipse x:Name="SidebarCollapsedStatusIndicator"
+                                 Width="10"
+                                 Height="10"
+                                 Fill="#22C55E"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Visibility="Collapsed"
+                                 ToolTip="وضعیت اتصال سرور"/>
+
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+
+        <!-- ACTIVE PAGE -->
+        <ContentControl x:Name="MainContent"
+                        Grid.Column="1"
+                        Background="{StaticResource ShellBackground}"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"/>
+
+    </Grid>
+</Window>
