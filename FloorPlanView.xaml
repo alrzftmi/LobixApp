@@ -182,7 +182,7 @@
                         <Grid Background="#11131B">
                             <Track x:Name="PART_Track"
                                    Orientation="{TemplateBinding Orientation}"
-                                   IsDirectionReversed="{TemplateBinding IsDirectionReversed}"
+                                   IsDirectionReversed="False"
                                    Focusable="False">
                                 <Track.Thumb>
                                     <Thumb>
@@ -214,6 +214,7 @@
                             <Trigger Property="Orientation" Value="Vertical">
                                 <Setter Property="Width" Value="11"/>
                                 <Setter Property="Height" Value="Auto"/>
+                                <Setter TargetName="PART_Track" Property="IsDirectionReversed" Value="True"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.35"/>
