@@ -5195,29 +5195,6 @@ namespace LobixApp.Views
                 Cursor = System.Windows.Input.Cursors.Hand
             };
 
-            datePickerButton.Click += (_, _) =>
-            {
-                var picker = new JalaliDatePickerWindow(
-                    selectedBookingDate,
-                    DateTime.Today)
-                {
-                    Owner = window
-                };
-
-                if (picker.ShowDialog() == true &&
-                    picker.SelectedDate.HasValue)
-                {
-                    selectedBookingDate =
-                        picker.SelectedDate.Value.Date;
-
-                    datePickerButton.Content =
-                        JalaliDateHelper.FormatDate(selectedBookingDate);
-
-                    if (isMultiSystemBooking)
-                        RefreshMultiSystemStartOptions();
-                }
-            };
-
             datePickerButton.IsEnabled = !_guidedBookingMode;
             fieldsPanel.Children.Add(
                 CreateCompactField("تاریخ شمسی", datePickerButton)
@@ -5678,6 +5655,29 @@ namespace LobixApp.Views
                 startHourCombo.SelectedItem = startHourCombo.Items[0];
                 RefreshEndHourOptions(GetStartMinutes() + 60);
             }
+
+            datePickerButton.Click += (_, _) =>
+            {
+                var picker = new JalaliDatePickerWindow(
+                    selectedBookingDate,
+                    DateTime.Today)
+                {
+                    Owner = window
+                };
+
+                if (picker.ShowDialog() == true &&
+                    picker.SelectedDate.HasValue)
+                {
+                    selectedBookingDate =
+                        picker.SelectedDate.Value.Date;
+
+                    datePickerButton.Content =
+                        JalaliDateHelper.FormatDate(selectedBookingDate);
+
+                    if (isMultiSystemBooking)
+                        RefreshMultiSystemStartOptions();
+                }
+            };
 
             // ساعت شروع
             if (isMultiSystemBooking)
