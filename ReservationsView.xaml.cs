@@ -1,4 +1,3 @@
-
 using LobixApp.Models;
 using LobixApp.Services;
 using LobixApp.Services.Sync;
@@ -17,6 +16,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Net.Http;
+using System.Windows.Media.Imaging;
 
 namespace LobixApp.Views
 {
@@ -24,6 +25,10 @@ namespace LobixApp.Views
     {
         private sealed class TimelineSystemRow
         {
+            private static readonly HttpClient TvLogoHttpClient = new()
+            {
+                Timeout = TimeSpan.FromSeconds(12)
+            };
             public int VariationId { get; init; }
             public string SystemNumber { get; init; } = string.Empty;
             public string Label { get; init; } = string.Empty;
@@ -38,6 +43,10 @@ namespace LobixApp.Views
         private readonly LobixExtendedApiService _extendedApiService;
         private readonly GamenetInfo _gamenet;
         private readonly OperatorSession _session;
+        private static readonly HttpClient TvLogoHttpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(12)
+        };
         private readonly List<LiveMapObject> _selectedLiveMapObjects = new();
         private List<ReservationItem> _allReservations = new();
         private List<ReservationItem> _reservations = new();
@@ -128,7 +137,43 @@ namespace LobixApp.Views
 
         private const int StartHour = 8;
         private const int EndHour = 24;
+        private async Task LoadTvLogoAsync(Image target, string? imageUrl)
+        {
+            if (string.IsNullOrWhiteSpace(imageUrl))
+                return;
 
+            if (!Uri.TryCreate(imageUrl.Trim(), UriKind.Absolute, out Uri? uri))
+                return;
+
+            if (uri.Scheme != Uri.UriSchemeHttps &&
+                uri.Scheme != Uri.UriSchemeHttp)
+                return;
+
+            try
+            {
+                byte[] imageBytes =
+                    await TvLogoHttpClient.GetByteArrayAsync(uri);
+
+                using var stream = new MemoryStream(imageBytes);
+
+                var bitmap = new BitmapImage();
+
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = stream;
+                bitmap.DecodePixelWidth = 160;
+                bitmap.EndInit();
+
+                bitmap.Freeze();
+
+                target.Source = bitmap;
+            }
+            catch
+            {
+                // در صورت خطای اینترنت یا نبود تصویر،
+                // جای لوگو خالی می‌ماند و نقشه همچنان کار می‌کند.
+            }
+        }
         // =========================================================
         // CONSTRUCTOR
         // =========================================================
@@ -2504,6 +2549,7 @@ namespace LobixApp.Views
                 try
                 {
                     using JsonDocument details = await _apiService.GetGamenetDetailsAsync(_gamenet.Id);
+                   
                     JsonElement detailsRoot = details.RootElement;
                     JsonElement detailData = GetJsonObject(detailsRoot, "data");
                     if (detailData.ValueKind != JsonValueKind.Object) detailData = detailsRoot;
@@ -2883,28 +2929,72 @@ namespace LobixApp.Views
 
             var heading = new StackPanel
             {
+                Orientation = Orientation.Horizontal,
                 VerticalAlignment = VerticalAlignment.Center,
                 FlowDirection = FlowDirection.RightToLeft
             };
-            heading.Children.Add(new TextBlock
+
+            // قاب لوگوی گیم‌نت
+            var logoBorder = new Border
             {
-                Text = "نقشه زنده سالن",
-                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                Width = 58,
+                Height = 58,
+                CornerRadius = new CornerRadius(12),
+                Background = new SolidColorBrush(Color.FromRgb(30, 32, 40)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(65, 38, 43)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0, 0, 14, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            var gamenetLogo = new Image
+            {
+                Stretch = Stretch.Uniform,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            logoBorder.Child = gamenetLogo;
+            heading.Children.Add(logoBorder);
+
+            // نام گیم‌نت و اطلاعات نقشه
+            var headingText = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            headingText.Children.Add(new TextBlock
+            {
+                Text = string.IsNullOrWhiteSpace(_gamenet.Name)
+                    ? "گیم‌نت"
+                    : _gamenet.Name,
+                FontFamily = FindResource("Peyda") as FontFamily
+                    ?? new FontFamily("Segoe UI"),
                 FontSize = 25,
                 FontWeight = FontWeights.Bold,
                 Foreground = Brushes.White
             });
+
             _tvFloorMapFloorText = new TextBlock
             {
-                Text = _selectedMapFloor,
+                Text = "نقشه زنده سالن · " + _selectedMapFloor,
                 Margin = new Thickness(0, 2, 0, 0),
-                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontFamily = FindResource("Peyda") as FontFamily
+                    ?? new FontFamily("Segoe UI"),
                 FontSize = 13,
                 Foreground = new SolidColorBrush(Color.FromRgb(166, 171, 185))
             };
-            heading.Children.Add(_tvFloorMapFloorText);
+
+            headingText.Children.Add(_tvFloorMapFloorText);
+            heading.Children.Add(headingText);
+
             Grid.SetColumn(heading, 0);
             headerGrid.Children.Add(heading);
+
+            // دریافت لوگوی گیم‌نت
+            _ = LoadTvLogoAsync(gamenetLogo, _gamenet.ImageUrl);
 
             var timePanel = new StackPanel
             {
@@ -2985,6 +3075,25 @@ namespace LobixApp.Views
             Grid.SetColumn(legend, 0);
             footerGrid.Children.Add(legend);
 
+            var brandingPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                FlowDirection = FlowDirection.LeftToRight
+            };
+
+            var lobixLogo = new Image
+            {
+                Width = 30,
+                Height = 30,
+                Stretch = Stretch.Uniform,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 9, 0)
+            };
+
+            brandingPanel.Children.Add(lobixLogo);
+
             var poweredBy = new TextBlock
             {
                 Text = "POWERED BY LOBIXAPP",
@@ -2993,11 +3102,18 @@ namespace LobixApp.Views
                 FontWeight = FontWeights.Bold,
                 Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 242)),
                 VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center,
-                FlowDirection = FlowDirection.LeftToRight,
+                FlowDirection = FlowDirection.LeftToRight
             };
-            Grid.SetColumn(poweredBy, 1);
-            footerGrid.Children.Add(poweredBy);
+
+            brandingPanel.Children.Add(poweredBy);
+
+            Grid.SetColumn(brandingPanel, 1);
+            footerGrid.Children.Add(brandingPanel);
+
+            _ = LoadTvLogoAsync(
+                lobixLogo,
+                "https://lobixapp.ir/wp-content/uploads/2026/07/lobix-logo02.png"
+            );
             footer.Child = footerGrid;
             Grid.SetRow(footer, 2);
             root.Children.Add(footer);
@@ -3007,7 +3123,7 @@ namespace LobixApp.Views
                 Title = "LobixApp | Live Map TV",
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
-                ShowInTaskbar = false,
+                ShowInTaskbar = true,
                 Background = root.Background,
                 Content = root,
                 WindowStartupLocation = WindowStartupLocation.Manual,
@@ -3096,7 +3212,7 @@ namespace LobixApp.Views
             _tvFloorMapTimer.Start();
 
             window.Show();
-            window.WindowState = WindowState.Maximized;
+            window.WindowState = WindowState.Normal;
             RenderTvFloorMap();
             UpdateTvFloorMapDashboard();
         }
