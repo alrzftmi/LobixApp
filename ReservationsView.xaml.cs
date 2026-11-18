@@ -124,7 +124,10 @@ namespace LobixApp.Views
         private Window? _timelineFullscreenWindow;
         // TV live map is a separate window that paints the operator map through a VisualBrush.
         // The original canvas stays in the operator UI and remains fully interactive.
-        private Window? _tvFloorMapWindow;
+        // پنجره تلویزیون بین نمونه‌های مختلف ReservationsView مشترک است.
+        private static Window? _tvFloorMapWindow;
+        private static string? _tvFloorMapGamenetId;
+
         private DispatcherTimer? _tvFloorMapTimer;
         private TextBlock? _tvFloorMapClockText;
         private TextBlock? _tvFloorMapDateText;
@@ -132,6 +135,7 @@ namespace LobixApp.Views
         private TextBlock? _tvFloorMapFreeText;
         private TextBlock? _tvFloorMapReservedText;
         private TextBlock? _tvFloorMapDisabledText;
+        private TextBlock? _tvFloorMapTypeAvailabilityText;
         private Canvas? _tvFloorMapCanvas;
         private const double HeaderHeight = 42;
 
@@ -264,14 +268,14 @@ namespace LobixApp.Views
         }
 
         private void ReservationsView_Unloaded(
-            object sender,
-            RoutedEventArgs e)
+     object sender,
+     RoutedEventArgs e)
         {
+            // فقط تایمر مخصوص صفحه رزروها متوقف می‌شود.
             _clockTimer.Stop();
-            _tvFloorMapTimer?.Stop();
-            _tvFloorMapWindow?.Close();
 
-            _extendedApiService.Dispose();
+            // پنجره TV و تایمر آن نباید با خروج از این صفحه بسته شوند.
+            // سرویس API نیز تا زمانی که TV از آن استفاده می‌کند نباید Dispose شود.
         }
 
         private void ClockTimer_Tick(
@@ -2438,7 +2442,7 @@ namespace LobixApp.Views
                 _serverAvailabilityDate = date;
                 _lastAvailabilityAttempt = DateTime.MinValue;
             }
-            if (!dateChanged && DateTime.Now - _lastAvailabilityAttempt < TimeSpan.FromSeconds(18)) return;
+            if (!dateChanged && DateTime.Now - _lastAvailabilityAttempt < TimeSpan.FromSeconds(5)) return;
             _lastAvailabilityAttempt = DateTime.Now;
             _availabilityRefreshing = true;
             try
@@ -2475,7 +2479,17 @@ namespace LobixApp.Views
             finally
             {
                 _availabilityRefreshing = false;
+
+                // به‌روزرسانی نقشه اصلی
                 RenderLiveFloorMap();
+
+                // به‌روزرسانی مستقیم نقشه تلویزیون
+                if (_tvFloorMapWindow != null &&
+                    _tvFloorMapWindow.IsVisible)
+                {
+                    RenderTvFloorMap();
+                    UpdateTvFloorMapDashboard();
+                }
             }
         }
 
@@ -2894,14 +2908,32 @@ namespace LobixApp.Views
                 return;
             }
 
-            // اگر پنجره از قبل باز است، همان را فعال کن
+            // شناسه گیم‌نت فعلی
+            string currentGamenetId = Convert.ToString(
+                _gamenet.Id,
+                CultureInfo.InvariantCulture
+            ) ?? string.Empty;
+
+            // اگر پنجره TV قبلاً باز شده است
             if (_tvFloorMapWindow != null)
             {
-                if (_tvFloorMapWindow.WindowState == WindowState.Minimized)
-                    _tvFloorMapWindow.WindowState = WindowState.Normal;
+                // اگر پنجره متعلق به گیم‌نت دیگری است، آن را ببند.
+                if (!string.Equals(
+                    _tvFloorMapGamenetId,
+                    currentGamenetId,
+                    StringComparison.Ordinal))
+                {
+                    _tvFloorMapWindow.Close();
+                }
+                else
+                {
+                    // همان پنجره قبلی را برگردان.
+                    if (_tvFloorMapWindow.WindowState == WindowState.Minimized)
+                        _tvFloorMapWindow.WindowState = WindowState.Normal;
 
-                _tvFloorMapWindow.Activate();
-                return;
+                    _tvFloorMapWindow.Activate();
+                    return;
+                }
             }
 
             OpenTvFloorMapWindow();
@@ -2930,6 +2962,7 @@ namespace LobixApp.Views
             };
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(88) });
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(58) });
             root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54) });
 
             var header = new Border
@@ -3064,6 +3097,34 @@ namespace LobixApp.Views
             Grid.SetRow(mapFrame, 1);
             root.Children.Add(mapFrame);
 
+            // نوار تعداد سیستم‌های آزاد به تفکیک نوع
+            var typeAvailabilityBorder = new Border
+            {
+                Margin = new Thickness(22, 0, 22, 8),
+                Padding = new Thickness(16, 5, 16, 5),
+                Background = new SolidColorBrush(Color.FromRgb(17, 19, 27)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(55, 28, 34)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(10)
+            };
+
+            _tvFloorMapTypeAvailabilityText = new TextBlock
+            {
+                Text = "در حال محاسبه موجودی سیستم‌ها...",
+                FontFamily = FindResource("Peyda") as FontFamily
+                    ?? new FontFamily("Segoe UI"),
+                FontSize = 16,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = new SolidColorBrush(Color.FromRgb(235, 238, 245)),
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
+
+            typeAvailabilityBorder.Child = _tvFloorMapTypeAvailabilityText;
+
+            Grid.SetRow(typeAvailabilityBorder, 2);
+            root.Children.Add(typeAvailabilityBorder);
             var footer = new Border
             {
                 Background = new SolidColorBrush(Color.FromRgb(15, 16, 22)),
@@ -3131,7 +3192,7 @@ namespace LobixApp.Views
                 "https://lobixapp.ir/wp-content/uploads/2026/07/lobix-logo02.png"
             );
             footer.Child = footerGrid;
-            Grid.SetRow(footer, 2);
+            Grid.SetRow(footer, 3);
             root.Children.Add(footer);
 
 
@@ -3227,18 +3288,22 @@ namespace LobixApp.Views
                 }
             };
 
-            // پاک‌سازی منابع هنگام بسته شدن پنجره
+            // پاک‌سازی منابع فقط هنگام بسته‌شدن واقعی پنجره TV
             window.Closed += (_, _) =>
             {
                 _tvFloorMapTimer?.Stop();
                 _tvFloorMapTimer = null;
 
-                _tvFloorMapWindow = null;
+                if (ReferenceEquals(_tvFloorMapWindow, window))
+                {
+                    _tvFloorMapWindow = null;
+                    _tvFloorMapGamenetId = null;
+                }
 
                 _tvFloorMapClockText = null;
                 _tvFloorMapDateText = null;
                 _tvFloorMapFloorText = null;
-
+                _tvFloorMapTypeAvailabilityText = null;
                 _tvFloorMapFreeText = null;
                 _tvFloorMapReservedText = null;
                 _tvFloorMapDisabledText = null;
@@ -3249,12 +3314,17 @@ namespace LobixApp.Views
             // ثبت پنجره فعال
             _tvFloorMapWindow = window;
 
+            _tvFloorMapGamenetId = Convert.ToString(
+                _gamenet.Id,
+                CultureInfo.InvariantCulture
+            ) ?? string.Empty;
+
             // تایمر به‌روزرسانی نقشه و اطلاعات
             _tvFloorMapTimer?.Stop();
 
             _tvFloorMapTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(1)
+                Interval = TimeSpan.FromSeconds(5)
             };
 
             _tvFloorMapTimer.Tick += (_, _) =>
@@ -3265,6 +3335,11 @@ namespace LobixApp.Views
                     return;
                 }
 
+                // دریافت وضعیت جدید سیستم‌ها از سرور
+                // متد داخلی خودش فاصله درخواست‌ها را روی ۱۸ ثانیه محدود می‌کند.
+                _ = RefreshDeviceAvailabilityAsync();
+
+                // رسم مجدد نقشه و اطلاعات تلویزیون
                 RenderTvFloorMap();
                 UpdateTvFloorMapDashboard();
             };
@@ -3588,6 +3663,71 @@ namespace LobixApp.Views
                 _tvFloorMapReservedText.Text = $"رزرو {reserved.ToString(CultureInfo.InvariantCulture)}";
             if (_tvFloorMapDisabledText != null)
                 _tvFloorMapDisabledText.Text = $"غیرفعال {disabled.ToString(CultureInfo.InvariantCulture)}";
+            // محاسبه تعداد سیستم‌های آزاد به تفکیک نوع
+            if (_tvFloorMapTypeAvailabilityText != null)
+            {
+                var typeStatistics = _liveMapObjects
+                    .Where(x =>
+                        string.Equals(
+                            x.Floor,
+                            _selectedMapFloor,
+                            StringComparison.OrdinalIgnoreCase) &&
+                        x.Type.Equals(
+                            "system",
+                            StringComparison.OrdinalIgnoreCase))
+                    .GroupBy(x => x.VariationId)
+                    .Select(group =>
+                    {
+                        int total = group.Count();
+                        int available = 0;
+
+                        foreach (LiveMapObject item in group)
+                        {
+                            string state = GetServerAvailabilityState(item);
+
+                            ReservationItem? booking = FindMapReservation(item);
+
+                            bool hasLocalSchedule =
+                                HasMapReservationForSystemOnDate(item);
+
+                            bool serverSaysOccupied = !hasLocalSchedule &&
+                                (state.Equals("reserved", StringComparison.OrdinalIgnoreCase) ||
+                                 state.Equals("in_use", StringComparison.OrdinalIgnoreCase));
+
+                            bool isDisabled = item.Disabled ||
+                                state.Equals("off", StringComparison.OrdinalIgnoreCase);
+
+                            bool isReserved = booking != null || serverSaysOccupied;
+
+                            if (!isDisabled && !isReserved)
+                                available++;
+                        }
+
+                        string typeName = GetVariationName(group.Key);
+
+                        if (string.IsNullOrWhiteSpace(typeName))
+                            typeName = "نوع نامشخص";
+
+                        return new
+                        {
+                            Name = typeName,
+                            Available = available,
+                            Total = total
+                        };
+                    })
+                    .OrderBy(x => x.Name)
+                    .ToList();
+
+                _tvFloorMapTypeAvailabilityText.Text =
+                    typeStatistics.Count == 0
+                        ? "سیستمی برای نمایش وجود ندارد"
+                        : string.Join(
+                            "     |     ",
+                            typeStatistics.Select(x =>
+                                $"{x.Name}: {x.Available} آزاد از {x.Total}"
+                            )
+                        );
+            }
         }
 
         private void UpdateLiveMapZoom()
@@ -4427,32 +4567,29 @@ namespace LobixApp.Views
                 .FirstOrDefault();
         }
 
+
         private static Color GetReservationMapColor(
-       ReservationItem? booking,
-       string? systemNumber = null)
+            ReservationItem? booking,
+            string? systemNumber = null)
         {
             string colorKey;
 
             if (booking == null)
             {
-                // سیستم بدون رزرو
                 colorKey = "system:" +
                            NormalizeMapSystemNumber(systemNumber);
             }
             else if (booking.OrderId > 0)
             {
-                // تمام سیستم‌های متعلق به یک سفارش آنلاین
-                // حتی با Source متفاوت، رنگ یکسان خواهند داشت.
+                // سیستم‌های متعلق به یک سفارش آنلاین، رنگ مشترک دارند.
                 colorKey = $"online-order:{booking.OrderId}";
             }
             else if (!string.IsNullOrWhiteSpace(booking.Id))
             {
-                // رزروهای دستی و سایر رزروها
                 colorKey = booking.Id;
             }
             else
             {
-                // شناسه جایگزین در صورت نبود شناسه اصلی
                 colorKey =
                     $"{booking.OrderId}:" +
                     $"{booking.Customer}:" +
@@ -4462,6 +4599,7 @@ namespace LobixApp.Views
 
             unchecked
             {
+                // ساخت Hash ثابت برای هر رزرو
                 uint hash = 2166136261;
 
                 foreach (char c in colorKey)
@@ -4470,10 +4608,15 @@ namespace LobixApp.Views
                     hash *= 16777619;
                 }
 
-                // تولید رنگ از روی کلید رزرو
-                double hue = hash % 360;
-                double saturation = 0.68;
-                double value = 0.82;
+                // انتخاب یکی از ۷۰ رنگ
+                int colorIndex = (int)(hash % 70);
+
+                // توزیع رنگ‌ها در چرخه رنگ برای کاهش شباهت
+                double hue = (colorIndex * 137.508) % 360.0;
+
+                // تنوع کنترل‌شده در شدت و روشنایی
+                double saturation = 0.76 + (colorIndex % 3) * 0.07;
+                double value = 0.82 + (colorIndex % 4) * 0.045;
 
                 double chroma = value * saturation;
 
@@ -4504,6 +4647,7 @@ namespace LobixApp.Views
                 );
             }
         }
+
 
         private static string GetBookingCountdown(ReservationItem? booking)
         {
