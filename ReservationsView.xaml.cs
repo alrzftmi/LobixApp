@@ -3290,10 +3290,22 @@ namespace LobixApp.Views
                 else
                     free++;
 
+
+                Color reservationColor = booking != null
+                    ? GetReservationMapColor(booking, item.SystemNumber)
+                    : Color.FromRgb(116, 35, 43);
+
+                // حاشیه کمی روشن‌تر از رنگ اصلی رزرو
+                Color reservationBorderColor = Color.FromRgb(
+                    (byte)Math.Min(255, reservationColor.R + 30),
+                    (byte)Math.Min(255, reservationColor.G + 30),
+                    (byte)Math.Min(255, reservationColor.B + 30)
+                );
+
                 Color fillColor = isDisabled
                     ? Color.FromRgb(41, 45, 58)
                     : isReserved
-                        ? Color.FromRgb(116, 35, 43)
+                        ? reservationColor
                         : Color.FromRgb(22, 112, 75);
 
                 Color borderColor = isDisabled
@@ -3301,8 +3313,9 @@ namespace LobixApp.Views
                     : isMapSelected
                         ? Color.FromRgb(115, 174, 255)
                         : isReserved
-                            ? Color.FromRgb(245, 91, 100)
+                            ? reservationBorderColor
                             : Color.FromRgb(61, 205, 139);
+
 
                 if (isMapSelected && !isDisabled)
                     fillColor = Color.FromRgb(39, 68, 112);
@@ -3791,16 +3804,10 @@ namespace LobixApp.Views
                 colorKey = "system:" +
                            NormalizeMapSystemNumber(systemNumber);
             }
-            else if (
-                string.Equals(
-                    booking.Source,
-                    "online",
-                    StringComparison.OrdinalIgnoreCase
-                ) &&
-                booking.OrderId > 0
-            )
+            else if (booking.OrderId > 0)
             {
-                // تمام آیتم‌های یک سفارش آنلاین، رنگ یکسان دارند.
+                // تمام سیستم‌های متعلق به یک سفارش آنلاین
+                // حتی با Source متفاوت، رنگ یکسان خواهند داشت.
                 colorKey = $"online-order:{booking.OrderId}";
             }
             else if (!string.IsNullOrWhiteSpace(booking.Id))
