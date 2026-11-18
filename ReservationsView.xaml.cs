@@ -3019,9 +3019,7 @@ namespace LobixApp.Views
             double virtualTop = SystemParameters.VirtualScreenTop;
             double virtualWidth = SystemParameters.VirtualScreenWidth;
             double primaryWidth = SystemParameters.PrimaryScreenWidth;
-            window.Left = virtualLeft < 0
-                ? virtualLeft
-                : Math.Min(primaryWidth, virtualLeft + Math.Max(0, virtualWidth - primaryWidth));
+            window.Left = virtualLeft < 0 ? virtualLeft : primaryWidth;
             window.Top = virtualTop;
             window.Width = Math.Max(800, virtualWidth - primaryWidth);
             window.Height = Math.Max(600, SystemParameters.VirtualScreenHeight);
