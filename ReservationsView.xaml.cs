@@ -112,6 +112,16 @@ namespace LobixApp.Views
         private ScrollViewer? _activeTimelineHeaderScrollViewer;
         private Canvas? _activeTimelineHeaderCanvas;
         private Window? _timelineFullscreenWindow;
+        // TV live map is a separate window that paints the operator map through a VisualBrush.
+        // The original canvas stays in the operator UI and remains fully interactive.
+        private Window? _tvFloorMapWindow;
+        private DispatcherTimer? _tvFloorMapTimer;
+        private TextBlock? _tvFloorMapClockText;
+        private TextBlock? _tvFloorMapDateText;
+        private TextBlock? _tvFloorMapFloorText;
+        private TextBlock? _tvFloorMapFreeText;
+        private TextBlock? _tvFloorMapReservedText;
+        private TextBlock? _tvFloorMapDisabledText;
         private const double HeaderHeight = 42;
 
         private const int StartHour = 8;
@@ -211,6 +221,8 @@ namespace LobixApp.Views
             RoutedEventArgs e)
         {
             _clockTimer.Stop();
+            _tvFloorMapTimer?.Stop();
+            _tvFloorMapWindow?.Close();
 
             _extendedApiService.Dispose();
         }
@@ -2805,155 +2817,315 @@ namespace LobixApp.Views
             object sender,
             RoutedEventArgs e)
         {
-            if (LiveFloorMapCanvas == null ||
-                LiveMapScrollViewer == null)
+            if (LiveFloorMapCanvas == null || !_floorMapLoaded)
+            {
+                RenderLiveFloorMap();
+                if (!_floorMapLoaded)
+                {
+                    LobixDialog.Show(
+                        "ابتدا صبر کنید تا نقشه سالن بارگذاری شود.",
+                        "نقشه زنده",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+            }
+
+            // اگر پنجره تلویزیون از قبل باز است، همان پنجره را فعال کن.
+            if (_tvFloorMapWindow != null)
+            {
+                if (_tvFloorMapWindow.WindowState == WindowState.Minimized)
+                    _tvFloorMapWindow.WindowState = WindowState.Maximized;
+
+                _tvFloorMapWindow.Activate();
+                return;
+            }
+
+            OpenTvFloorMapWindow();
+        }
+
+        private void OpenTvFloorMapWindow()
+        {
+            if (LiveFloorMapCanvas == null)
                 return;
 
-            var originalContent = LiveMapScrollViewer.Content;
-
-            var background = new SolidColorBrush(
-                Color.FromRgb(13, 14, 19));
-
-            double zoom = 1.0;
-            bool restoring = false;
-
-            // به‌روزرسانی اندازه واقعی نقشه قبل از نمایش
-            RenderLiveFloorMap();
-
-            LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
-            LiveFloorMapCanvas.FlowDirection = FlowDirection.LeftToRight;
-
-            LiveMapScrollViewer.Content = new Canvas
+            // این Brush یک تصویر زنده از Canvas می‌سازد؛ Canvas از صفحه اپراتور
+            // جدا یا جابه‌جا نمی‌شود و کلیک‌های نقشه نیز به تلویزیون منتقل نمی‌شوند.
+            var liveMapBrush = new VisualBrush(LiveFloorMapCanvas)
             {
-                Width = 1600,
-                Height = 1000,
-                Background = background
+                Stretch = Stretch.Uniform,
+                AlignmentX = AlignmentX.Center,
+                AlignmentY = AlignmentY.Center
             };
 
-            var mapScrollViewer = new ScrollViewer
+            var root = new Grid
             {
+                Background = new SolidColorBrush(Color.FromRgb(7, 8, 12)),
+                FlowDirection = FlowDirection.RightToLeft
+            };
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(88) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(54) });
+
+            var header = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(17, 19, 27)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(55, 28, 34)),
+                BorderThickness = new Thickness(0, 0, 0, 1),
+                Padding = new Thickness(34, 12, 34, 12)
+            };
+            var headerGrid = new Grid();
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var heading = new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                FlowDirection = FlowDirection.RightToLeft
+            };
+            heading.Children.Add(new TextBlock
+            {
+                Text = "نقشه زنده سالن",
+                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontSize = 25,
+                FontWeight = FontWeights.Bold,
+                Foreground = Brushes.White
+            });
+            _tvFloorMapFloorText = new TextBlock
+            {
+                Text = _selectedMapFloor,
+                Margin = new Thickness(0, 2, 0, 0),
+                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontSize = 13,
+                Foreground = new SolidColorBrush(Color.FromRgb(166, 171, 185))
+            };
+            heading.Children.Add(_tvFloorMapFloorText);
+            Grid.SetColumn(heading, 0);
+            headerGrid.Children.Add(heading);
+
+            var timePanel = new StackPanel
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                FlowDirection = FlowDirection.RightToLeft
+            };
+            _tvFloorMapClockText = new TextBlock
+            {
+                Text = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture),
+                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontSize = 25,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(242, 70, 79)),
+                TextAlignment = TextAlignment.Left
+            };
+            _tvFloorMapDateText = new TextBlock
+            {
+                Text = DateTime.Now.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture),
+                Margin = new Thickness(0, 2, 0, 0),
+                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontSize = 12,
+                Foreground = new SolidColorBrush(Color.FromRgb(166, 171, 185)),
+                TextAlignment = TextAlignment.Left
+            };
+            timePanel.Children.Add(_tvFloorMapClockText);
+            timePanel.Children.Add(_tvFloorMapDateText);
+            Grid.SetColumn(timePanel, 1);
+            headerGrid.Children.Add(timePanel);
+            header.Child = headerGrid;
+            Grid.SetRow(header, 0);
+            root.Children.Add(header);
+
+            var mapFrame = new Border
+            {
+                Margin = new Thickness(22, 18, 22, 18),
+                Padding = new Thickness(8),
+                Background = new SolidColorBrush(Color.FromRgb(13, 15, 21)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(65, 35, 42)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(16),
+                ClipToBounds = true
+            };
+            var mapViewbox = new Viewbox
+            {
+                Stretch = Stretch.Uniform,
+                StretchDirection = StretchDirection.Both,
+                Child = new Rectangle
+                {
+                    Width = Math.Max(1, LiveFloorMapCanvas.Width),
+                    Height = Math.Max(1, LiveFloorMapCanvas.Height),
+                    Fill = liveMapBrush,
+                    SnapsToDevicePixels = true
+                }
+            };
+            mapFrame.Child = mapViewbox;
+            Grid.SetRow(mapFrame, 1);
+            root.Children.Add(mapFrame);
+
+            var footer = new Border
+            {
+                Background = new SolidColorBrush(Color.FromRgb(15, 16, 22)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(42, 44, 54)),
+                BorderThickness = new Thickness(0, 1, 0, 0),
+                Padding = new Thickness(30, 8, 30, 8)
+            };
+            var footerGrid = new Grid();
+            footerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            footerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            footerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var legend = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Center,
+                FlowDirection = FlowDirection.RightToLeft
+            };
+            _tvFloorMapFreeText = CreateTvMapLegendItem("آزاد ۰", Color.FromRgb(47, 190, 125));
+            _tvFloorMapReservedText = CreateTvMapLegendItem("رزرو ۰", Color.FromRgb(235, 65, 77));
+            _tvFloorMapDisabledText = CreateTvMapLegendItem("غیرفعال ۰", Color.FromRgb(145, 151, 165));
+            legend.Children.Add(_tvFloorMapFreeText);
+            legend.Children.Add(_tvFloorMapReservedText);
+            legend.Children.Add(_tvFloorMapDisabledText);
+            Grid.SetColumn(legend, 0);
+            footerGrid.Children.Add(legend);
+
+            var poweredBy = new TextBlock
+            {
+                Text = "POWERED BY LOBIXAPP",
+                FontFamily = new FontFamily("Segoe UI"),
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(238, 238, 242)),
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
                 FlowDirection = FlowDirection.LeftToRight,
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                CanContentScroll = false,
-                PanningMode = PanningMode.Both,
-                Background = background,
-                ClipToBounds = true,
-                Content = LiveFloorMapCanvas
+                CharacterSpacing = 90
             };
-
-            mapScrollViewer.PreviewMouseWheel += (_, args) =>
-            {
-                if (!Keyboard.IsKeyDown(Key.LeftCtrl) &&
-                    !Keyboard.IsKeyDown(Key.RightCtrl))
-                    return;
-
-                args.Handled = true;
-
-                double oldZoom = zoom;
-
-                double factor = args.Delta > 0
-                    ? 1.1
-                    : 1.0 / 1.1;
-
-                double newZoom = Math.Clamp(
-                    oldZoom * factor,
-                    0.2,
-                    4.0);
-
-                if (Math.Abs(newZoom - oldZoom) < 0.0001)
-                    return;
-
-                Point mouse = args.GetPosition(mapScrollViewer);
-
-                // موقعیت نقطه زیر نشانگر قبل از تغییر زوم
-                double contentX =
-                    (mapScrollViewer.HorizontalOffset + mouse.X) / oldZoom;
-
-                double contentY =
-                    (mapScrollViewer.VerticalOffset + mouse.Y) / oldZoom;
-
-                zoom = newZoom;
-
-                LiveFloorMapCanvas.LayoutTransform =
-                    new ScaleTransform(zoom, zoom);
-
-                mapScrollViewer.InvalidateMeasure();
-                mapScrollViewer.InvalidateArrange();
-                mapScrollViewer.UpdateLayout();
-
-                double maxX = Math.Max(
-                    0,
-                    mapScrollViewer.ExtentWidth -
-                    mapScrollViewer.ViewportWidth);
-
-                double maxY = Math.Max(
-                    0,
-                    mapScrollViewer.ExtentHeight -
-                    mapScrollViewer.ViewportHeight);
-
-                mapScrollViewer.ScrollToHorizontalOffset(
-                    Math.Clamp(
-                        contentX * zoom - mouse.X,
-                        0,
-                        maxX));
-
-                mapScrollViewer.ScrollToVerticalOffset(
-                    Math.Clamp(
-                        contentY * zoom - mouse.Y,
-                        0,
-                        maxY));
-            };
+            Grid.SetColumn(poweredBy, 1);
+            footerGrid.Children.Add(poweredBy);
+            footer.Child = footerGrid;
+            Grid.SetRow(footer, 2);
+            root.Children.Add(footer);
 
             var window = new Window
             {
-                Title = "نقشه زنده سالن — لابیکس",
-                Width = Math.Min(
-                    1500,
-                    SystemParameters.WorkArea.Width - 40),
-                Height = Math.Min(
-                    860,
-                    SystemParameters.WorkArea.Height - 40),
-                MinWidth = 900,
-                MinHeight = 520,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = Window.GetWindow(this),
-                FlowDirection = FlowDirection.RightToLeft,
-                Background = background,
-                Content = mapScrollViewer
+                Title = "LobixApp | Live Map TV",
+                WindowStyle = WindowStyle.None,
+                ResizeMode = ResizeMode.NoResize,
+                ShowInTaskbar = false,
+                Background = root.Background,
+                Content = root,
+                WindowStartupLocation = WindowStartupLocation.Manual,
+                FlowDirection = FlowDirection.RightToLeft
             };
 
-            window.Loaded += (_, _) =>
+            // در چیدمان Extend، تلویزیون معمولاً سمت راست نمایشگر اصلی قرار می‌گیرد.
+            // اگر نمایشگر دوم سمت چپ باشد، از مختصات مجازی ویندوز استفاده می‌کنیم.
+            double virtualLeft = SystemParameters.VirtualScreenLeft;
+            double virtualTop = SystemParameters.VirtualScreenTop;
+            double virtualWidth = SystemParameters.VirtualScreenWidth;
+            double primaryWidth = SystemParameters.PrimaryScreenWidth;
+            window.Left = virtualLeft < 0
+                ? virtualLeft
+                : Math.Min(primaryWidth, virtualLeft + Math.Max(0, virtualWidth - primaryWidth));
+            window.Top = virtualTop;
+            window.Width = Math.Max(800, virtualWidth - primaryWidth);
+            window.Height = Math.Max(600, SystemParameters.VirtualScreenHeight);
+
+            window.PreviewKeyDown += (_, args) =>
             {
-                mapScrollViewer.UpdateLayout();
-                mapScrollViewer.ScrollToHorizontalOffset(0);
-                mapScrollViewer.ScrollToVerticalOffset(0);
+                if (args.Key == Key.Escape)
+                {
+                    args.Handled = true;
+                    window.Close();
+                }
             };
 
             window.Closed += (_, _) =>
             {
-                if (restoring)
-                    return;
-
-                restoring = true;
-
-                mapScrollViewer.Content = null;
-
-                LiveFloorMapCanvas.LayoutTransform = Transform.Identity;
-
-                LiveMapScrollViewer.Content = originalContent;
-
-                UpdateLiveMapZoom();
-                RenderLiveFloorMap();
+                _tvFloorMapTimer?.Stop();
+                _tvFloorMapTimer = null;
+                _tvFloorMapWindow = null;
+                _tvFloorMapClockText = null;
+                _tvFloorMapDateText = null;
+                _tvFloorMapFloorText = null;
+                _tvFloorMapFreeText = null;
+                _tvFloorMapReservedText = null;
+                _tvFloorMapDisabledText = null;
             };
 
-            window.ShowDialog();
+            _tvFloorMapWindow = window;
+            _tvFloorMapTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _tvFloorMapTimer.Tick += (_, _) => UpdateTvFloorMapDashboard();
+            _tvFloorMapTimer.Start();
+
+            window.Show();
+            window.WindowState = WindowState.Maximized;
+            UpdateTvFloorMapDashboard();
         }
 
+        private TextBlock CreateTvMapLegendItem(string text, Color color)
+        {
+            return new TextBlock
+            {
+                Text = text,
+                Margin = new Thickness(0, 0, 24, 0),
+                FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                FontSize = 15,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = new SolidColorBrush(color),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+        }
 
+        private void UpdateTvFloorMapDashboard()
+        {
+            if (_tvFloorMapWindow == null)
+                return;
 
+            DateTime now = DateTime.Now;
+            if (_tvFloorMapClockText != null)
+                _tvFloorMapClockText.Text = now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
+            if (_tvFloorMapDateText != null)
+                _tvFloorMapDateText.Text = now.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
+            if (_tvFloorMapFloorText != null)
+                _tvFloorMapFloorText.Text = _selectedMapFloor;
 
+            int free = 0;
+            int reserved = 0;
+            int disabled = 0;
 
+            foreach (LiveMapObject item in _liveMapObjects.Where(x =>
+                string.Equals(x.Floor, _selectedMapFloor, StringComparison.OrdinalIgnoreCase) &&
+                x.Type.Equals("system", StringComparison.OrdinalIgnoreCase)))
+            {
+                string serverState = GetServerAvailabilityState(item);
+                ReservationItem? booking = FindMapReservation(item);
+                bool hasLocalSchedule = HasMapReservationForSystemOnDate(item);
+                bool serverSaysOccupied = !hasLocalSchedule &&
+                    (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) ||
+                     serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase));
+                bool isDisabled = item.Disabled ||
+                    serverState.Equals("off", StringComparison.OrdinalIgnoreCase);
+                bool isReserved = booking != null || serverSaysOccupied;
+
+                if (isDisabled)
+                    disabled++;
+                else if (isReserved)
+                    reserved++;
+                else
+                    free++;
+            }
+
+            if (_tvFloorMapFreeText != null)
+                _tvFloorMapFreeText.Text = $"آزاد {free.ToString(CultureInfo.InvariantCulture)}";
+            if (_tvFloorMapReservedText != null)
+                _tvFloorMapReservedText.Text = $"رزرو {reserved.ToString(CultureInfo.InvariantCulture)}";
+            if (_tvFloorMapDisabledText != null)
+                _tvFloorMapDisabledText.Text = $"غیرفعال {disabled.ToString(CultureInfo.InvariantCulture)}";
+        }
 
         private void UpdateLiveMapZoom()
         {
