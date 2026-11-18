@@ -3170,7 +3170,7 @@ namespace LobixApp.Views
                     BorderThickness = new Thickness(1.5),
                     CornerRadius = new CornerRadius(9),
                     Padding = new Thickness(4),
-                    Child = BuildMapSystemContent(item, booking, disabled, serverState, false),
+                    Child = BuildTvMapSystemContent(item, booking, disabled, serverState),
                     IsHitTestVisible = false
                 };
                 tile.RenderTransformOrigin = new Point(0.5, 0.5);
@@ -3182,6 +3182,99 @@ namespace LobixApp.Views
 
             target.InvalidateMeasure();
             target.InvalidateArrange();
+        }
+
+        private UIElement BuildTvMapSystemContent(
+            LiveMapObject item,
+            ReservationItem? booking,
+            bool disabled,
+            string serverState)
+        {
+            double side = Math.Min(Math.Max(1, item.Width), Math.Max(1, item.Height));
+            bool compact = side < 76;
+            var font = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI");
+
+            string title = GetVariationName(item.VariationId);
+            string rawNumber = (item.SystemNumber ?? string.Empty).Trim();
+            string number = new string(rawNumber.Reverse().TakeWhile(char.IsDigit).Reverse().ToArray());
+
+            string status = disabled
+                ? "غیرفعال"
+                : serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase)
+                    ? "در حال استفاده"
+                    : booking != null || serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase)
+                        ? "رزرو شده"
+                        : "آزاد";
+
+            var panel = new StackPanel
+            {
+                FlowDirection = FlowDirection.RightToLeft,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(3, 2, 3, 2),
+                IsHitTestVisible = false
+            };
+
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Text = title,
+                    FontFamily = font,
+                    FontSize = compact ? 12 : Math.Clamp(side * 0.19, 15, 21),
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = Brushes.White,
+                    TextAlignment = TextAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxHeight = compact ? 30 : 44
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(number))
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Text = number,
+                    FontFamily = font,
+                    FontSize = compact ? 12 : Math.Clamp(side * 0.14, 13, 17),
+                    FontWeight = FontWeights.Medium,
+                    Foreground = new SolidColorBrush(Color.FromRgb(235, 239, 248)),
+                    TextAlignment = TextAlignment.Center
+                });
+            }
+
+            panel.Children.Add(new TextBlock
+            {
+                Text = status,
+                FontFamily = font,
+                FontSize = compact ? 10 : Math.Clamp(side * 0.14, 13, 16),
+                FontWeight = FontWeights.Bold,
+                Foreground = Brushes.White,
+                TextAlignment = TextAlignment.Center,
+                Margin = new Thickness(1, 2, 1, 0)
+            });
+
+            if (!disabled && booking != null)
+            {
+                string countdown = GetBookingCountdown(booking);
+                if (!string.IsNullOrWhiteSpace(countdown))
+                {
+                    panel.Children.Add(new TextBlock
+                    {
+                        Text = countdown.Replace("\n", "  "),
+                        FontFamily = font,
+                        FontSize = compact ? 10 : Math.Clamp(side * 0.13, 12, 16),
+                        FontWeight = FontWeights.Bold,
+                        Foreground = Brushes.White,
+                        TextAlignment = TextAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap,
+                        MaxHeight = 42,
+                        Margin = new Thickness(1, 2, 1, 0)
+                    });
+                }
+            }
+
+            return panel;
         }
 
         private void DrawTvFloorDecoration(Canvas target, LiveMapObject item, double offsetX, double offsetY)
@@ -3245,7 +3338,7 @@ namespace LobixApp.Views
             if (_tvFloorMapClockText != null)
                 _tvFloorMapClockText.Text = now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
             if (_tvFloorMapDateText != null)
-                _tvFloorMapDateText.Text = now.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture);
+                _tvFloorMapDateText.Text = ToPersianDate(now);
             if (_tvFloorMapFloorText != null)
                 _tvFloorMapFloorText.Text = _selectedMapFloor;
 
