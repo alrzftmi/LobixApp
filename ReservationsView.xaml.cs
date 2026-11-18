@@ -2855,12 +2855,6 @@ namespace LobixApp.Views
         }
 
 
-
-
-
-
-
-
         private void FullscreenFloorMapButton_Click(
             object sender,
             RoutedEventArgs e)
@@ -2868,22 +2862,43 @@ namespace LobixApp.Views
             if (LiveFloorMapCanvas == null || !_floorMapLoaded)
             {
                 RenderLiveFloorMap();
-                if (!_floorMapLoaded)
-                {
-                    LobixDialog.Show(
-                        "ابتدا صبر کنید تا نقشه سالن بارگذاری شود.",
-                        "نقشه زنده",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
-                    return;
-                }
             }
 
-            // اگر پنجره تلویزیون از قبل باز است، همان پنجره را فعال کن.
+            if (!_floorMapLoaded)
+            {
+                LobixDialog.Show(
+                    "ابتدا صبر کنید تا نقشه سالن بارگذاری شود.",
+                    "نقشه زنده",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            // بررسی وجود سیستم در طبقه انتخاب‌شده
+            int systemCount = _liveMapObjects.Count(x =>
+                string.Equals(
+                    x.Floor,
+                    _selectedMapFloor,
+                    StringComparison.OrdinalIgnoreCase) &&
+                x.Type.Equals(
+                    "system",
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (systemCount == 0)
+            {
+                LobixDialog.Show(
+                    "برای طبقه انتخاب‌شده هیچ سیستمی در نقشه پیدا نشد.",
+                    "نقشه زنده",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            // اگر پنجره از قبل باز است، همان را فعال کن
             if (_tvFloorMapWindow != null)
             {
                 if (_tvFloorMapWindow.WindowState == WindowState.Minimized)
-                    _tvFloorMapWindow.WindowState = WindowState.Maximized;
+                    _tvFloorMapWindow.WindowState = WindowState.Normal;
 
                 _tvFloorMapWindow.Activate();
                 return;
@@ -2891,6 +2906,7 @@ namespace LobixApp.Views
 
             OpenTvFloorMapWindow();
         }
+
 
         private void OpenTvFloorMapWindow()
         {
@@ -3118,64 +3134,90 @@ namespace LobixApp.Views
             Grid.SetRow(footer, 2);
             root.Children.Add(footer);
 
+
             var window = new Window
             {
                 Title = "LobixApp | Live Map TV",
-                WindowStyle = WindowStyle.None,
-                ResizeMode = ResizeMode.NoResize,
+                WindowStyle = WindowStyle.SingleBorderWindow,
+                ResizeMode = ResizeMode.CanResize,
                 ShowInTaskbar = true,
                 Background = root.Background,
                 Content = root,
                 WindowStartupLocation = WindowStartupLocation.Manual,
-                FlowDirection = FlowDirection.RightToLeft
+                FlowDirection = FlowDirection.RightToLeft,
+                MinWidth = 800,
+                MinHeight = 550
             };
 
-            // در چیدمان Extend، تلویزیون معمولاً سمت راست نمایشگر اصلی قرار می‌گیرد.
-            // اگر نمایشگر دوم سمت چپ باشد، از مختصات مجازی ویندوز استفاده می‌کنیم.
+
+
+            // =========================================================
+            // TV WINDOW DISPLAY / LIFECYCLE
+            // =========================================================
+
+            // تعیین محدوده نمایشگر مقصد
+            double targetLeft = 0;
+            double targetTop = 0;
+            double targetWidth = SystemParameters.PrimaryScreenWidth;
+            double targetHeight = SystemParameters.PrimaryScreenHeight;
+
             double virtualLeft = SystemParameters.VirtualScreenLeft;
             double virtualTop = SystemParameters.VirtualScreenTop;
             double virtualWidth = SystemParameters.VirtualScreenWidth;
             double virtualHeight = SystemParameters.VirtualScreenHeight;
+
             double primaryWidth = SystemParameters.PrimaryScreenWidth;
             double primaryHeight = SystemParameters.PrimaryScreenHeight;
 
+            // نمایشگر دوم در سمت چپ
             if (virtualLeft < -1)
             {
-                window.Left = virtualLeft;
-                window.Top = virtualTop;
-                window.Width = Math.Max(800, virtualWidth - primaryWidth);
-                window.Height = Math.Max(600, virtualHeight);
+                targetLeft = virtualLeft;
+                targetTop = virtualTop;
+                targetWidth = primaryWidth - virtualLeft;
+                targetHeight = virtualHeight;
             }
+            // نمایشگر دوم در سمت راست
             else if (virtualWidth > primaryWidth + 1)
             {
-                window.Left = primaryWidth;
-                window.Top = virtualTop;
-                window.Width = Math.Max(800, virtualWidth - primaryWidth);
-                window.Height = Math.Max(600, virtualHeight);
+                targetLeft = primaryWidth;
+                targetTop = virtualTop;
+                targetWidth = virtualWidth - primaryWidth;
+                targetHeight = virtualHeight;
             }
+            // نمایشگر دوم در بالا
             else if (virtualTop < -1)
             {
-                window.Left = virtualLeft;
-                window.Top = virtualTop;
-                window.Width = Math.Max(800, virtualWidth);
-                window.Height = Math.Max(600, virtualHeight - primaryHeight);
+                targetLeft = virtualLeft;
+                targetTop = virtualTop;
+                targetWidth = virtualWidth;
+                targetHeight = primaryHeight - virtualTop;
             }
+            // نمایشگر دوم در پایین
             else if (virtualHeight > primaryHeight + 1)
             {
-                window.Left = virtualLeft;
-                window.Top = primaryHeight;
-                window.Width = Math.Max(800, virtualWidth);
-                window.Height = Math.Max(600, virtualHeight - primaryHeight);
-            }
-            else
-            {
-                // اگر نمایشگر دوم شناسایی نشد، پنجره در موقعیت نمایشگر دوم احتمالی قرار می‌گیرد.
-                window.Left = primaryWidth;
-                window.Top = 0;
-                window.Width = Math.Max(800, primaryWidth);
-                window.Height = Math.Max(600, primaryHeight);
+                targetLeft = virtualLeft;
+                targetTop = primaryHeight;
+                targetWidth = virtualWidth;
+                targetHeight = virtualHeight - primaryHeight;
             }
 
+            // جلوگیری از اندازه‌های نامعتبر
+            targetWidth = Math.Max(800, targetWidth);
+            targetHeight = Math.Max(550, targetHeight);
+
+            // اندازه اولیه پنجره؛ نه تمام‌صفحه
+            window.Width = Math.Min(1200, targetWidth - 40);
+            window.Height = Math.Min(800, targetHeight - 40);
+
+            window.MinWidth = 800;
+            window.MinHeight = 550;
+
+            // قرار دادن پنجره در مرکز نمایشگر مقصد
+            window.Left = targetLeft + (targetWidth - window.Width) / 2;
+            window.Top = targetTop + (targetHeight - window.Height) / 2;
+
+            // بستن پنجره با Escape
             window.PreviewKeyDown += (_, args) =>
             {
                 if (args.Key == Key.Escape)
@@ -3185,34 +3227,56 @@ namespace LobixApp.Views
                 }
             };
 
+            // پاک‌سازی منابع هنگام بسته شدن پنجره
             window.Closed += (_, _) =>
             {
                 _tvFloorMapTimer?.Stop();
                 _tvFloorMapTimer = null;
+
                 _tvFloorMapWindow = null;
+
                 _tvFloorMapClockText = null;
                 _tvFloorMapDateText = null;
                 _tvFloorMapFloorText = null;
+
                 _tvFloorMapFreeText = null;
                 _tvFloorMapReservedText = null;
                 _tvFloorMapDisabledText = null;
+
                 _tvFloorMapCanvas = null;
             };
 
+            // ثبت پنجره فعال
             _tvFloorMapWindow = window;
+
+            // تایمر به‌روزرسانی نقشه و اطلاعات
+            _tvFloorMapTimer?.Stop();
+
             _tvFloorMapTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
+
             _tvFloorMapTimer.Tick += (_, _) =>
             {
+                if (_tvFloorMapWindow == null ||
+                    !_tvFloorMapWindow.IsVisible)
+                {
+                    return;
+                }
+
                 RenderTvFloorMap();
                 UpdateTvFloorMapDashboard();
             };
+
             _tvFloorMapTimer.Start();
 
-            window.Show();
+            // نمایش پنجره
             window.WindowState = WindowState.Normal;
+            window.Show();
+            window.Activate();
+
+            // رسم اولیه نقشه و داشبورد
             RenderTvFloorMap();
             UpdateTvFloorMapDashboard();
         }
