@@ -122,6 +122,7 @@ namespace LobixApp.Views
         private TextBlock? _tvFloorMapFreeText;
         private TextBlock? _tvFloorMapReservedText;
         private TextBlock? _tvFloorMapDisabledText;
+        private Canvas? _tvFloorMapCanvas;
         private const double HeaderHeight = 42;
 
         private const int StartHour = 8;
@@ -2849,13 +2850,14 @@ namespace LobixApp.Views
             if (LiveFloorMapCanvas == null)
                 return;
 
-            // این Brush یک تصویر زنده از Canvas می‌سازد؛ Canvas از صفحه اپراتور
-            // جدا یا جابه‌جا نمی‌شود و کلیک‌های نقشه نیز به تلویزیون منتقل نمی‌شوند.
-            var liveMapBrush = new VisualBrush(LiveFloorMapCanvas)
+            // نقشه تلویزیون Canvas مستقل دارد؛ هیچ کنترل یا انتخابی از نقشه اپراتور کپی نمی‌شود.
+            _tvFloorMapCanvas = new Canvas
             {
-                Stretch = Stretch.Uniform,
-                AlignmentX = AlignmentX.Center,
-                AlignmentY = AlignmentY.Center
+                Width = Math.Max(1, LiveFloorMapCanvas.Width),
+                Height = Math.Max(1, LiveFloorMapCanvas.Height),
+                Background = new SolidColorBrush(Color.FromRgb(13, 15, 21)),
+                FlowDirection = FlowDirection.LeftToRight,
+                ClipToBounds = false
             };
 
             var root = new Grid
@@ -2949,13 +2951,7 @@ namespace LobixApp.Views
             {
                 Stretch = Stretch.Uniform,
                 StretchDirection = StretchDirection.Both,
-                Child = new Rectangle
-                {
-                    Width = Math.Max(1, LiveFloorMapCanvas.Width),
-                    Height = Math.Max(1, LiveFloorMapCanvas.Height),
-                    Fill = liveMapBrush,
-                    SnapsToDevicePixels = true
-                }
+                Child = _tvFloorMapCanvas
             };
             mapFrame.Child = mapViewbox;
             Grid.SetRow(mapFrame, 1);
@@ -3050,6 +3046,7 @@ namespace LobixApp.Views
                 _tvFloorMapFreeText = null;
                 _tvFloorMapReservedText = null;
                 _tvFloorMapDisabledText = null;
+                _tvFloorMapCanvas = null;
             };
 
             _tvFloorMapWindow = window;
@@ -3057,12 +3054,172 @@ namespace LobixApp.Views
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            _tvFloorMapTimer.Tick += (_, _) => UpdateTvFloorMapDashboard();
+            _tvFloorMapTimer.Tick += (_, _) =>
+            {
+                RenderTvFloorMap();
+                UpdateTvFloorMapDashboard();
+            };
             _tvFloorMapTimer.Start();
 
             window.Show();
             window.WindowState = WindowState.Maximized;
+            RenderTvFloorMap();
             UpdateTvFloorMapDashboard();
+        }
+
+        private void RenderTvFloorMap()
+        {
+            if (_tvFloorMapCanvas == null || LiveFloorMapCanvas == null)
+                return;
+
+            var target = _tvFloorMapCanvas;
+            var objects = _liveMapObjects
+                .Where(x => string.Equals(x.Floor, _selectedMapFloor, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => x.Type.Equals("system", StringComparison.OrdinalIgnoreCase) ? 1 : 0)
+                .ToList();
+
+            const double padding = 40;
+            double minX = 0, minY = 0, maxX = 1600, maxY = 1000;
+
+            foreach (LiveMapObject item in objects)
+            {
+                double x = double.IsFinite(item.X) ? item.X : 0;
+                double y = double.IsFinite(item.Y) ? item.Y : 0;
+                double width = Math.Max(1, item.Width);
+                double height = item.Type.Equals("system", StringComparison.OrdinalIgnoreCase)
+                    ? Math.Max(84, item.Height)
+                    : Math.Max(24, item.Height);
+                double radians = item.Rotation * Math.PI / 180.0;
+                double rotatedWidth = Math.Abs(width * Math.Cos(radians)) + Math.Abs(height * Math.Sin(radians));
+                double rotatedHeight = Math.Abs(width * Math.Sin(radians)) + Math.Abs(height * Math.Cos(radians));
+                double centerX = x + width / 2.0;
+                double centerY = y + height / 2.0;
+                minX = Math.Min(minX, centerX - rotatedWidth / 2.0);
+                minY = Math.Min(minY, centerY - rotatedHeight / 2.0);
+                maxX = Math.Max(maxX, centerX + rotatedWidth / 2.0);
+                maxY = Math.Max(maxY, centerY + rotatedHeight / 2.0);
+            }
+
+            double offsetX = padding - minX;
+            double offsetY = padding - minY;
+            double canvasWidth = Math.Max(1600, maxX - minX + padding * 2);
+            double canvasHeight = Math.Max(1000, maxY - minY + padding * 2);
+
+            target.Width = canvasWidth;
+            target.Height = canvasHeight;
+            target.Children.Clear();
+
+            var gridBrush = new SolidColorBrush(Color.FromRgb(28, 30, 39));
+            for (double x = 0; x <= canvasWidth; x += 50)
+                target.Children.Add(new Line { X1 = x, X2 = x, Y1 = 0, Y2 = canvasHeight, Stroke = gridBrush, StrokeThickness = 1, IsHitTestVisible = false });
+            for (double y = 0; y <= canvasHeight; y += 50)
+                target.Children.Add(new Line { X1 = 0, X2 = canvasWidth, Y1 = y, Y2 = y, Stroke = gridBrush, StrokeThickness = 1, IsHitTestVisible = false });
+
+            if (!_floorMapLoaded)
+            {
+                target.Children.Add(new TextBlock
+                {
+                    Text = _floorMapLoadMessage,
+                    Foreground = Brushes.LightGray,
+                    FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                    FontSize = 24,
+                    Width = Math.Max(500, canvasWidth - 100),
+                    TextAlignment = TextAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                });
+                return;
+            }
+
+            foreach (LiveMapObject item in objects)
+            {
+                if (!item.Type.Equals("system", StringComparison.OrdinalIgnoreCase))
+                {
+                    DrawTvFloorDecoration(target, item, offsetX, offsetY);
+                    continue;
+                }
+
+                // نمای تلویزیون همیشه وضعیت واقعی را نشان می‌دهد، نه پیش‌نمایش رزرو هدایت‌شده اپراتور.
+                ReservationItem? booking = FindMapReservation(item);
+                string serverState = GetServerAvailabilityState(item);
+                bool hasLocalSchedule = HasMapReservationForSystemOnDate(item);
+                bool serverSaysOccupied = !hasLocalSchedule &&
+                    (serverState.Equals("reserved", StringComparison.OrdinalIgnoreCase) ||
+                     serverState.Equals("in_use", StringComparison.OrdinalIgnoreCase));
+                bool disabled = item.Disabled || serverState.Equals("off", StringComparison.OrdinalIgnoreCase);
+                bool reserved = booking != null || serverSaysOccupied;
+
+                Color fill = disabled
+                    ? Color.FromRgb(41, 45, 58)
+                    : reserved
+                        ? (booking != null ? GetReservationMapColor(booking, item.SystemNumber) : Color.FromRgb(116, 35, 43))
+                        : Color.FromRgb(22, 112, 75);
+
+                Color borderColor = disabled
+                    ? Color.FromRgb(130, 135, 150)
+                    : Color.FromRgb(
+                        (byte)Math.Min(255, fill.R + 30),
+                        (byte)Math.Min(255, fill.G + 30),
+                        (byte)Math.Min(255, fill.B + 30));
+
+                var tile = new Border
+                {
+                    Width = Math.Max(1, item.Width),
+                    Height = Math.Max(84, item.Height),
+                    Background = new SolidColorBrush(fill),
+                    BorderBrush = new SolidColorBrush(borderColor),
+                    BorderThickness = new Thickness(1.5),
+                    CornerRadius = new CornerRadius(9),
+                    Padding = new Thickness(4),
+                    Child = BuildMapSystemContent(item, booking, disabled, serverState, false),
+                    IsHitTestVisible = false
+                };
+                tile.RenderTransformOrigin = new Point(0.5, 0.5);
+                tile.RenderTransform = new RotateTransform(item.Rotation);
+                Canvas.SetLeft(tile, item.X + offsetX);
+                Canvas.SetTop(tile, item.Y + offsetY);
+                target.Children.Add(tile);
+            }
+
+            target.InvalidateMeasure();
+            target.InvalidateArrange();
+        }
+
+        private void DrawTvFloorDecoration(Canvas target, LiveMapObject item, double offsetX, double offsetY)
+        {
+            Color color = item.Type.ToLowerInvariant() switch
+            {
+                "wall" or "دیوار" => Color.FromRgb(112, 116, 128),
+                "room" or "ناحیه" or "section" => Color.FromArgb(80, 73, 82, 105),
+                "entrance" or "ورودی" => Color.FromRgb(34, 91, 74),
+                "desk" or "میز" => Color.FromRgb(55, 59, 72),
+                _ => Color.FromRgb(48, 51, 63)
+            };
+
+            var decoration = new Border
+            {
+                Width = item.Width,
+                Height = Math.Max(24, item.Height),
+                Background = new SolidColorBrush(color),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(89, 93, 108)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(5),
+                IsHitTestVisible = false,
+                Child = new TextBlock
+                {
+                    Text = item.Label,
+                    Foreground = Brushes.Gainsboro,
+                    FontFamily = FindResource("Peyda") as FontFamily ?? new FontFamily("Segoe UI"),
+                    FontSize = 18,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                }
+            };
+            decoration.RenderTransformOrigin = new Point(0.5, 0.5);
+            decoration.RenderTransform = new RotateTransform(item.Rotation);
+            Canvas.SetLeft(decoration, item.X + offsetX);
+            Canvas.SetTop(decoration, item.Y + offsetY);
+            target.Children.Add(decoration);
         }
 
         private TextBlock CreateTvMapLegendItem(string text, Color color)
