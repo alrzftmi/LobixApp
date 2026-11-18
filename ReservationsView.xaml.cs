@@ -2998,7 +2998,6 @@ namespace LobixApp.Views
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FlowDirection = FlowDirection.LeftToRight,
-                CharacterSpacing = 90
             };
             Grid.SetColumn(poweredBy, 1);
             footerGrid.Children.Add(poweredBy);
