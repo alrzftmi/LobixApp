@@ -3018,11 +3018,46 @@ namespace LobixApp.Views
             double virtualLeft = SystemParameters.VirtualScreenLeft;
             double virtualTop = SystemParameters.VirtualScreenTop;
             double virtualWidth = SystemParameters.VirtualScreenWidth;
+            double virtualHeight = SystemParameters.VirtualScreenHeight;
             double primaryWidth = SystemParameters.PrimaryScreenWidth;
-            window.Left = virtualLeft < 0 ? virtualLeft : primaryWidth;
-            window.Top = virtualTop;
-            window.Width = Math.Max(800, virtualWidth - primaryWidth);
-            window.Height = Math.Max(600, SystemParameters.VirtualScreenHeight);
+            double primaryHeight = SystemParameters.PrimaryScreenHeight;
+
+            if (virtualLeft < -1)
+            {
+                window.Left = virtualLeft;
+                window.Top = virtualTop;
+                window.Width = Math.Max(800, virtualWidth - primaryWidth);
+                window.Height = Math.Max(600, virtualHeight);
+            }
+            else if (virtualWidth > primaryWidth + 1)
+            {
+                window.Left = primaryWidth;
+                window.Top = virtualTop;
+                window.Width = Math.Max(800, virtualWidth - primaryWidth);
+                window.Height = Math.Max(600, virtualHeight);
+            }
+            else if (virtualTop < -1)
+            {
+                window.Left = virtualLeft;
+                window.Top = virtualTop;
+                window.Width = Math.Max(800, virtualWidth);
+                window.Height = Math.Max(600, virtualHeight - primaryHeight);
+            }
+            else if (virtualHeight > primaryHeight + 1)
+            {
+                window.Left = virtualLeft;
+                window.Top = primaryHeight;
+                window.Width = Math.Max(800, virtualWidth);
+                window.Height = Math.Max(600, virtualHeight - primaryHeight);
+            }
+            else
+            {
+                // اگر نمایشگر دوم شناسایی نشد، پنجره در موقعیت نمایشگر دوم احتمالی قرار می‌گیرد.
+                window.Left = primaryWidth;
+                window.Top = 0;
+                window.Width = Math.Max(800, primaryWidth);
+                window.Height = Math.Max(600, primaryHeight);
+            }
 
             window.PreviewKeyDown += (_, args) =>
             {
